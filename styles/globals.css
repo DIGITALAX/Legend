@@ -1,0 +1,98 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "VCR";
+  src: url("/fonts/vcr.ttf");
+}
+
+@font-face {
+  font-family: "Earls Revenge";
+  font-weight: 400;
+  src: url("/fonts/EarlsRevenge.ttf");
+}
+
+@font-face {
+  font-family: "Megamax Jones";
+  font-weight: 400;
+  src: url("/fonts/MegamaxJones.ttf");
+}
+
+body {
+  background: #131313;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(
+      to right,
+      #bed2f34a 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, #bed2f34a 1px, transparent 1px);
+  background-size: 100px 100px;
+}
+
+#indexBody {
+  cursor: url("https://chromadin.infura-ipfs.io/ipfs/QmSvwVtnD6NRM64xRiPthdYRP8mW3jJHmCEohZMyr7zD4T"),
+    pointer;
+}
+
+#title {
+  -webkit-text-stroke: 1px black;
+  -moz-text-stroke: 1px black;
+  text-stroke: 1px black;
+}
+
+#highlighted-content {
+  font-family: "Earls Revenge";
+  font-size: 1rem;
+  line-height: 1.5rem;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+#highlighted-content::-webkit-scrollbar {
+  display: none;
+}
+
+#post {
+  color: transparent;
+  background: transparent;
+  caret-color: white;
+}
+
+#post #highlighting * {
+  font-family: "Earls Revenge";
+  font-size: 1rem; /* 16px */
+  line-height: 1.5rem;
+  overflow-y: auto;
+  white-space: pre-wrap;
+}
+
+#borderPreview {
+  -webkit-text-stroke: 1px black;
+  -moz-text-stroke: 1px black;
+  text-stroke: 1px black;
+}
+
+
+div::-webkit-scrollbar {
+  width: 0.01rem;
+  height: 0.1rem;
+}
+
+div::-webkit-scrollbar {
+  width: 0.01rem;
+}
+
+div::-webkit-scrollbar-track:active {
+  background-color: #f3f6f7 !important;
+  opacity: 80%;
+  border-radius: 200px;
+}
+
+div::-webkit-scrollbar-thumb:active {
+  background-color: #172534 !important;
+}
