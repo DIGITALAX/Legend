@@ -1,7 +1,7 @@
-import { ItemTypes } from "@/components/Grants/types/grant.types";
 import { NextRouter } from "next/router";
 import { ChangeEvent } from "react";
 import { AnyAction, Dispatch } from "redux";
+import { Profile } from "../../../../graphql/generated";
 
 export type MilestoneProps = {
   index: number;
@@ -39,7 +39,6 @@ export type RegisterAndPostProps = {
 export type PreviewProps = {
   postInformation: PostInformation;
   setPostInformation: (e: PostInformation) => void;
-  grantStageLoading: boolean;
   levelArray: LevelInfo[];
   setPriceIndex: (e: number[][]) => void;
   priceIndex: number[][];
@@ -48,7 +47,6 @@ export type PreviewProps = {
 export type DeployProps = {
   grantStage: number;
   setGrantStage: (e: number) => void;
-  grantStageLoading: boolean;
   postInformation: PostInformation;
   setPostInformation: (e: PostInformation) => void;
   dispatch: Dispatch<AnyAction>;
@@ -72,11 +70,18 @@ export interface PrintItem {
     images: string[];
     description: string;
     title: string;
-    handle: string;
+    profileId: string;
   };
+  profile: Profile;
   prices: string[];
-  printType: ItemTypes;
-  amount: number;
+  printType: PrintType;
+}
+
+export enum PrintType {
+  Sticker = "0",
+  Poster = "1",
+  Shirt = "2",
+  Hoodie = "3",
 }
 
 export interface LevelInfo {
@@ -90,7 +95,7 @@ export type LaunchSwitchProps = {
   handleShuffleCollectionLevels: () => void;
   setPostInformation: (e: PostInformation) => void;
   grantStage: number;
-  grantStageLoading: boolean;
+  allCollectionsLoading: boolean;
   setPriceIndex: (e: number[][]) => void;
   priceIndex: number[][];
   imageLoading: boolean;
@@ -146,14 +151,14 @@ export interface Milestone {
 export type CollectionShuffleProps = {
   handleShuffleCollectionLevels: () => void;
   levelArray: LevelInfo[];
-  grantStageLoading: boolean;
+  allCollectionsLoading: boolean;
   setPriceIndex: (e: number[][]) => void;
   priceIndex: number[][];
 };
 
 export type CollectItemProps = {
   index: number;
-  grantStageLoading?: boolean;
+  allCollectionsLoading?: boolean;
   item: LevelInfo;
   setPriceIndex: (e: number[][]) => void;
   priceIndex: number[][];

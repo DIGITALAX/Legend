@@ -1,10 +1,10 @@
 import { FetchResult } from "@apollo/client";
-import { apolloClient } from "../../lib/lens/client";
+import { apolloClient } from "../../../lib/lens/client";
 import {
   OnchainQuoteRequest,
   QuoteOnchainDocument,
   QuoteOnchainMutation,
-} from "../generated";
+} from "../../generated";
 
 const quotePost = async (
   request: OnchainQuoteRequest

@@ -30,7 +30,7 @@ const LaunchSwitch: FunctionComponent<LaunchSwitchProps> = ({
   handlePostGrant,
   handleRegisterGrant,
   registerLoading,
-  grantStageLoading,
+  allCollectionsLoading,
   handleShuffleCollectionLevels,
   router,
   pubId,
@@ -90,7 +90,7 @@ const LaunchSwitch: FunctionComponent<LaunchSwitchProps> = ({
         <CollectionShuffle
           handleShuffleCollectionLevels={handleShuffleCollectionLevels}
           levelArray={levelArray}
-          grantStageLoading={grantStageLoading}
+          allCollectionsLoading={allCollectionsLoading}
           priceIndex={priceIndex}
           setPriceIndex={setPriceIndex}
         />
@@ -99,7 +99,6 @@ const LaunchSwitch: FunctionComponent<LaunchSwitchProps> = ({
       return (
         <Preview
           postInformation={postInformation}
-          grantStageLoading={grantStageLoading}
           levelArray={levelArray}
           setPostInformation={setPostInformation}
           priceIndex={priceIndex}

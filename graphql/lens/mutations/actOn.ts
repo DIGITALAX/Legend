@@ -1,10 +1,10 @@
 import { FetchResult } from "@apollo/client";
-import { apolloClient } from "../../lib/lens/client";
+import { apolloClient } from "../../../lib/lens/client";
 import {
   ActOnOpenActionDocument,
   ActOnOpenActionMutation,
   ActOnOpenActionRequest,
-} from "../generated";
+} from "../../generated";
 
 const actOnGrant = async (
   request: ActOnOpenActionRequest

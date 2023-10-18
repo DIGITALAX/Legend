@@ -8,12 +8,11 @@ import {
   POSTER_SIZE,
   STICKER_SIZE,
 } from "../../../../lib/constants";
-import { CollectItemProps, PrintItem } from "../types/launch.types";
-import { ItemTypes } from "@/components/Grants/types/grant.types";
+import { CollectItemProps, PrintItem, PrintType } from "../types/launch.types";
 
 const CollectItem: FunctionComponent<CollectItemProps> = ({
   index,
-  grantStageLoading,
+  allCollectionsLoading,
   item,
   setPriceIndex,
   priceIndex,
@@ -28,7 +27,7 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
             className="relative w-full h-fit flex flex-col bg-offWhite gap-2 justify-start items-center p-2 border-b border-x rounded-b-sm border-black"
           >
             <div className="relative w-52 h-52 rounded-sm border border-black flex items-center justify-center">
-              {grantStageLoading ? (
+              {allCollectionsLoading ? (
                 <div className="relative w-fit h-fit flex items-center justify-center">
                   <AiOutlineLoading size={15} color="black" />
                 </div>
@@ -49,9 +48,10 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                 Sizes
               </div>
               <div className="relative flex flex-row gap-1 items-center justify-center">
-                {(value?.printType === ItemTypes.Sticker
+                {(value?.printType === PrintType.Sticker
                   ? STICKER_SIZE
-                  : value?.printType === ItemTypes.Apparel
+                  : value?.printType === PrintType.Shirt ||
+                    value?.printType === PrintType.Hoodie
                   ? APPAREL_SIZE
                   : POSTER_SIZE
                 ).map((item: string, indexThree: number) => {
@@ -75,7 +75,8 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                 })}
               </div>
             </div>
-            {value?.printType === ItemTypes.Apparel && (
+            {(value?.printType === PrintType.Shirt ||
+              value?.printType === PrintType.Hoodie) && (
               <div className="relative flex flex-col gap-1.5 justify-start items-center text-black font-dog text-xxs">
                 <div className="relative flex justify-start items-center">
                   Base Colors

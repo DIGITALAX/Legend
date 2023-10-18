@@ -1,10 +1,10 @@
 import { FetchResult } from "@apollo/client";
-import { apolloClient } from "../../lib/lens/client";
+import { apolloClient } from "../../../lib/lens/client";
 import {
   CommentOnchainDocument,
   CommentOnchainMutation,
   OnchainCommentRequest,
-} from "../generated";
+} from "../../generated";
 
 const commentPost = async (
   request: OnchainCommentRequest

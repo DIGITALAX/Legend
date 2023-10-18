@@ -2,16 +2,11 @@ import { AnyAction } from "redux";
 import { ExplorePublication, Profile } from "../../../../graphql/generated";
 import { Dispatch } from "react";
 import { NextRouter } from "next/router";
-import { LevelInfo } from "@/components/Launch/types/launch.types";
-
-export enum ItemTypes {
-  Poster,
-  Sticker,
-  Apparel,
-}
+import { LevelInfo, PrintItem } from "@/components/Launch/types/launch.types";
 
 export type GrantProps = {
   publication: ExplorePublication;
+  apparelItems: LevelInfo[];
   imageIndex: number[];
   setImageIndex: (e: number[]) => void;
   index: number;
@@ -62,7 +57,7 @@ export type CollectItemProps = {
   }[];
   dispatch: Dispatch<AnyAction>;
   id: string;
-  item: LevelInfo;
+  items: PrintItem[];
 };
 
 export type MirrorBoxProps = {

@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { isValid, parse, format } from "date-fns";
 import uploadPostContent from "../../../../lib/lens/helpers/uploadPostContent";
-import onChainPost from "../../../../graphql/mutations/onchainPost";
+import onChainPost from "../../../../graphql/lens/mutations/onchainPost";
 import { useAccount } from "wagmi";
 import { PostInformation } from "../types/launch.types";
 import { ethers } from "ethers";
@@ -14,7 +14,7 @@ import { createPublicClient, createWalletClient, custom, http } from "viem";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import GrantRegisterAbi from "./../../../../abi/GrantRegisterAbi.json";
-import getPublications from "../../../../graphql/queries/publications";
+import getPublications from "../../../../graphql/lens/queries/publications";
 import {
   LimitType,
   PublicationType,
@@ -35,7 +35,6 @@ const useLaunch = () => {
   );
   const [grantStage, setGrantStage] = useState<number>(0);
   const [grantId, setGrantId] = useState<number>();
-  const [grantStageLoading, setGrantStageLoading] = useState<boolean>(false);
   const [registerLoading, setRegisterLoading] = useState<boolean>(false);
   const [postLoading, setPostLoading] = useState<boolean>(false);
   const [grantRegistered, setGrantRegistered] = useState<boolean>(false);
@@ -173,9 +172,9 @@ const useLaunch = () => {
       const contentURIValue = await uploadPostContent(postInformation);
 
       const encodedData = ethers.utils.defaultAbiCoder.encode(LEVEL_INFO_ABI, [
-        levelArray.map((item) => ({
+        levelArray?.map((item) => ({
           collectionIds: item.items.map((value) => value.collectionId),
-          amounts: item.items.map((value) => value.amount),
+          amounts: item.items.map((_) => 1),
         })),
       ]);
 
@@ -257,24 +256,6 @@ const useLaunch = () => {
     });
   };
 
-  const handleGetAvailableCollections = async () => {
-    setGrantStageLoading(true);
-    try {
-    } catch (err: any) {
-      console.error(err.message);
-    }
-    setGrantStageLoading(false);
-  };
-
-  const handleGetMilestoneCovers = async () => {
-    setGrantStageLoading(true);
-    try {
-    } catch (err: any) {
-      console.error(err.message);
-    }
-    setGrantStageLoading(false);
-  };
-
   const getLastPost = async () => {
     try {
       const data = await getPublications({
@@ -304,15 +285,6 @@ const useLaunch = () => {
     }
   };
 
-  useEffect(() => {
-    if (grantStage == 3) {
-      handleGetAvailableCollections();
-    }
-
-    if (grantStage == 4) {
-      handleGetMilestoneCovers();
-    }
-  }, [grantStage]);
 
   return {
     handleInputDateChange,
@@ -337,7 +309,6 @@ const useLaunch = () => {
     claimMilestoneLoading,
     setGrantStage,
     grantStage,
-    grantStageLoading,
     grantId,
   };
 };

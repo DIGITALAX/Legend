@@ -1,10 +1,10 @@
 import { FetchResult } from "@apollo/client";
-import { authClient } from "../../lib/lens/client";
+import { authClient } from "../../../lib/lens/client";
 import {
   AuthenticateDocument,
   AuthenticateMutation,
   SignedAuthChallenge,
-} from "../generated";
+} from "../../generated";
 
 const authenticate = async (
   request: SignedAuthChallenge

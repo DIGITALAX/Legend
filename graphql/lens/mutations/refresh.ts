@@ -1,6 +1,6 @@
 import { FetchResult } from "@apollo/client";
-import { apolloClient } from "../../lib/lens/client";
-import { RefreshDocument, RefreshMutation, RefreshRequest } from "../generated";
+import { apolloClient } from "../../../lib/lens/client";
+import { RefreshDocument, RefreshMutation, RefreshRequest } from "../../generated";
 
 const refresh = async (
   request: RefreshRequest

@@ -1,6 +1,6 @@
-import likePost from "../../../../graphql/mutations/like";
+import likePost from "../../../../graphql/lens/mutations/like";
 import { setReactBox } from "../../../../redux/reducers/reactBoxSlice";
-import whoReactedPublication from "../../../../graphql/queries/whoReacted";
+import whoReactedPublication from "../../../../graphql/lens/queries/whoReacted";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import {
@@ -11,11 +11,11 @@ import {
   PublicationsOrderByType,
 } from "../../../../graphql/generated";
 import { useEffect, useState } from "react";
-import getPublications from "../../../../graphql/queries/publications";
+import getPublications from "../../../../graphql/lens/queries/publications";
 import { setInteractionsCount } from "../../../../redux/reducers/interactionsCountSlice";
-import mirrorPost from "../../../../graphql/mutations/mirror";
-import quotePost from "../../../../graphql/mutations/quote";
-import commentPost from "../../../../graphql/mutations/comment";
+import mirrorPost from "../../../../graphql/lens/mutations/mirror";
+import quotePost from "../../../../graphql/lens/mutations/quote";
+import commentPost from "../../../../graphql/lens/mutations/comment";
 import uploadCommentQuoteContent from "../../../../lib/lens/helpers/uploadCommentQuote";
 
 const useInteractions = () => {

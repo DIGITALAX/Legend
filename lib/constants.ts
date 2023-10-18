@@ -8,6 +8,7 @@ export const GRANT_MILESTONE_CLAIM_CONTRACT: `0x${string}` =
   "0xa6931B10156721F55e6bd7D8A980254952A78BaA";
 export const OPEN_ACION: `0x${string}` =
   "0x86179F3Df6713011FB9220bc57940a12f67731EA";
+export const DIGITALAX_PROFILE_ID_LENS: string = "0x016305";
 
 export const MILESTONE_COVERS: string[] = [
   "QmTC4QyfKBZjGxmbB4SUY6vMRiyLcJWnSBzsoiHywspg5E",
