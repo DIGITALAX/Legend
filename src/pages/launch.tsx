@@ -32,11 +32,14 @@ export default function Launch() {
     claimMilestoneLoading,
     grantStage,
     setGrantStage,
-    grantStageLoading,
     grantId,
   } = useLaunch();
-  const { handleShuffleCollectionLevels, priceIndex, setPriceIndex } =
-    useLevelItems();
+  const {
+    handleShuffleCollectionLevels,
+    priceIndex,
+    setPriceIndex,
+    allCollectionsLoading,
+  } = useLevelItems();
   const { handleLensSignIn, signInLoading } = useSignIn();
   const { openConnectModal } = useConnectModal();
   const router = useRouter();
@@ -80,7 +83,7 @@ export default function Launch() {
           handleRegisterGrant={handleRegisterGrant}
           handlePostGrant={handlePostGrant}
           handleShuffleCollectionLevels={handleShuffleCollectionLevels}
-          grantStageLoading={grantStageLoading}
+          allCollectionsLoading={allCollectionsLoading}
           router={router}
           pubId={grantId}
           profileId={profileId}
@@ -91,7 +94,6 @@ export default function Launch() {
       </div>
       <Deploy
         dispatch={dispatch}
-        grantStageLoading={grantStageLoading}
         setGrantStage={setGrantStage}
         grantStage={grantStage}
         postInformation={postInformation}

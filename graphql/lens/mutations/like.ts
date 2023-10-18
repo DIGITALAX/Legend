@@ -1,10 +1,10 @@
 import { FetchResult } from "@apollo/client";
-import { apolloClient } from "../../lib/lens/client";
+import { apolloClient } from "../../../lib/lens/client";
 import {
   AddReactionDocument,
   AddReactionMutation,
   ReactionRequest,
-} from "../generated";
+} from "../../generated";
 
 const likePost = async (
   request: ReactionRequest

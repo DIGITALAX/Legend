@@ -1,10 +1,10 @@
 import { FetchResult } from "@apollo/client";
-import { authClient } from "../../lib/lens/client";
+import { authClient } from "../../../lib/lens/client";
 import {
   PublicationsDocument,
   PublicationsQuery,
   PublicationsRequest,
-} from "../generated";
+} from "../../generated";
 
 export const getPublications = (
   request: PublicationsRequest

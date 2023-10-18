@@ -1,10 +1,10 @@
 import { FetchResult } from "@apollo/client";
-import { authClient } from "../../lib/lens/client";
+import { authClient } from "../../../lib/lens/client";
 import {
   ChallengeDocument,
   ChallengeQuery,
   ChallengeRequest,
-} from "../generated";
+} from "../../generated";
 
 export const generateChallenge = (
   request: ChallengeRequest

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import actOnGrant from "../../../../graphql/mutations/actOn";
+import actOnGrant from "../../../../graphql/lens/mutations/actOn";
 import { RootState } from "../../../../redux/store";
 import { useSelector } from "react-redux";
 import { useAccount } from "wagmi";

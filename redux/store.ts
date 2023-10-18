@@ -13,6 +13,8 @@ import errorModalReducer from "./reducers/errorModalSlice";
 import imageExpandReducer from "./reducers/mediaExpandSlice";
 import availableCollectionsReducer from "./reducers/availableCollectionsSlice";
 import levelArrayReducer from "./reducers/levelArraySlice";
+import availablePubLevelsReducer from "./reducers/availablePubLevelsSlice";
+import cachedProfilesReducer from "./reducers/cachedProfilesSlice";
 
 const reducer = combineReducers({
   walletConnectedReducer,
@@ -28,6 +30,8 @@ const reducer = combineReducers({
   imageExpandReducer,
   availableCollectionsReducer,
   levelArrayReducer,
+  availablePubLevelsReducer,
+  cachedProfilesReducer,
 });
 
 export const store = configureStore({

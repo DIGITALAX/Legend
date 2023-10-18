@@ -1,4 +1,4 @@
-import refresh from "../../graphql/mutations/refresh";
+import refresh from "../../graphql/lens/mutations/refresh";
 
 const AUTH_STORAGE_KEY = "LH_STORAGE_KEY";
 

@@ -1,10 +1,10 @@
 import { FetchResult } from "@apollo/client";
-import { authClient } from "../../lib/lens/client";
+import { authClient } from "../../../lib/lens/client";
 import {
   CreateProfileWithHandleDocument,
   CreateProfileWithHandleMutation,
   CreateProfileWithHandleRequest,
-} from "../generated";
+} from "../../generated";
 
 const createProfile = async (
   request: CreateProfileWithHandleRequest

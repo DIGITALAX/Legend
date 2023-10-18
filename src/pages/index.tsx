@@ -46,6 +46,9 @@ export default function Home() {
   const allPublications = useSelector(
     (state: RootState) => state.app.publishedGrantsReducer.items
   );
+  const apparelItems = useSelector(
+    (state: RootState) => state.app.publishedGrantsReducer.apparel
+  );
   return (
     <div
       className="relative w-full h-full flex flex-col items-center justify-start p-2 overflow-auto flex-grow"
@@ -104,6 +107,7 @@ export default function Home() {
               showMirrors={showMirrors}
               showQuotes={showQuotes}
               interactionsLoading={interactionsLoading[index]}
+              apparelItems={apparelItems?.[index]}
             />
           );
         })}

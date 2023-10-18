@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import generateChallenge from "../../../../graphql/queries/challenge";
+import generateChallenge from "../../../../graphql/lens/queries/challenge";
 import { useAccount, useSignMessage } from "wagmi";
 import { useDispatch, useSelector } from "react-redux";
 import { setWalletConnected } from "../../../../redux/reducers/walletConnectedSlice";
-import authenticate from "../../../../graphql/mutations/authenticate";
+import authenticate from "../../../../graphql/lens/mutations/authenticate";
 import {
   getAuthenticationToken,
   isAuthExpired,
@@ -12,9 +12,9 @@ import {
   setAuthenticationToken,
 } from "../../../../lib/lens/utils";
 import { setLensConnected } from "../../../../redux/reducers/lensProfileSlice";
-import getProfiles from "../../../../graphql/queries/profiles";
+import getProfiles from "../../../../graphql/lens/queries/profiles";
 import { Profile } from "../../../../graphql/generated";
-import createProfile from "../../../../graphql/mutations/createProfile";
+import createProfile from "../../../../graphql/lens/mutations/createProfile";
 import { RootState } from "../../../../redux/store";
 import { setCartAnim } from "../../../../redux/reducers/cartAnimSlice";
 

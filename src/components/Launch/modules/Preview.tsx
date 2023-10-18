@@ -7,7 +7,6 @@ import CollectItem from "./CollectItem";
 
 const Preview: FunctionComponent<PreviewProps> = ({
   postInformation,
-  grantStageLoading,
   levelArray,
   priceIndex,
   setPriceIndex,
@@ -194,7 +193,6 @@ const Preview: FunctionComponent<PreviewProps> = ({
                 <CollectItem
                   key={index}
                   index={index}
-                  grantStageLoading={grantStageLoading}
                   item={item}
                   priceIndex={priceIndex}
                   setPriceIndex={setPriceIndex}

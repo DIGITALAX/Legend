@@ -26,6 +26,7 @@ const Grant: FunctionComponent<GrantProps> = ({
   showMirrors,
   showQuotes,
   interactionsLoading,
+  apparelItems
 }) => {
   return (
     <div className="relative h-fit w-[30rem] border border-black flex flex-col items-center justify-center">
@@ -179,8 +180,8 @@ const Grant: FunctionComponent<GrantProps> = ({
           <div className="relative w-full h-fit bg-offWhite p-2 rounded-sm border border-black overflow-x-hidden items-center justify-center flex flex-col">
             <div className="relative w-fit h-fit flex flex-row gap-2 pb-2 items-center justify-center">
               {[
-                ...publication?.levelItems?.slice(imageIndex[index]),
-                ...publication?.levelItems?.slice(0, imageIndex[index]),
+                ...apparelItems?.slice(imageIndex[index]),
+                ...apparelItems?.slice(0, imageIndex[index]),
               ]?.map((item: LevelInfo, index: number) => {
                 return (
                   <CollectItem
@@ -190,7 +191,7 @@ const Grant: FunctionComponent<GrantProps> = ({
                     setCollectChoice={setCollectChoice}
                     dispatch={dispatch}
                     cartItems={cartItems}
-                    item={item}
+                    items={item.items}
                     id={publication?.id}
                     router={router}
                   />

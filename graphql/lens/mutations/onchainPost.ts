@@ -1,10 +1,10 @@
 import { FetchResult } from "@apollo/client";
-import { apolloClient } from "../../lib/lens/client";
+import { apolloClient } from "../../../lib/lens/client";
 import {
   OnchainPostRequest,
   PostOnchainDocument,
   PostOnchainMutation,
-} from "../generated";
+} from "../../generated";
 
 const onChainPost = async (
   request: OnchainPostRequest

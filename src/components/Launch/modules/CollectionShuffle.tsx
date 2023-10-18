@@ -6,7 +6,6 @@ import CollectItem from "./CollectItem";
 const CollectionShuffle: FunctionComponent<CollectionShuffleProps> = ({
   levelArray,
   handleShuffleCollectionLevels,
-  grantStageLoading,
   priceIndex,
   setPriceIndex,
 }): JSX.Element => {
@@ -36,14 +35,13 @@ const CollectionShuffle: FunctionComponent<CollectionShuffleProps> = ({
         id="milestone"
       >
         <div className="relative w-fit h-fit flex flex-row gap-3">
-          {levelArray.map((item: LevelInfo, index: number) => {
+          {levelArray?.map((item: LevelInfo, index: number) => {
             return (
               <CollectItem
                 index={index}
                 key={index}
-                grantStageLoading={grantStageLoading}
                 item={item}
-                priceIndex={priceIndex?.[index]}
+                priceIndex={priceIndex}
                 setPriceIndex={setPriceIndex}
               />
             );

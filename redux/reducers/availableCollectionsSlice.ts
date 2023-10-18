@@ -2,11 +2,11 @@ import { PrintItem } from "@/components/Launch/types/launch.types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface AvailableCollectionsState {
-  collections: PrintItem[];
+  collections: { [key: string]: PrintItem[] } | undefined;
 }
 
 const initialAvailableCollectionsState: AvailableCollectionsState = {
-    collections: [],
+  collections: undefined,
 };
 
 export const availableCollectionsSlice = createSlice({
@@ -15,7 +15,7 @@ export const availableCollectionsSlice = createSlice({
   reducers: {
     setAvailableCollections: (
       state: AvailableCollectionsState,
-      action: PayloadAction<PrintItem[]>
+      action: PayloadAction<{ [key: string]: PrintItem[] }>
     ) => {
       state.collections = action.payload;
     },

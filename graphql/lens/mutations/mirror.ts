@@ -1,10 +1,10 @@
 import { FetchResult } from "@apollo/client";
-import { apolloClient } from "../../lib/lens/client";
+import { apolloClient } from "../../../lib/lens/client";
 import {
   MirrorOnchainDocument,
   MirrorOnchainMutation,
   OnchainMirrorRequest,
-} from "../generated";
+} from "../../generated";
 
 const mirrorPost = async (
   request: OnchainMirrorRequest
