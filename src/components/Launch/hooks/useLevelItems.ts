@@ -43,6 +43,7 @@ const useLevelItems = () => {
           uri: string;
           prices: string[];
           printType: string;
+          fulfiller: string;
         }) => {
           const uri: {
             images: string[];

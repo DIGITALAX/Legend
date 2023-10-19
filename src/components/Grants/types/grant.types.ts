@@ -3,6 +3,7 @@ import { ExplorePublication, Profile } from "../../../../graphql/generated";
 import { Dispatch } from "react";
 import { NextRouter } from "next/router";
 import { LevelInfo, PrintItem } from "@/components/Launch/types/launch.types";
+import { CartItem } from "@/components/Checkout/types/checkout.types";
 
 export type GrantProps = {
   publication: ExplorePublication;
@@ -19,13 +20,7 @@ export type GrantProps = {
     color: string;
     size: string;
   }[];
-  cartItems: {
-    id: string;
-    size: string;
-    color: string;
-    amount: number;
-    level: number;
-  }[];
+  cartItems: CartItem[];
   dispatch: Dispatch<AnyAction>;
   router: NextRouter;
   showComments: (id: string) => Promise<void>;
@@ -48,13 +43,7 @@ export type CollectItemProps = {
     color: string;
     size: string;
   }[];
-  cartItems: {
-    id: string;
-    size: string;
-    color: string;
-    amount: number;
-    level: number;
-  }[];
+  cartItems: CartItem[];
   dispatch: Dispatch<AnyAction>;
   id: string;
   items: PrintItem[];

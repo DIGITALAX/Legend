@@ -38,20 +38,11 @@ const useCheckout = () => {
       const authSig = await LitJsSDK.checkAndSignAuthMessage({
         chain: "mumbai",
       });
+      const fulfillers = handleFulfillers();
       const { ciphertext, dataToEncryptHash } = await LitJsSDK.encryptString(
         {
           accessControlConditions: [
-            {
-              contractAddress: "",
-              standardContractType: "",
-              chain: "mumbai",
-              method: "",
-              parameters: [":userAddress"],
-              returnValueTest: {
-                comparator: "=",
-                value: FULFILLER_ADDRESS.toLowerCase(),
-              },
-            },
+            ...(fulfillers as any),
             {
               contractAddress: "",
               standardContractType: "",
@@ -82,8 +73,53 @@ const useCheckout = () => {
     setFulfillmentLoading(false);
   };
 
+  const handleFulfillers = (): (
+    | {
+        contractAddress: string;
+        standardContractType: string;
+        chain: string;
+        method: string;
+        parameters: string[];
+        returnValueTest: {
+          comparator: string;
+          value: string;
+        };
+      }
+    | {
+        operator: string;
+      }
+  )[] => {
+    const addresses = cartItems.reduce<string[]>((acc, item) => {
+      acc.push(item.fulfiller);
+      return acc;
+    }, []);
+
+    let fulfillers = [];
+
+    for (let i = 0; i < addresses.length; i++) {
+      fulfillers.push({
+        contractAddress: "",
+        standardContractType: "",
+        chain: "mumbai",
+        method: "",
+        parameters: [":userAddress"],
+        returnValueTest: {
+          comparator: "=",
+          value: addresses[i].toLowerCase(),
+        },
+      });
+      fulfillers.push({
+        operator: "or",
+      });
+    }
+
+    return fulfillers;
+  };
+
   const handleCheckout = async (item: CartItem) => {
-    const index = cartItems.findIndex((pub) => pub.id === item.id);
+    const index = cartItems.findIndex(
+      (pub) => pub.collectionId === item.collectionId
+    );
     if (index === -1) {
       return;
     }
@@ -106,7 +142,7 @@ const useCheckout = () => {
             data: encodedData,
           },
         },
-        for: item.id,
+        for: item.collectionId,
       });
       setItemCheckedOut((prev) => {
         const updatedArray = [...prev];

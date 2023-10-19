@@ -75,6 +75,7 @@ export interface PrintItem {
   profile: Profile;
   prices: string[];
   printType: PrintType;
+  fulfiller: string;
 }
 
 export enum PrintType {

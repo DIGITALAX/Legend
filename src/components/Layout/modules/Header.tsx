@@ -146,7 +146,7 @@ const Header: FunctionComponent = (): JSX.Element => {
                         className="relative font-dog items-center justify-center w-fit h-fit text-center cursor-pointer active:scale-95 text-white text-xs"
                         onClick={() => {
                           const newItems = cartItems.map((value) => {
-                            return value.id !== item.id;
+                            return value.collectionId !== item.collectionId;
                           });
 
                           dispatch(setCartItems(newItems));

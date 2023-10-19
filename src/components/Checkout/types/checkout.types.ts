@@ -18,9 +18,10 @@ export interface CartItem {
   size: string;
   color: string;
   amount: number;
-  id: string;
+  collectionId: string;
   level: number;
-  price: number;
+  totalPrice: number;
+  fulfiller: string;
 }
 
 export interface Fulfillment {
