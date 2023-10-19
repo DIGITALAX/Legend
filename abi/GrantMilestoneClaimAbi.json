@@ -3,17 +3,17 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_currencyAddress",
+        "name": "_legendRegisterAddress",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "_grantRegisterAddress",
+        "name": "_printAccessControlAddress",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "_ooV3Address",
+        "name": "_printSplitsDataAddress",
         "type": "address"
       }
     ],
@@ -22,46 +22,23 @@
   },
   {
     "inputs": [],
-    "name": "alreadyClaimedMilestone",
+    "name": "AddressNotAdmin",
     "type": "error"
   },
   {
     "inputs": [],
-    "name": "invalidMilestone",
+    "name": "AlreadyClaimed",
     "type": "error"
   },
   {
     "inputs": [],
-    "name": "invalidResolution",
+    "name": "GranteeNotRegistered",
     "type": "error"
   },
   {
     "inputs": [],
-    "name": "milestoneInitiated",
+    "name": "InvalidClaim",
     "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "notRegisteredGrantee",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "timeNotExpired",
-    "type": "error"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint8",
-        "name": "version",
-        "type": "uint8"
-      }
-    ],
-    "name": "Initialized",
-    "type": "event"
   },
   {
     "anonymous": false,
@@ -75,13 +52,13 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "amount",
+        "name": "milestone",
         "type": "uint256"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "milestone",
+        "name": "pubId",
         "type": "uint256"
       }
     ],
@@ -89,221 +66,15 @@
     "type": "event"
   },
   {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "previousOwner",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "OwnershipTransferred",
-    "type": "event"
-  },
-  {
     "inputs": [
       {
         "internalType": "uint256",
         "name": "_pubId",
         "type": "uint256"
-      }
-    ],
-    "name": "claimVerifiedMilestone",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "currency",
-    "outputs": [
-      {
-        "internalType": "contract IERC20",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "defaultIdentifier",
-    "outputs": [
-      {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "_assertionId",
-        "type": "bytes32"
-      }
-    ],
-    "name": "getAssertion",
-    "outputs": [
-      {
-        "components": [
-          {
-            "components": [
-              {
-                "internalType": "bool",
-                "name": "arbitrateViaEscalationManager",
-                "type": "bool"
-              },
-              {
-                "internalType": "bool",
-                "name": "discardOracle",
-                "type": "bool"
-              },
-              {
-                "internalType": "bool",
-                "name": "validateDisputers",
-                "type": "bool"
-              },
-              {
-                "internalType": "address",
-                "name": "assertingCaller",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "escalationManager",
-                "type": "address"
-              }
-            ],
-            "internalType": "struct OptimisticOracleV3Interface.EscalationManagerSettings",
-            "name": "escalationManagerSettings",
-            "type": "tuple"
-          },
-          {
-            "internalType": "address",
-            "name": "asserter",
-            "type": "address"
-          },
-          {
-            "internalType": "uint64",
-            "name": "assertionTime",
-            "type": "uint64"
-          },
-          {
-            "internalType": "bool",
-            "name": "settled",
-            "type": "bool"
-          },
-          {
-            "internalType": "contract IERC20",
-            "name": "currency",
-            "type": "address"
-          },
-          {
-            "internalType": "uint64",
-            "name": "expirationTime",
-            "type": "uint64"
-          },
-          {
-            "internalType": "bool",
-            "name": "settlementResolution",
-            "type": "bool"
-          },
-          {
-            "internalType": "bytes32",
-            "name": "domainId",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "bytes32",
-            "name": "identifier",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "uint256",
-            "name": "bond",
-            "type": "uint256"
-          },
-          {
-            "internalType": "address",
-            "name": "callbackRecipient",
-            "type": "address"
-          },
-          {
-            "internalType": "address",
-            "name": "disputer",
-            "type": "address"
-          }
-        ],
-        "internalType": "struct OptimisticOracleV3Interface.Assertion",
-        "name": "",
-        "type": "tuple"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "_assertionId",
-        "type": "bytes32"
-      }
-    ],
-    "name": "getAssertionResult",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "grantDisputeManager",
-    "outputs": [
-      {
-        "internalType": "contract GrantDisputeManager",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "grantRegister",
-    "outputs": [
-      {
-        "internalType": "contract GrantRegister",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
+      },
       {
         "internalType": "uint256",
-        "name": "_pubId",
+        "name": "_milestone",
         "type": "uint256"
       }
     ],
@@ -313,66 +84,53 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "legendRegister",
+    "outputs": [
+      {
+        "internalType": "contract LegendRegister",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "printAccessControl",
+    "outputs": [
+      {
+        "internalType": "contract PrintAccessControl",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "printSplitsData",
+    "outputs": [
+      {
+        "internalType": "contract PrintSplitsData",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "milestones",
-    "outputs": [
-      {
         "internalType": "address",
-        "name": "",
+        "name": "_newLegendRegisterAddress",
         "type": "address"
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "ooV3",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "oov3",
-    "outputs": [
-      {
-        "internalType": "contract OptimisticOracleV3Interface",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "owner",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "renounceOwnership",
+    "name": "setLegendRegisterAddress",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -381,11 +139,11 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_disputeManagerAddress",
+        "name": "_newPrintAccessControlAddress",
         "type": "address"
       }
     ],
-    "name": "setDisputeManager",
+    "name": "setPrintAccessControlAddress",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -393,31 +151,12 @@
   {
     "inputs": [
       {
-        "internalType": "bytes32",
-        "name": "_assertionId",
-        "type": "bytes32"
-      }
-    ],
-    "name": "settleAndGetAssertionResult",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "address",
-        "name": "newOwner",
+        "name": "_newPrintSplitsDataAddress",
         "type": "address"
       }
     ],
-    "name": "transferOwnership",
+    "name": "setPrintSplitsDataAddress",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

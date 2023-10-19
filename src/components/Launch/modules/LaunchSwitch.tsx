@@ -41,7 +41,10 @@ const LaunchSwitch: FunctionComponent<LaunchSwitchProps> = ({
   signInLoading,
   priceIndex,
   setPriceIndex,
-  levelArray
+  levelArray,
+  checkoutCurrency,
+  setCheckoutCurrency,
+  oracleData,
 }) => {
   switch (grantStage) {
     case 0:
@@ -93,6 +96,9 @@ const LaunchSwitch: FunctionComponent<LaunchSwitchProps> = ({
           allCollectionsLoading={allCollectionsLoading}
           priceIndex={priceIndex}
           setPriceIndex={setPriceIndex}
+          checkoutCurrency={checkoutCurrency}
+          setCheckoutCurrency={setCheckoutCurrency}
+          oracleData={oracleData}
         />
       );
     case 4:

@@ -39,6 +39,8 @@ export default function Launch() {
     priceIndex,
     setPriceIndex,
     allCollectionsLoading,
+    checkoutCurrency,
+    setCheckoutCurrency,
   } = useLevelItems();
   const { handleLensSignIn, signInLoading } = useSignIn();
   const { openConnectModal } = useConnectModal();
@@ -52,6 +54,9 @@ export default function Launch() {
   );
   const connected = useSelector(
     (state: RootState) => state.app.walletConnectedReducer.value
+  );
+  const oracleData = useSelector(
+    (state: RootState) => state.app.oracleDataReducer.data
   );
   return (
     <div className="relative w-full h-full flex items-center justify-center p-5 overflow-y-hidden">
@@ -90,6 +95,9 @@ export default function Launch() {
           openConnectModal={openConnectModal}
           handleLensSignIn={handleLensSignIn}
           connected={connected}
+          checkoutCurrency={checkoutCurrency}
+          setCheckoutCurrency={setCheckoutCurrency}
+          oracleData={oracleData}
         />
       </div>
       <Deploy

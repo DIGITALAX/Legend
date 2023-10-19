@@ -2,12 +2,16 @@ import Bar from "@/components/Common/modules/Bar";
 import { FunctionComponent } from "react";
 import { CollectionShuffleProps, LevelInfo } from "../types/launch.types";
 import CollectItem from "./CollectItem";
+import LevelOne from "./LevelOne";
 
 const CollectionShuffle: FunctionComponent<CollectionShuffleProps> = ({
   levelArray,
   handleShuffleCollectionLevels,
   priceIndex,
   setPriceIndex,
+  checkoutCurrency,
+  setCheckoutCurrency,
+  oracleData
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit flex flex-col items-center justify-center gap-8">
@@ -35,6 +39,11 @@ const CollectionShuffle: FunctionComponent<CollectionShuffleProps> = ({
         id="milestone"
       >
         <div className="relative w-fit h-fit flex flex-row gap-3">
+          <LevelOne
+            checkoutCurrency={checkoutCurrency}
+            setCheckoutCurrency={setCheckoutCurrency}
+            oracleData={oracleData}
+          />
           {levelArray?.map((item: LevelInfo, index: number) => {
             return (
               <CollectItem
@@ -43,6 +52,9 @@ const CollectionShuffle: FunctionComponent<CollectionShuffleProps> = ({
                 item={item}
                 priceIndex={priceIndex}
                 setPriceIndex={setPriceIndex}
+                checkoutCurrency={checkoutCurrency}
+                setCheckoutCurrency={setCheckoutCurrency}
+                oracleData={oracleData}
               />
             );
           })}

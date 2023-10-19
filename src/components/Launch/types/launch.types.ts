@@ -76,6 +76,9 @@ export interface PrintItem {
   prices: string[];
   printType: PrintType;
   fulfiller: string;
+  fulfillerPercent: string;
+  fulfillerBase: string;
+  designerPercent: string;
 }
 
 export enum PrintType {
@@ -90,12 +93,19 @@ export interface LevelInfo {
   items: PrintItem[];
 }
 
+export type SplitsProps = {
+  designer: number;
+  fulfiller: number;
+  grantee: number;
+};
+
 export type LaunchSwitchProps = {
   postInformation: PostInformation;
   levelArray: LevelInfo[];
   handleShuffleCollectionLevels: () => void;
   setPostInformation: (e: PostInformation) => void;
   grantStage: number;
+  oracleData: OracleData[];
   allCollectionsLoading: boolean;
   setPriceIndex: (e: number[][]) => void;
   priceIndex: number[][];
@@ -127,6 +137,8 @@ export type LaunchSwitchProps = {
   handleLensSignIn: () => Promise<void>;
   connected: boolean | undefined;
   signInLoading: boolean;
+  checkoutCurrency: string[];
+  setCheckoutCurrency: (e: string[]) => void;
 };
 
 export interface PostInformation {
@@ -155,6 +167,9 @@ export type CollectionShuffleProps = {
   allCollectionsLoading: boolean;
   setPriceIndex: (e: number[][]) => void;
   priceIndex: number[][];
+  checkoutCurrency: string[];
+  setCheckoutCurrency: (e: string[]) => void;
+  oracleData: OracleData[];
 };
 
 export type CollectItemProps = {
@@ -163,9 +178,24 @@ export type CollectItemProps = {
   item: LevelInfo;
   setPriceIndex: (e: number[][]) => void;
   priceIndex: number[][];
+  checkoutCurrency: string[];
+  setCheckoutCurrency: (e: string[]) => void;
+  oracleData: OracleData[];
 };
+
+export interface OracleData {
+  currency: string;
+  rate: string;
+  wei: string;
+}
 
 export type SuccessProps = {
   router: NextRouter;
   pubId: string | undefined;
+};
+
+export type LevelOneProps = {
+  checkoutCurrency: string[];
+  setCheckoutCurrency: (e: string[]) => void;
+  oracleData: OracleData[];
 };
