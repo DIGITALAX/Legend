@@ -12,6 +12,8 @@ import pickRandomItem from "../../../../lib/graph/helpers/pickRandomItem";
 import cachedProfiles from "../../../../lib/graph/helpers/cachedProfiles";
 import { DIGITALAX_PROFILE_ID_LENS } from "../../../../lib/constants";
 import { setCachedProfiles } from "../../../../redux/reducers/cachedProfilesSlice";
+import { getOracleData } from "../../../../graphql/subgraph/queries/getOracleData";
+import { setOracleData } from "../../../../redux/reducers/oracleDataSlice";
 
 const useLevelItems = () => {
   const dispatch = useDispatch();
@@ -24,6 +26,9 @@ const useLevelItems = () => {
   const [allCollectionsLoading, setAllCollectionsLoading] =
     useState<boolean>(false);
   const [priceIndex, setPriceIndex] = useState<number[][]>([]);
+  const [checkoutCurrency, setCheckoutCurrency] = useState<string[]>(
+    Array.from({ length: 7 }, () => "USDT")
+  );
 
   const getAllAvailableCollections = async () => {
     setAllCollectionsLoading(true);
@@ -149,6 +154,16 @@ const useLevelItems = () => {
     dispatch(setLevelArray(levelArray));
   };
 
+  const handleOracles = async () => {
+    try {
+      const { data } = await getOracleData();
+
+      dispatch(setOracleData(data?.oracleUpdateds));
+    } catch (err: any) {
+      console.error(err.message);
+    }
+  };
+
   useEffect(() => {
     if (allCollections) {
       handleShuffleCollectionLevels();
@@ -158,6 +173,7 @@ const useLevelItems = () => {
   useEffect(() => {
     if (!allCollections) {
       getAllAvailableCollections();
+      handleOracles();
     }
   }, []);
 
@@ -166,6 +182,8 @@ const useLevelItems = () => {
     priceIndex,
     setPriceIndex,
     handleShuffleCollectionLevels,
+    checkoutCurrency,
+    setCheckoutCurrency,
   };
 };
 

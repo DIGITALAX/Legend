@@ -3,12 +3,15 @@ import Image from "next/legacy/image";
 import { FunctionComponent } from "react";
 import { AiOutlineLoading } from "react-icons/ai";
 import {
+  ACCEPTED_TOKENS_MUMBAI,
   APPAREL_SIZE,
   INFURA_GATEWAY,
   POSTER_SIZE,
   STICKER_SIZE,
 } from "../../../../lib/constants";
 import { CollectItemProps, PrintItem, PrintType } from "../types/launch.types";
+import PurchaseTokens from "@/components/Common/modules/PurchaseTokens";
+import Splits from "./Splits";
 
 const CollectItem: FunctionComponent<CollectItemProps> = ({
   index,
@@ -16,11 +19,38 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
   item,
   setPriceIndex,
   priceIndex,
+  checkoutCurrency,
+  setCheckoutCurrency,
+  oracleData,
 }): JSX.Element => {
   return (
-    <div className="relative w-72 h-fit flex flex-col">
+    <div className="relative w-72 h-full flex flex-col">
       <Bar title={`Collect Lvl.${index + 1}`} />
       {item.items?.map((value: PrintItem, indexTwo: number) => {
+        const price =
+          Number(value?.prices?.[priceIndex?.[index]?.[indexTwo]]) /
+          Number(
+            oracleData.find(
+              (oracle) =>
+                oracle.currency ===
+                ACCEPTED_TOKENS_MUMBAI.find((item) => {
+                  if (checkoutCurrency && item[1] === checkoutCurrency[0]) {
+                    return item[2];
+                  }
+                })?.[0]
+            )?.rate
+          ) /
+          Number(
+            oracleData.find(
+              (oracle) =>
+                oracle.currency ===
+                ACCEPTED_TOKENS_MUMBAI.find((item) => {
+                  if (item[1] === checkoutCurrency?.[0]) {
+                    return item[2];
+                  }
+                })?.[0]
+            )?.wei
+          );
         return (
           <div
             key={indexTwo}
@@ -98,8 +128,26 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                 </div>
               </div>
             )}
+            <Splits
+              grantee={
+                price -
+                Number(value.fulfillerBase) -
+                Number(value.fulfillerPercent) * price -
+                Number(value.designerPercent) * price
+              }
+              designer={price * Number(value.designerPercent)}
+              fulfiller={
+                Number(value.fulfillerBase) +
+                Number(value.fulfillerPercent) * price
+              }
+            />
+            <PurchaseTokens
+              checkoutCurrency={checkoutCurrency}
+              setCheckoutCurrency={setCheckoutCurrency}
+              index={index + 1}
+            />
             <div className="relative flex justify-center items-center font-dog text-black text-xs">
-              $ {value?.prices?.[priceIndex?.[index]?.[indexTwo]]}
+              {`${price} ${checkoutCurrency[index + 1]}`}
             </div>
           </div>
         );

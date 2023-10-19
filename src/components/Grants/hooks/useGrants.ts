@@ -196,7 +196,7 @@ const useGrants = () => {
             const itemPromises: Promise<PrintItem>[] = collectionIds.map(
               async (collectionId) => {
                 const { data } = await getOneCollection(collectionId);
-                const obj = data.collectionCreateds?.[0];
+                const obj = data?.collectionCreateds?.[0];
 
                 const uri: {
                   images: string[];
@@ -250,7 +250,7 @@ const useGrants = () => {
   const handleFetchApparelLevels = async () => {
     try {
       const { data } = await getPubLevels();
-      dispatch(setAvailablePubLevels(data.levelsAddeds));
+      dispatch(setAvailablePubLevels(data?.levelsAddeds));
     } catch (err: any) {
       console.error(err.message);
     }

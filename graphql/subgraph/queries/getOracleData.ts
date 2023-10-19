@@ -1,24 +1,19 @@
 import { gql } from "@apollo/client";
 import { graphPrintClient } from "../../../lib/graph/client";
 
-const COLLECTIONS = `
+const ORACLE = `
   query {
-    collectionCreateds(where: {unlimited: true, printType_not: "4"}) {
-      collectionId
-      uri
-      prices
-      fulfiller
-      printType
-      fulfillerPercent
-      fulfillerBase
-      designerPercent
-    }
+    oracleUpdateds {
+        currency
+        rate
+        wei
+      }
   }
 `;
 
-export const getAllCollections = async (): Promise<any> => {
+export const getOracleData = async (): Promise<any> => {
   const queryPromise = graphPrintClient.query({
-    query: gql(COLLECTIONS),
+    query: gql(ORACLE),
     fetchPolicy: "no-cache",
     errorPolicy: "all",
   });

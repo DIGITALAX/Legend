@@ -161,9 +161,6 @@ const Grant: FunctionComponent<GrantProps> = ({
                     </div>
                   </div>
                   <div className="relative w-full h-fit items-center justify-start text-white text-xxs font-dog flex flex-col gap-4">
-                    <div className="relative w-fit h-fit break-words items-center justify-center text-center flex">
-                      Milestone Contestation Period
-                    </div>
                     <div className="relative w-full h-6 rounded-lg border border-white bg-amar/60 text-black text-center flex items-center justify-center">
                       Not Completed
                     </div>
