@@ -7,6 +7,7 @@ const COLLECTIONS = `
       collectionId
       uri
       prices
+      fulfiller
       printType
     }
   }

@@ -6,6 +6,7 @@ const COLLECTIONS = `
     collectionCreateds(where: {collectionId: $collectionId}) {
       collectionId
       uri
+      fulfiller
       prices
       printType
     }

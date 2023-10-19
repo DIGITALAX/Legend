@@ -121,7 +121,7 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
             <div
               className={`w-40 h-8 cursor-pointer rounded-sm cursor-pointer active:scale-95 border border-black flex items-center justify-center text-center font-gam text-xl ${
                 !cartItems?.some(
-                  (item) => item.id === id && item.level === index
+                  (item) => item.collectionId === id && item.level === index
                 )
                   ? "bg-lima"
                   : "bg-viol"
@@ -132,19 +132,20 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                   id: id,
                   amount: item?.prices,
                   level: index,
+                  fulfiller: item.fulfiller,
                 };
 
                 if (
                   cartItems?.some(
-                    (item) => item.id === id && item.level === index
+                    (item) => item.collectionId === id && item.level === index
                   )
                 ) {
                   router.push("/checkout");
                 } else {
                   const itemIndex = cartItems.findIndex(
-                    (cartItem) => cartItem.id === id
+                    (cartItem) => cartItem.collectionId === id
                   );
-                  if (cartItems?.some((item) => item.id === id)) {
+                  if (cartItems?.some((item) => item.collectionId === id)) {
                     const newCartItems = [...cartItems];
                     newCartItems.splice(itemIndex, 1);
                     dispatch(setCartItems([...newCartItems, newItem]));
@@ -155,7 +156,9 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                 dispatch(setCartAnim(true));
               }}
             >
-              {cartItems?.some((item) => item.id === id && item.level === index)
+              {cartItems?.some(
+                (item) => item.collectionId === id && item.level === index
+              )
                 ? "Go to Cart"
                 : "Choose Level"}
             </div>
