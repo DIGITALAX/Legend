@@ -4,10 +4,10 @@ import { BarProps } from "../types/common.types";
 const Bar: FunctionComponent<BarProps> = ({ title }): JSX.Element => {
   return (
     <div
-      className="relative w-full h-8 flex flex-row items-center justify-between p-1.5 font-dog gap-2"
+      className="relative w-full min-w-fit h-8 flex flex-row items-center justify-between p-1.5 font-dog gap-2"
       id="bar"
     >
-      <div className="relative p-1 bg-offWhite/70 text-black items-center justify-start flex text-xxs w-fit h-fit">
+      <div className="relative p-1 whitespace-nowrap bg-offWhite/70 text-black items-center justify-start flex text-xxs w-fit h-fit">
         {title}
       </div>
       <div className="relative w-fit h-fit flex flex-row gap-1 items-center justify-end">

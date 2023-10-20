@@ -203,6 +203,8 @@ const useGrants = () => {
                   description: string;
                   title: string;
                   profileId: string;
+                  tags: string[];
+                  prompt: string;
                 } = await fetchIpfsJson((obj.uri as any)?.split("ipfs://")[1]);
                 let profile: Profile = profileCache[DIGITALAX_PROFILE_ID_LENS];
 

@@ -5,23 +5,32 @@ const Splits: FunctionComponent<SplitsProps> = ({
   designer,
   fulfiller,
   grantee,
+  onlyGrantee,
 }): JSX.Element => {
   return (
     <div className="relative w-fit h-fit flex flex-row items-start justify-center text-left break-words gap-3 text-black text-xxs font-vcr">
-      {[
-        {
-          name: "You",
-          amount: grantee,
-        },
-        {
-          name: "Designer",
-          amount: designer,
-        },
-        {
-          name: "Fulfiller",
-          amount: fulfiller,
-        },
-      ].map(
+      {(onlyGrantee
+        ? [
+            {
+              name: "You",
+              amount: grantee,
+            },
+          ]
+        : [
+            {
+              name: "You",
+              amount: grantee,
+            },
+            {
+              name: "Designer",
+              amount: designer,
+            },
+            {
+              name: "Fulfiller",
+              amount: fulfiller,
+            },
+          ]
+      ).map(
         (
           item: {
             name: string;
@@ -37,8 +46,8 @@ const Splits: FunctionComponent<SplitsProps> = ({
               <div className="relative w-fit h-fit items-center justify-center">
                 {item.name}
               </div>
-              <div className="relative w-fit h-fit items-center justify-center">
-                {item.amount}
+              <div className="relative w-fit h-fit items-center justify-center text-enferm">
+                {item.amount}%
               </div>
             </div>
           );

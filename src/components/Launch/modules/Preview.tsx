@@ -4,16 +4,19 @@ import Bar from "@/components/Common/modules/Bar";
 import Image from "next/legacy/image";
 import { INFURA_GATEWAY } from "../../../../lib/constants";
 import CollectItem from "./CollectItem";
+import LevelOne from "./LevelOne";
 
 const Preview: FunctionComponent<PreviewProps> = ({
   postInformation,
   levelArray,
-  priceIndex,
-  setPriceIndex,
+  indexes,
+  handleChangeCurrency,
+  handleChangeImage,
+  handleChangeItem,
 }): JSX.Element => {
   return (
     <div
-      className="relative flex items-start justify-center w-full h-full overflow-y-scroll"
+      className="relative flex flex-col w-full h-full overflow-y-scroll justify-start items-center"
       id="milestone"
     >
       <div className="relative w-full h-fit flex flex-col gap-4 items-center justify-start">
@@ -188,14 +191,19 @@ const Preview: FunctionComponent<PreviewProps> = ({
           id="milestone"
         >
           <div className="relative w-fit h-fit flex flex-row gap-3">
+            <LevelOne
+              index={indexes[0]}
+              handleChangeCurrency={handleChangeCurrency}
+            />
             {levelArray?.map((item: LevelInfo, index: number) => {
               return (
                 <CollectItem
                   key={index}
-                  index={index}
                   item={item}
-                  priceIndex={priceIndex}
-                  setPriceIndex={setPriceIndex}
+                  index={indexes[index + 1]}
+                  handleChangeCurrency={handleChangeCurrency}
+                  handleChangeImage={handleChangeImage}
+                  handleChangeItem={handleChangeItem}
                 />
               );
             })}

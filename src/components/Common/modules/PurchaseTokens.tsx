@@ -7,9 +7,11 @@ import {
 import { PurchaseTokensProps } from "../types/common.types";
 
 const PurchaseTokens: FunctionComponent<PurchaseTokensProps> = ({
-  checkoutCurrency,
-  setCheckoutCurrency,
-  index,
+  currency,
+  handleChangeCurrency,
+  itemIndex,
+  levelIndex,
+  priceIndex
 }): JSX.Element => {
   return (
     <div className="relative w-3/4 justify-center items-center flex flex-row gap-1">
@@ -17,16 +19,12 @@ const PurchaseTokens: FunctionComponent<PurchaseTokensProps> = ({
         return (
           <div
             className={`relative w-fit h-fit rounded-full flex items-center cursor-pointer active:scale-95 ${
-              checkoutCurrency?.[index] === item[1]
-                ? "opacity-50"
-                : "opacity-100"
+              currency === item[1] ? "opacity-50" : "opacity-100"
             }`}
             key={indexTwo}
-            onClick={() => {
-              const currencies = [...checkoutCurrency];
-              currencies[index] = item[1];
-              setCheckoutCurrency(currencies);
-            }}
+            onClick={() =>
+              handleChangeCurrency(levelIndex, itemIndex, priceIndex, item[1])
+            }
           >
             <Image
               src={`${INFURA_GATEWAY}/ipfs/${item[0]}`}

@@ -14,10 +14,6 @@ export type MilestoneProps = {
   inputDateValue: string[];
   dateOpen: boolean[];
   setDateOpen: (e: boolean[]) => void;
-  handleActivateMilestone: (index: number) => Promise<void>;
-  handleClaimMilestone: (index: number) => Promise<void>;
-  activateMilestoneLoading: boolean[];
-  claimMilestoneLoading: boolean[];
   postInformation: PostInformation;
   setPostInformation: (e: PostInformation) => void;
 };
@@ -38,10 +34,24 @@ export type RegisterAndPostProps = {
 
 export type PreviewProps = {
   postInformation: PostInformation;
-  setPostInformation: (e: PostInformation) => void;
   levelArray: LevelInfo[];
-  setPriceIndex: (e: number[][]) => void;
-  priceIndex: number[][];
+  indexes: {
+    levelIndex: number;
+    imageIndex: number;
+    rate: number;
+    price: number[];
+    priceIndex: number
+    currency: string;
+    itemIndex: number;
+  }[];
+  handleChangeCurrency: (
+    levelIndex: number,
+    itemIndex: number,
+    priceIndex: number,
+    checkoutCurrency: string
+  ) => void;
+  handleChangeImage: (levelIndex: number, imageIndex: number) => void;
+  handleChangeItem: (levelIndex: number, newItemIndex: number) => void;
 };
 
 export type DeployProps = {
@@ -71,6 +81,8 @@ export interface PrintItem {
     description: string;
     title: string;
     profileId: string;
+    tags: string[];
+    prompt: string;
   };
   profile: Profile;
   prices: string[];
@@ -97,6 +109,7 @@ export type SplitsProps = {
   designer: number;
   fulfiller: number;
   grantee: number;
+  onlyGrantee?: boolean;
 };
 
 export type LaunchSwitchProps = {
@@ -105,17 +118,10 @@ export type LaunchSwitchProps = {
   handleShuffleCollectionLevels: () => void;
   setPostInformation: (e: PostInformation) => void;
   grantStage: number;
-  oracleData: OracleData[];
   allCollectionsLoading: boolean;
-  setPriceIndex: (e: number[][]) => void;
-  priceIndex: number[][];
   imageLoading: boolean;
   dateOpen: boolean[];
   setDateOpen: (e: boolean[]) => void;
-  handleActivateMilestone: (index: number) => Promise<void>;
-  handleClaimMilestone: (index: number) => Promise<void>;
-  activateMilestoneLoading: boolean[];
-  claimMilestoneLoading: boolean[];
   handleInputDateChange: (
     e: ChangeEvent<HTMLInputElement>,
     index: number
@@ -137,8 +143,23 @@ export type LaunchSwitchProps = {
   handleLensSignIn: () => Promise<void>;
   connected: boolean | undefined;
   signInLoading: boolean;
-  checkoutCurrency: string[];
-  setCheckoutCurrency: (e: string[]) => void;
+  indexes: {
+    levelIndex: number;
+    imageIndex: number;
+    rate: number;
+    price: number[];
+    priceIndex: number
+    currency: string;
+    itemIndex: number;
+  }[];
+  handleChangeCurrency: (
+    levelIndex: number,
+    itemIndex: number,
+    priceIndex: number,
+    checkoutCurrency: string
+  ) => void;
+  handleChangeImage: (levelIndex: number, imageIndex: number) => void;
+  handleChangeItem: (levelIndex: number, newItemIndex: number) => void;
 };
 
 export interface PostInformation {
@@ -165,22 +186,45 @@ export type CollectionShuffleProps = {
   handleShuffleCollectionLevels: () => void;
   levelArray: LevelInfo[];
   allCollectionsLoading: boolean;
-  setPriceIndex: (e: number[][]) => void;
-  priceIndex: number[][];
-  checkoutCurrency: string[];
-  setCheckoutCurrency: (e: string[]) => void;
-  oracleData: OracleData[];
+  indexes: {
+    levelIndex: number;
+    imageIndex: number;
+    rate: number;
+    price: number[];
+    priceIndex: number
+    currency: string;
+    itemIndex: number;
+  }[];
+  handleChangeCurrency: (
+    levelIndex: number,
+    itemIndex: number,
+    priceIndex: number,
+    checkoutCurrency: string
+  ) => void;
+  handleChangeImage: (levelIndex: number, imageIndex: number) => void;
+  handleChangeItem: (levelIndex: number, newItemIndex: number) => void;
 };
 
 export type CollectItemProps = {
-  index: number;
   allCollectionsLoading?: boolean;
   item: LevelInfo;
-  setPriceIndex: (e: number[][]) => void;
-  priceIndex: number[][];
-  checkoutCurrency: string[];
-  setCheckoutCurrency: (e: string[]) => void;
-  oracleData: OracleData[];
+  index: {
+    levelIndex: number;
+    imageIndex: number;
+    rate: number;
+    currency: string;
+    price: number[];
+    priceIndex: number
+    itemIndex: number;
+  };
+  handleChangeCurrency: (
+    levelIndex: number,
+    itemIndex: number,
+    priceIndex: number,
+    checkoutCurrency: string
+  ) => void;
+  handleChangeImage: (levelIndex: number, imageIndex: number) => void;
+  handleChangeItem: (levelIndex: number, newItemIndex: number) => void;
 };
 
 export interface OracleData {
@@ -195,7 +239,19 @@ export type SuccessProps = {
 };
 
 export type LevelOneProps = {
-  checkoutCurrency: string[];
-  setCheckoutCurrency: (e: string[]) => void;
-  oracleData: OracleData[];
+  index: {
+    levelIndex: number;
+    imageIndex: number;
+    rate: number;
+    currency: string;
+    price: number[];
+    priceIndex: number
+    itemIndex: number;
+  };
+  handleChangeCurrency: (
+    levelIndex: number,
+    itemIndex: number,
+    priceIndex: number,
+    checkoutCurrency: string
+  ) => void;
 };

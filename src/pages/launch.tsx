@@ -26,21 +26,17 @@ export default function Launch() {
     handleImageUpload,
     postInformation,
     setPostInformation,
-    handleActivateMilestone,
-    handleClaimMilestone,
-    activateMilestoneLoading,
-    claimMilestoneLoading,
     grantStage,
     setGrantStage,
     grantId,
   } = useLaunch();
   const {
     handleShuffleCollectionLevels,
-    priceIndex,
-    setPriceIndex,
+    indexes,
+    handleChangeCurrency,
+    handleChangeImage,
+    handleChangeItem,
     allCollectionsLoading,
-    checkoutCurrency,
-    setCheckoutCurrency,
   } = useLevelItems();
   const { handleLensSignIn, signInLoading } = useSignIn();
   const { openConnectModal } = useConnectModal();
@@ -55,26 +51,20 @@ export default function Launch() {
   const connected = useSelector(
     (state: RootState) => state.app.walletConnectedReducer.value
   );
-  const oracleData = useSelector(
-    (state: RootState) => state.app.oracleDataReducer.data
-  );
   return (
     <div className="relative w-full h-full flex items-center justify-center p-5 overflow-y-hidden">
-      <div className="relative w-3/5 h-4/5 items-center justify-center gap-4 flex">
+      <div
+        className="relative w-3/5 h-4/5 items-start justify-center gap-4 flex overflow-y-scroll"
+        id="milestone"
+      >
         <LaunchSwitch
           dateOpen={dateOpen}
           levelArray={levelArray}
-          setPriceIndex={setPriceIndex}
-          priceIndex={priceIndex}
           setDateOpen={setDateOpen}
           handleDateSelect={handleDateSelect}
           selectedDate={selectedDate}
           inputDateValue={inputDateValue}
           handleInputDateChange={handleInputDateChange}
-          handleActivateMilestone={handleActivateMilestone}
-          handleClaimMilestone={handleClaimMilestone}
-          activateMilestoneLoading={activateMilestoneLoading}
-          claimMilestoneLoading={claimMilestoneLoading}
           postInformation={postInformation}
           setPostInformation={setPostInformation}
           grantStage={grantStage}
@@ -95,9 +85,10 @@ export default function Launch() {
           openConnectModal={openConnectModal}
           handleLensSignIn={handleLensSignIn}
           connected={connected}
-          checkoutCurrency={checkoutCurrency}
-          setCheckoutCurrency={setCheckoutCurrency}
-          oracleData={oracleData}
+          indexes={indexes}
+          handleChangeCurrency={handleChangeCurrency}
+          handleChangeImage={handleChangeImage}
+          handleChangeItem={handleChangeItem}
         />
       </div>
       <Deploy

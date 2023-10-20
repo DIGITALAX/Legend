@@ -11,7 +11,13 @@ const Item: FunctionComponent<ItemProps> = ({ grant }): JSX.Element => {
       className="relative w-80 h-60 flex flex-col items-center justify-center gap-4"
     >
       <div className="relative w-full h-full border-2 border-viol bg-offWhite">
-        <Image src={`${INFURA_GATEWAY}/ipfs/${grant?.image}`} layout="fill" />
+        {grant?.image && (
+          <Image
+            src={`${INFURA_GATEWAY}/ipfs/${grant?.image}`}
+            layout="fill"
+            objectFit="cover"
+          />
+        )}
       </div>
       <div
         className="relative w-full h-12 flex flex-row justify-between items-center gap-8 p-1"
@@ -19,10 +25,13 @@ const Item: FunctionComponent<ItemProps> = ({ grant }): JSX.Element => {
       >
         <div className="relative w-fit h-fit flex items-center justify-center">
           <div className="relative w-6 h-6 rounded-full border border-viol bg-white">
-            <Image
-              src={`${INFURA_GATEWAY}/ipfs/${grant?.profileImage}`}
-              layout="fill"
-            />
+            {grant?.profileImage && (
+              <Image
+                src={`${INFURA_GATEWAY}/ipfs/${grant?.profileImage}`}
+                layout="fill"
+                objectFit="cover"
+              />
+            )}
           </div>
         </div>
         <div className="relative w-full h-full flex flex-col gap-1.5 bg-offWhite/40 justify-center items-start border border-black font-gam">

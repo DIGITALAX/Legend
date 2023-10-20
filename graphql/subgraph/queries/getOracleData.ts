@@ -3,7 +3,7 @@ import { graphPrintClient } from "../../../lib/graph/client";
 
 const ORACLE = `
   query {
-    oracleUpdateds {
+    currencyAddeds {
         currency
         rate
         wei

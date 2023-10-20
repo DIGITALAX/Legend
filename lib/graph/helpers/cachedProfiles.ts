@@ -10,7 +10,8 @@ const cachedProfiles = async (): Promise<
     const { data: digiData } = await getProfile({
       forProfileId: DIGITALAX_PROFILE_ID_LENS,
     });
-    return (profileCache[DIGITALAX_PROFILE_ID_LENS] = digiData?.profile?.id);
+    profileCache[DIGITALAX_PROFILE_ID_LENS] = digiData?.profile?.id;
+    return profileCache;
   } catch (err: any) {
     console.error(err.message);
   }
