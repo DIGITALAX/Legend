@@ -6,7 +6,6 @@ import { format } from "date-fns";
 import FocusTrap from "focus-trap-react";
 import "react-day-picker/dist/style.css";
 import { usePopper } from "react-popper";
-import { AiOutlineLoading } from "react-icons/ai";
 
 const Milestone: FunctionComponent<MilestoneProps> = ({
   index,
@@ -16,10 +15,6 @@ const Milestone: FunctionComponent<MilestoneProps> = ({
   selectedDate,
   inputDateValue,
   handleInputDateChange,
-  handleActivateMilestone,
-  handleClaimMilestone,
-  activateMilestoneLoading,
-  claimMilestoneLoading,
   postInformation,
   setPostInformation,
 }): JSX.Element => {

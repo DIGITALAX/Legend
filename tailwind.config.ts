@@ -36,8 +36,12 @@ const config: Config = {
         net: "Network",
       },
       fontSize: {
+        super: "0.4rem",
         xxs: "0.6rem",
       },
+      height: {
+        110: "30rem"
+      }
     },
   },
   plugins: [],

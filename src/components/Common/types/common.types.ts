@@ -3,7 +3,14 @@ export type BarProps = {
 };
 
 export type PurchaseTokensProps = {
-  checkoutCurrency: string[];
-  setCheckoutCurrency: (e: string[]) => void;
-  index: number;
+  currency: string;
+  handleChangeCurrency: (
+    levelIndex: number,
+    itemIndex: number,
+    priceIndex: number,
+    checkoutCurrency: string
+  ) => void;
+  itemIndex: number;
+  levelIndex: number;
+  priceIndex: number;
 };

@@ -17,6 +17,7 @@ import { Profile } from "../../../../graphql/generated";
 import createProfile from "../../../../graphql/lens/mutations/createProfile";
 import { RootState } from "../../../../redux/store";
 import { setCartAnim } from "../../../../redux/reducers/cartAnimSlice";
+import { profile } from "console";
 
 const useSignIn = () => {
   const dispatch = useDispatch();
@@ -34,7 +35,7 @@ const useSignIn = () => {
     setCreateProfileLoading(true);
     try {
       const profile = await createProfile({
-        handle: new Date().toDateString(),
+        handle: "emmaja",
         to: address,
       });
 
@@ -47,6 +48,9 @@ const useSignIn = () => {
 
   const handleLensSignIn = async () => {
     setSignInLoading(true);
+
+    // await createProfileWithHandle();
+
     try {
       const profile = await getProfiles({
         where: {
@@ -143,7 +147,7 @@ const useSignIn = () => {
     createProfileWithHandle,
     createProfileLoading,
     checkoutOpen,
-    setCheckoutOpen
+    setCheckoutOpen,
   };
 };
 

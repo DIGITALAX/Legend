@@ -16,14 +16,10 @@ const LaunchSwitch: FunctionComponent<LaunchSwitchProps> = ({
   handleImageUpload,
   dateOpen,
   setDateOpen,
-  claimMilestoneLoading,
   inputDateValue,
   selectedDate,
   handleDateSelect,
   handleInputDateChange,
-  handleActivateMilestone,
-  activateMilestoneLoading,
-  handleClaimMilestone,
   postLoading,
   grantPosted,
   grantRegistered,
@@ -39,12 +35,11 @@ const LaunchSwitch: FunctionComponent<LaunchSwitchProps> = ({
   handleLensSignIn,
   connected,
   signInLoading,
-  priceIndex,
-  setPriceIndex,
   levelArray,
-  checkoutCurrency,
-  setCheckoutCurrency,
-  oracleData,
+  indexes,
+  handleChangeCurrency,
+  handleChangeImage,
+  handleChangeItem,
 }) => {
   switch (grantStage) {
     case 0:
@@ -58,7 +53,7 @@ const LaunchSwitch: FunctionComponent<LaunchSwitchProps> = ({
       );
     case 1:
       return (
-        <div className="relative flex flex-row w-full h-full gap-3">
+        <div className="relative flex flex-row w-full h-full gap-3 overflow-x-scroll" id="milestone">
           {Array.from({ length: 3 }).map((_, index: number) => {
             return (
               <Milestone
@@ -70,10 +65,6 @@ const LaunchSwitch: FunctionComponent<LaunchSwitchProps> = ({
                 selectedDate={selectedDate}
                 inputDateValue={inputDateValue}
                 handleInputDateChange={handleInputDateChange}
-                handleActivateMilestone={handleActivateMilestone}
-                handleClaimMilestone={handleClaimMilestone}
-                activateMilestoneLoading={activateMilestoneLoading}
-                claimMilestoneLoading={claimMilestoneLoading}
                 postInformation={postInformation}
                 setPostInformation={setPostInformation}
               />
@@ -94,11 +85,10 @@ const LaunchSwitch: FunctionComponent<LaunchSwitchProps> = ({
           handleShuffleCollectionLevels={handleShuffleCollectionLevels}
           levelArray={levelArray}
           allCollectionsLoading={allCollectionsLoading}
-          priceIndex={priceIndex}
-          setPriceIndex={setPriceIndex}
-          checkoutCurrency={checkoutCurrency}
-          setCheckoutCurrency={setCheckoutCurrency}
-          oracleData={oracleData}
+          indexes={indexes}
+          handleChangeCurrency={handleChangeCurrency}
+          handleChangeImage={handleChangeImage}
+          handleChangeItem={handleChangeItem}
         />
       );
     case 4:
@@ -106,9 +96,10 @@ const LaunchSwitch: FunctionComponent<LaunchSwitchProps> = ({
         <Preview
           postInformation={postInformation}
           levelArray={levelArray}
-          setPostInformation={setPostInformation}
-          priceIndex={priceIndex}
-          setPriceIndex={setPriceIndex}
+          indexes={indexes}
+          handleChangeCurrency={handleChangeCurrency}
+          handleChangeImage={handleChangeImage}
+          handleChangeItem={handleChangeItem}
         />
       );
 

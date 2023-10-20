@@ -7,22 +7,21 @@ import LevelOne from "./LevelOne";
 const CollectionShuffle: FunctionComponent<CollectionShuffleProps> = ({
   levelArray,
   handleShuffleCollectionLevels,
-  priceIndex,
-  setPriceIndex,
-  checkoutCurrency,
-  setCheckoutCurrency,
-  oracleData
+  indexes,
+  handleChangeCurrency,
+  handleChangeImage,
+  handleChangeItem,
 }): JSX.Element => {
   return (
-    <div className="relative w-full h-fit flex flex-col items-center justify-center gap-8">
-      <div className="relative w-3/5 h-fit flex flex-col items-center justify-start">
+    <div className="relative w-full h-fit flex flex-col items-center justify-center gap-6">
+      <div className="relative w-3/5 min-w-fit h-fit flex flex-col items-center justify-start">
         <Bar title="Collection Shuffle" />
         <div className="relative bg-offWhite w-full h-fit flex flex-col items-center justify-start p-3 gap-4 border border-black rounded-b-sm">
           <div className="relative text-center w-4/5 h-fit font-dog text-offBlack text-xxs break-words">
             Unlock exclusive NFT art, prints, and stylish attire. Each level
-            offers a unique blend. A baseline cost of $100 and 20% vig is
-            earmarked for the creative fulfillment team behind the curtain. All
-            surplus is channeled into your grant.
+            offers a unique blend. A baseline cost and vig is earmarked for the
+            creative fulfillment team behind the curtain. All surplus is
+            channeled into your grant.
             <br />
             <br /> Want a fresh mix? Swap for another set.
           </div>
@@ -35,26 +34,23 @@ const CollectionShuffle: FunctionComponent<CollectionShuffleProps> = ({
         </div>
       </div>
       <div
-        className="relative flex w-full h-fit overflow-x-scroll"
+        className="relative flex w-full items-center justify-start h-fit flex-row overflow-x-scroll"
         id="milestone"
       >
-        <div className="relative w-fit h-fit flex flex-row gap-3">
+        <div className="relative w-fit h-full flex flex-row gap-3">
           <LevelOne
-            checkoutCurrency={checkoutCurrency}
-            setCheckoutCurrency={setCheckoutCurrency}
-            oracleData={oracleData}
+            index={indexes[0]}
+            handleChangeCurrency={handleChangeCurrency}
           />
           {levelArray?.map((item: LevelInfo, index: number) => {
             return (
               <CollectItem
-                index={index}
                 key={index}
                 item={item}
-                priceIndex={priceIndex}
-                setPriceIndex={setPriceIndex}
-                checkoutCurrency={checkoutCurrency}
-                setCheckoutCurrency={setCheckoutCurrency}
-                oracleData={oracleData}
+                index={indexes[index+1]}
+                handleChangeCurrency={handleChangeCurrency}
+                handleChangeImage={handleChangeImage}
+                handleChangeItem={handleChangeItem}
               />
             );
           })}

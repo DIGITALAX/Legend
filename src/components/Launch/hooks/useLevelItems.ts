@@ -6,11 +6,19 @@ import { getAllCollections } from "../../../../graphql/subgraph/queries/getAllCo
 import { setAvailableCollections } from "../../../../redux/reducers/availableCollectionsSlice";
 import { Profile } from "../../../../graphql/generated";
 import getProfile from "../../../../graphql/lens/queries/profile";
-import { LevelInfo, PrintItem, PrintType } from "../types/launch.types";
+import {
+  LevelInfo,
+  OracleData,
+  PrintItem,
+  PrintType,
+} from "../types/launch.types";
 import fetchIpfsJson from "../../../../lib/graph/helpers/fetchIPFSJson";
 import pickRandomItem from "../../../../lib/graph/helpers/pickRandomItem";
 import cachedProfiles from "../../../../lib/graph/helpers/cachedProfiles";
-import { DIGITALAX_PROFILE_ID_LENS } from "../../../../lib/constants";
+import {
+  ACCEPTED_TOKENS_MUMBAI,
+  DIGITALAX_PROFILE_ID_LENS,
+} from "../../../../lib/constants";
 import { setCachedProfiles } from "../../../../redux/reducers/cachedProfilesSlice";
 import { getOracleData } from "../../../../graphql/subgraph/queries/getOracleData";
 import { setOracleData } from "../../../../redux/reducers/oracleDataSlice";
@@ -23,11 +31,34 @@ const useLevelItems = () => {
   const profiles = useSelector(
     (state: RootState) => state.app.cachedProfilesReducer.profiles
   );
+  const oracleData = useSelector(
+    (state: RootState) => state.app.oracleDataReducer.data
+  );
+  const levelItems = useSelector(
+    (state: RootState) => state.app.levelArrayReducer.collections
+  );
   const [allCollectionsLoading, setAllCollectionsLoading] =
     useState<boolean>(false);
-  const [priceIndex, setPriceIndex] = useState<number[][]>([]);
-  const [checkoutCurrency, setCheckoutCurrency] = useState<string[]>(
-    Array.from({ length: 7 }, () => "USDT")
+  const [indexes, setIndexes] = useState<
+    {
+      levelIndex: number;
+      imageIndex: number;
+      rate: number;
+      currency: string;
+      price: number[];
+      priceIndex: number;
+      itemIndex: number;
+    }[]
+  >(
+    Array.from({ length: 7 }, (_, index) => ({
+      levelIndex: index,
+      imageIndex: 0,
+      rate: 0,
+      currency: "USDT",
+      priceIndex: 0,
+      price: Array.from({ length: 3 }, () => 0),
+      itemIndex: 0,
+    }))
   );
 
   const getAllAvailableCollections = async () => {
@@ -36,7 +67,7 @@ const useLevelItems = () => {
       const { data } = await getAllCollections();
       let profileCache: { [key: string]: Profile } = {};
 
-      if (!profiles) {
+      if (!profiles || typeof profiles !== "object") {
         profileCache = (await cachedProfiles()) as { [key: string]: Profile };
       } else {
         profileCache = profiles;
@@ -55,6 +86,8 @@ const useLevelItems = () => {
             description: string;
             title: string;
             profileId: string;
+            tags: string[];
+            prompt: string;
           } = await fetchIpfsJson((obj.uri as any)?.split("ipfs://")[1]);
           let profile: Profile = profileCache[DIGITALAX_PROFILE_ID_LENS];
 
@@ -103,65 +136,134 @@ const useLevelItems = () => {
 
   const handleShuffleCollectionLevels = () => {
     const levelArray: LevelInfo[] = [];
-    const usedItemIds: Set<string> = new Set();
 
     for (let level = 2; level <= 7; level++) {
       const levelObj: LevelInfo = { level, items: [] };
       switch (level) {
         case 2:
           levelObj.items.push(
-            pickRandomItem(allCollections?.[PrintType.Sticker]!, usedItemIds)
+            pickRandomItem(allCollections?.[PrintType.Sticker]!)
           );
           break;
         case 3:
           levelObj.items.push(
-            pickRandomItem(allCollections?.[PrintType.Poster]!, usedItemIds)
+            pickRandomItem(allCollections?.[PrintType.Poster]!)
           );
           break;
         case 4:
           levelObj.items.push(
-            pickRandomItem(allCollections?.[PrintType.Shirt]!, usedItemIds)
+            pickRandomItem(allCollections?.[PrintType.Shirt]!)
           );
           break;
         case 5:
           levelObj.items.push(
-            pickRandomItem(allCollections?.[PrintType.Hoodie]!, usedItemIds)
+            pickRandomItem(allCollections?.[PrintType.Hoodie]!)
           );
           break;
         case 6:
           levelObj.items.push(
-            pickRandomItem(allCollections?.[PrintType.Sticker]!, usedItemIds),
-            pickRandomItem(allCollections?.[PrintType.Poster]!, usedItemIds),
-            pickRandomItem(allCollections?.[PrintType.Hoodie]!, usedItemIds),
-            pickRandomItem(allCollections?.[PrintType.Shirt]!, usedItemIds)
+            pickRandomItem(allCollections?.[PrintType.Sticker]!),
+            pickRandomItem(allCollections?.[PrintType.Poster]!),
+            pickRandomItem(allCollections?.[PrintType.Hoodie]!),
+            pickRandomItem(allCollections?.[PrintType.Shirt]!)
           );
           break;
         case 7:
           levelObj.items.push(
-            pickRandomItem(allCollections?.[PrintType.Sticker]!, usedItemIds),
-            pickRandomItem(allCollections?.[PrintType.Sticker]!, usedItemIds),
-            pickRandomItem(allCollections?.[PrintType.Poster]!, usedItemIds),
-            pickRandomItem(allCollections?.[PrintType.Poster]!, usedItemIds),
-            pickRandomItem(allCollections?.[PrintType.Shirt]!, usedItemIds),
-            pickRandomItem(allCollections?.[PrintType.Shirt]!, usedItemIds),
-            pickRandomItem(allCollections?.[PrintType.Hoodie]!, usedItemIds)
+            pickRandomItem(allCollections?.[PrintType.Sticker]!),
+            pickRandomItem(allCollections?.[PrintType.Sticker]!),
+            pickRandomItem(allCollections?.[PrintType.Poster]!),
+            pickRandomItem(allCollections?.[PrintType.Poster]!),
+            pickRandomItem(allCollections?.[PrintType.Shirt]!),
+            pickRandomItem(allCollections?.[PrintType.Shirt]!),
+            pickRandomItem(allCollections?.[PrintType.Hoodie]!)
           );
           break;
       }
       levelArray?.push(levelObj);
     }
 
+    const rate = oracleData?.find(
+      (oracle) =>
+        oracle.currency ===
+        ACCEPTED_TOKENS_MUMBAI.find((item) => item[1] === "USDT")?.[2]
+    )?.rate;
+
+    setIndexes(
+      Array.from({ length: 7 }, (_, index: number) => ({
+        levelIndex: index,
+        imageIndex: 0,
+        rate: Number(rate),
+        currency: "USDT",
+        priceIndex: 0,
+        price:
+          index === 0
+            ? [10 ** 18]
+            : levelArray[index - 1]?.items?.map((item) =>
+                Number(item.prices[0])
+              ),
+        itemIndex: 0,
+      }))
+    );
+
     dispatch(setLevelArray(levelArray));
   };
 
-  const handleOracles = async () => {
+  const handleOracles = async (): Promise<OracleData[] | undefined> => {
     try {
       const { data } = await getOracleData();
 
-      dispatch(setOracleData(data?.oracleUpdateds));
+      dispatch(setOracleData(data?.currencyAddeds));
+
+      return data?.currencyAddeds;
     } catch (err: any) {
       console.error(err.message);
     }
+  };
+
+  const handleChangeCurrency = (
+    levelIndex: number,
+    itemIndex: number,
+    priceIndex: number,
+    checkoutCurrency: string
+  ): void => {
+    const items = [...indexes];
+    items[levelIndex].currency = checkoutCurrency;
+    items[levelIndex].priceIndex = priceIndex;
+    if (levelIndex != 0) {
+      items[levelIndex].price[priceIndex] = Number(
+        levelItems[levelIndex - 1].items[itemIndex].prices[priceIndex]
+      );
+    }
+
+    items[levelIndex].rate = Number(
+      oracleData?.find(
+        (oracle) =>
+          oracle.currency ===
+          ACCEPTED_TOKENS_MUMBAI.find(
+            (item) => item[1] === checkoutCurrency
+          )?.[2]
+      )?.rate
+    );
+    setIndexes(items);
+  };
+
+  const handleChangeImage = (levelIndex: number, imageIndex: number): void => {
+    const items = [...indexes];
+    items[levelIndex].imageIndex = imageIndex;
+    setIndexes(items);
+  };
+
+  const handleChangeItem = (levelIndex: number, newItemIndex: number): void => {
+    const items = [...indexes];
+    items[levelIndex].itemIndex = newItemIndex;
+    handleChangeCurrency(
+      levelIndex,
+      newItemIndex,
+      0,
+      items[levelIndex].currency
+    );
+    setIndexes(items);
   };
 
   useEffect(() => {
@@ -179,11 +281,11 @@ const useLevelItems = () => {
 
   return {
     allCollectionsLoading,
-    priceIndex,
-    setPriceIndex,
     handleShuffleCollectionLevels,
-    checkoutCurrency,
-    setCheckoutCurrency,
+    indexes,
+    handleChangeCurrency,
+    handleChangeImage,
+    handleChangeItem,
   };
 };
 

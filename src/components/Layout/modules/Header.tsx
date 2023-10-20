@@ -9,6 +9,7 @@ import Image from "next/legacy/image";
 import { INFURA_GATEWAY } from "../../../../lib/constants";
 import { useRouter } from "next/router";
 import { setCartItems } from "../../../../redux/reducers/cartItemsSlice";
+import { ImageSet, NftImage } from "../../../../graphql/generated";
 
 const Header: FunctionComponent = (): JSX.Element => {
   const router = useRouter();
@@ -78,6 +79,21 @@ const Header: FunctionComponent = (): JSX.Element => {
             );
           })}
         </div>
+        <div className="relative flex justify-center items-center w-6 h-6 rounded-full border border-white">
+          <Image
+            layout="fill"
+            src={`${INFURA_GATEWAY}/ipfs/${
+              profile?.metadata?.picture?.__typename === "ImageSet"
+                ? (profile.metadata.picture as ImageSet)?.raw.uri.split(
+                    "ipfs://"
+                  )[1]
+                : (
+                    profile?.metadata?.picture as NftImage
+                  )?.image.raw.uri?.split("ipfs://")[1]
+            }`}
+            draggable={false}
+          />
+        </div>
         <div
           className={`relative w-24 h-7 items-center justify-center flex font-vcr cursor-pointer active:scale-95 border border-white rounded-sm text-sm ${
             connected && profile ? "text-black bg-white" : "text-white"
@@ -91,13 +107,15 @@ const Header: FunctionComponent = (): JSX.Element => {
           }
         >
           <div
-            className={`relative text-center items-center justify-center flex `}
+            className={`relative text-center items-center justify-center flex ${
+              signInLoading && "animate-spin"
+            }`}
           >
             {signInLoading ? (
               <AiOutlineLoading />
             ) : !connected ? (
               "Connect"
-            ) : connected && profile ? (
+            ) : connected && !profile ? (
               "Lens"
             ) : (
               "Account"
