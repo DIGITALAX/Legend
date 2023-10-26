@@ -53,6 +53,28 @@ const useGrants = () => {
       color: string;
     }[]
   >(Array.from({ length: 6 }, () => ({ size: "", color: "" })));
+  const [indexes, setIndexes] = useState<
+    {
+      levelIndex: number;
+      imageIndex: number;
+      rate: number;
+      currency: string;
+      price: number[];
+      priceIndex: number;
+      itemIndex: number;
+    }[]
+  >(
+    Array.from({ length: 7 }, (_, index) => ({
+      levelIndex: index,
+      imageIndex: 0,
+      rate: 0,
+      currency: "USDT",
+      priceIndex: 0,
+      price: Array.from({ length: 3 }, () => 0),
+      itemIndex: 0,
+    }))
+  );
+
 
   const handleFetchGrants = async () => {
     try {
