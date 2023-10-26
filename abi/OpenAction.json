@@ -1,0 +1,481 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_hub",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_moduleGlobals",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_printAccessControlAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_printSplitsDataAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_printDesignDataAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_marketCreatorAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_legendMilestoneAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_legendRegisterAddress",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [],
+    "name": "CurrencyNotWhitelisted",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidAddress",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidAmounts",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NotHub",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "granteeAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "level",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "pubId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "profileId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "GrantContributed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "profileId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "pubId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "granteeAddress",
+        "type": "address"
+      }
+    ],
+    "name": "LevelsAdded",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "HUB",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "MODULE_GLOBALS",
+    "outputs": [
+      {
+        "internalType": "contract IModuleGlobals",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_pubId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_profileId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_level",
+        "type": "uint256"
+      }
+    ],
+    "name": "getGrantLevelCollectionAmounts",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_pubId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_profileId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_level",
+        "type": "uint256"
+      }
+    ],
+    "name": "getGrantLevelCollectionIds",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_pubId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_profileId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getGranteeReceiverAddress",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_profileId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_pubId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_granteeAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes",
+        "name": "_data",
+        "type": "bytes"
+      }
+    ],
+    "name": "initializePublicationAction",
+    "outputs": [
+      {
+        "internalType": "bytes",
+        "name": "",
+        "type": "bytes"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "legendMilestone",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "legendRegister",
+    "outputs": [
+      {
+        "internalType": "contract LegendRegister",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "marketCreator",
+    "outputs": [
+      {
+        "internalType": "contract MarketCreator",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "printAccessControl",
+    "outputs": [
+      {
+        "internalType": "contract PrintAccessControl",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "printDesignData",
+    "outputs": [
+      {
+        "internalType": "contract PrintDesignData",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "printSplitsData",
+    "outputs": [
+      {
+        "internalType": "contract PrintSplitsData",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "publicationActedProfileId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "publicationActedId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "actorProfileId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "actorProfileOwner",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "transactionExecutor",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256[]",
+            "name": "referrerProfileIds",
+            "type": "uint256[]"
+          },
+          {
+            "internalType": "uint256[]",
+            "name": "referrerPubIds",
+            "type": "uint256[]"
+          },
+          {
+            "internalType": "enum Types.PublicationType[]",
+            "name": "referrerPubTypes",
+            "type": "uint8[]"
+          },
+          {
+            "internalType": "bytes",
+            "name": "actionModuleData",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct Types.ProcessActionParams",
+        "name": "_params",
+        "type": "tuple"
+      }
+    ],
+    "name": "processPublicationAction",
+    "outputs": [
+      {
+        "internalType": "bytes",
+        "name": "",
+        "type": "bytes"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_newLegendMilestoneAddress",
+        "type": "address"
+      }
+    ],
+    "name": "setLegendMilestoneAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_newLegendRegisterAddress",
+        "type": "address"
+      }
+    ],
+    "name": "setLegendRegisterAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_newMarketCreatorAddress",
+        "type": "address"
+      }
+    ],
+    "name": "setMarketCreatorAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_newPrintAccessControlAddress",
+        "type": "address"
+      }
+    ],
+    "name": "setPrintAccessControlAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_newPrintDesignDataAddress",
+        "type": "address"
+      }
+    ],
+    "name": "setPrintDesignDataAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

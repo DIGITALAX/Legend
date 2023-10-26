@@ -8,9 +8,11 @@ import {
   POSTER_SIZE,
   STICKER_SIZE,
 } from "../../../../lib/constants";
-import { CollectItemProps, PrintType } from "../types/launch.types";
+import { CollectItemProps, PrintType } from "../../Launch/types/launch.types";
 import PurchaseTokens from "@/components/Common/modules/PurchaseTokens";
-import Splits from "./Splits";
+import Splits from "../../Launch/modules/Splits";
+import { setCartAnim } from "../../../../redux/reducers/cartAnimSlice";
+import { setCartItems } from "../../../../redux/reducers/cartItemsSlice";
 
 const CollectItem: FunctionComponent<CollectItemProps> = ({
   index,
@@ -19,22 +21,28 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
   handleChangeCurrency,
   handleChangeImage,
   handleChangeItem,
+  cart,
+  cartItems,
+  router,
+  dispatch,
+  id,
 }): JSX.Element => {
   const fulfillerBase =
-    Number(item.items[index.itemIndex]?.fulfillerBase) / 10 ** 18;
+    Number(item?.items?.[index?.itemIndex]?.fulfillerBase) / 10 ** 18;
   const fulfillerPercent =
-    Number(item.items[index.itemIndex]?.fulfillerPercent) / 10000;
+    Number(item?.items?.[index?.itemIndex]?.fulfillerPercent) / 10000;
   const designerPercent =
-    Number(item.items[index.itemIndex]?.designerPercent) / 10000;
-  const total = (index.price[index.priceIndex] ) / 10 ** 18;
+    Number(item?.items?.[index?.itemIndex]?.designerPercent) / 10000;
+  const total = index?.price?.[index?.priceIndex] / 10 ** 18;
 
-  const fulfillerShare = fulfillerPercent * (total - fulfillerBase) + fulfillerBase;
+  const fulfillerShare =
+    fulfillerPercent * (total - fulfillerBase) + fulfillerBase;
   const designerShare = designerPercent * (total - fulfillerBase);
-  const granteeShare = (total) - designerShare - fulfillerShare;
+  const granteeShare = total - designerShare - fulfillerShare;
 
   return (
     <div className="relative w-72 h-full flex flex-col items-center justify-start">
-      <Bar title={`Collect Lvl.${index.levelIndex + 1}`} />
+      <Bar title={`Collect Lvl.${index?.levelIndex + 1}`} />
       <div className="relative w-full h-110 flex flex-col gap-2 justify-between items-center p-2 border-b border-x rounded-b-sm border-black bg-offWhite">
         {allCollectionsLoading ? (
           <div className="relative w-48 h-48 rounded-sm border border-black flex items-center justify-center">
@@ -44,7 +52,7 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
           </div>
         ) : (
           <div className="relative flex flex-col gap-2 w-full h-fit items-center justify-center">
-            {item.items.length > 1 && (
+            {item?.items?.length > 1 && (
               <div className="relative w-full h-fit flex items-center justify-center flex-row gap-1.5 text-xxs text-white font-dog">
                 <div
                   className={`relative w-fit h-6 items-center px-1.5 justify-center flex bg-mar border border-white rounded-md cursor-pointer active:scale-95`}
@@ -75,14 +83,14 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
               </div>
             )}
             <div className="relative w-52 h-52 rounded-sm border border-black flex items-center justify-center">
-              {item.items[index.itemIndex]?.uri.images?.[
-                index.imageIndex
+              {item?.items?.[index?.itemIndex]?.uri?.images?.[
+                index?.imageIndex
               ]?.split("ipfs://")[1] && (
                 <Image
                   layout="fill"
                   src={`${INFURA_GATEWAY}/ipfs/${
-                    item.items[index.itemIndex]?.uri.images?.[
-                      index.imageIndex
+                    item?.items?.[index.itemIndex]?.uri?.images?.[
+                      index?.imageIndex
                     ]?.split("ipfs://")[1]
                   }`}
                   draggable={false}
@@ -137,15 +145,15 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
           </div>
         )}
         <div className="relative flex items-center text-center justify-center w-fit text-sm font-net break-words">
-          {item.items[index.itemIndex]?.uri?.title}
+          {item?.items?.[index?.itemIndex]?.uri?.title}
         </div>
         <div className="relative flex flex-col gap-1.5 justify-start items-center text-black font-dog text-xxs">
           <div className="relative flex justify-start items-center">Sizes</div>
           <div className="relative flex flex-row gap-1 items-center justify-center">
-            {(item.items[index.itemIndex]?.printType === PrintType.Sticker
+            {(item?.items?.[index?.itemIndex]?.printType === PrintType.Sticker
               ? STICKER_SIZE
-              : item.items[index.itemIndex]?.printType === PrintType.Shirt ||
-                item.items[index.itemIndex]?.printType === PrintType.Hoodie
+              : item?.items?.[index?.itemIndex]?.printType === PrintType.Shirt ||
+                item?.items?.[index?.itemIndex]?.printType === PrintType.Hoodie
               ? APPAREL_SIZE
               : POSTER_SIZE
             ).map((value: string, indexThree: number) => {
@@ -153,18 +161,18 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                 <div
                   key={indexThree}
                   className={`relative ${
-                    item.items[index.itemIndex]?.printType !==
+                    item?.items?.[index.itemIndex]?.printType !==
                       PrintType.Shirt &&
-                    item.items[index.itemIndex]?.printType !== PrintType.Hoodie
+                    item?.items?.[index.itemIndex]?.printType !== PrintType.Hoodie
                       ? "w-fit h-fit rounded-sm"
                       : "w-6 h-6 rounded-full border-black"
                   } p-1 flex items-center justify-center text-white text-center text-super bg-mar border uppercase  ${
-                    item.items[index.itemIndex]?.printType !==
+                    item?.items?.[index?.itemIndex]?.printType !==
                       PrintType.Shirt &&
-                    item.items[index.itemIndex]?.printType !==
+                    item?.items?.[index?.itemIndex]?.printType !==
                       PrintType.Hoodie &&
                     `cursor-pointer ${
-                      index.priceIndex === indexThree
+                      index?.priceIndex === indexThree
                         ? "border-white"
                         : "border-black"
                     }`
@@ -190,8 +198,8 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
             })}
           </div>
         </div>
-        {(item.items[index.itemIndex]?.printType === PrintType.Shirt ||
-          item.items[index.itemIndex]?.printType === PrintType.Hoodie) && (
+        {(item?.items?.[index?.itemIndex]?.printType === PrintType.Shirt ||
+          item?.items?.[index?.itemIndex]?.printType === PrintType.Hoodie) && (
           <div className="relative flex flex-col gap-1.5 justify-start items-center text-black font-dog text-xxs">
             <div className="relative flex justify-start items-center">
               Base Colors
@@ -213,23 +221,71 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
             </div>
           </div>
         )}
-        <Splits
-          grantee={Number(((granteeShare / total) * 100).toFixed(2))}
-          designer={Number(((designerShare / total) * 100).toFixed(2))}
-          fulfiller={Number(((fulfillerShare / total) * 100).toFixed(2))}
-        />
+        {!cart && (
+          <Splits
+            grantee={Number(((granteeShare / total) * 100).toFixed(2))}
+            designer={Number(((designerShare / total) * 100).toFixed(2))}
+            fulfiller={Number(((fulfillerShare / total) * 100).toFixed(2))}
+          />
+        )}
         <PurchaseTokens
-          levelIndex={index.levelIndex}
-          currency={index.currency}
+          levelIndex={index?.levelIndex}
+          currency={index?.currency}
           handleChangeCurrency={handleChangeCurrency}
-          itemIndex={index.itemIndex}
-          priceIndex={index.priceIndex}
+          itemIndex={index?.itemIndex}
+          priceIndex={index?.priceIndex}
         />
         <div className="relative flex justify-center items-center font-dog text-black text-xxs">
           {`${Number(
-            (index.price[index.priceIndex] / index.rate)?.toFixed(2)
-          )} ${index.currency}`}
+            (index?.price?.[index.priceIndex] / index?.rate)?.toFixed(2)
+          )} ${index?.currency}`}
         </div>
+        {cart && (
+          <div
+            className={`w-40 h-8 cursor-pointer rounded-sm cursor-pointer active:scale-95 border border-black flex items-center justify-center text-center font-gam text-xl ${
+              !cartItems?.some(
+                (item) => item.collectionId === id && index.levelIndex === index
+              )
+                ? "bg-lima"
+                : "bg-viol"
+            }`}
+            onClick={() => {
+              const newItem = {
+                ...collectChoice[index],
+                id: id,
+                amount: item?.prices,
+                level: index,
+                fulfiller: item.fulfiller,
+              };
+
+              if (
+                cartItems?.some(
+                  (item) => item.collectionId === id && item.level === index
+                )
+              ) {
+                router!.push("/checkout");
+              } else {
+                const itemIndex = cartItems!.findIndex(
+                  (cartItem) => cartItem.collectionId === id
+                );
+                if (cartItems?.some((item) => item.collectionId === id)) {
+                  const newCartItems = [...cartItems];
+                  newCartItems.splice(itemIndex, 1);
+                  dispatch!(setCartItems([...newCartItems, newItem]));
+                } else {
+                  dispatch!(setCartItems([...cartItems!, newItem]));
+                }
+              }
+              dispatch!(setCartAnim(true));
+            }}
+          >
+            {cartItems?.some(
+              (item) => item.collectionId === id && item.level === index
+            )
+              ? "Go to Cart"
+              : "Choose Level"}
+          </div>
+        )}
       </div>
     </div>
   );

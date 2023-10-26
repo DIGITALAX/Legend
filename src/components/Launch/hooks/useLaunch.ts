@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { isValid, parse, format } from "date-fns";
 import uploadPostContent from "../../../../lib/lens/helpers/uploadPostContent";
 import onChainPost from "../../../../graphql/lens/mutations/onchainPost";
@@ -7,7 +7,7 @@ import { PostInformation } from "../types/launch.types";
 import { ethers } from "ethers";
 import {
   GRANT_REGISTER_CONTRACT,
-  LEVEL_INFO_ABI,
+  OPEN_ACTION_CONTRACT,
 } from "../../../../lib/constants";
 import { polygonMumbai } from "viem/chains";
 import { createPublicClient, createWalletClient, custom, http } from "viem";
@@ -15,11 +15,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import GrantRegisterAbi from "./../../../../abi/GrantRegisterAbi.json";
 import getPublications from "../../../../graphql/lens/queries/publications";
-import {
-  LimitType,
-  PublicationType,
-  PublicationsOrderByType,
-} from "../../../../graphql/generated";
+import { LimitType, PublicationType } from "../../../../graphql/generated";
+import pollUntilIndexed from "../../../../graphql/lens/queries/indexer";
+import validateMetadata from "../../../../graphql/lens/queries/metadata";
 
 const useLaunch = () => {
   const publicClient = createPublicClient({
@@ -128,6 +126,7 @@ const useLaunch = () => {
     let simulateContract;
     try {
       const pubId = await getLastPost();
+
       simulateContract = await publicClient.simulateContract({
         address: GRANT_REGISTER_CONTRACT,
         abi: GrantRegisterAbi,
@@ -138,13 +137,14 @@ const useLaunch = () => {
             amounts: postInformation.milestones.map(
               (item) => item.amount * 10 ** 18
             ),
-            submitBy: postInformation.milestones.map(
-              (item) =>
+            submitBy: postInformation.milestones.map((date) =>
+              Math.floor(
                 new Date(
-                  item.submit
-                    .replace(/-/g, "/")
-                    .replace(/^(\w{3}) (\w{3}) (\d{2}) (\d{4})$/, "$3 $2 $4")
+                  2000 + parseInt(date.submit.split("-")[2]),
+                  Number(date.submit.split("-")[1]) - 1,
+                  Number(date.submit.split("-")[0])
                 ).getTime() / 1000
+              )
             ),
             pubId: pubId,
             profileId: parseInt(lensProfile?.id, 16),
@@ -168,30 +168,59 @@ const useLaunch = () => {
 
   const handlePostGrant = async () => {
     setPostLoading(true);
+
     try {
       const contentURIValue = await uploadPostContent(postInformation);
+      const metadata = await validateMetadata({
+        rawURI: contentURIValue,
+      });
 
-      const encodedData = ethers.utils.defaultAbiCoder.encode(LEVEL_INFO_ABI, [
-        levelArray?.map((item) => ({
-          collectionIds: item.items.map((value) => value.collectionId),
-          amounts: item.items.map((_) => 1),
-        })),
-      ]);
+      if (!metadata?.data?.validatePublicationMetadata.valid) {
+        setPostLoading(false);
+        return;
+      }
 
-      const { data, errors } = await onChainPost({
+      const encodedData: string = ethers.utils.defaultAbiCoder.encode(
+        [
+          "uint256[][2]",
+          "uint256[][2]",
+          "uint256[][2]",
+          "uint256[][2]",
+          "uint256[][2]",
+          "uint256[][2]",
+          "address",
+        ],
+        [
+          ...levelArray?.map((item) => [
+            item.items.map((value) => Number(value.collectionId)),
+            item.items.map((_) => 1),
+          ]),
+          address,
+        ]
+      );
+
+      const { data } = await onChainPost({
         contentURI: contentURIValue,
         openActionModules: [
           {
             unknownOpenAction: {
-              address: address,
+              address: OPEN_ACTION_CONTRACT,
               data: encodedData,
             },
           },
         ],
       });
-      if (!errors) {
-        setGrantPosted(true);
-        setGrantStage(6);
+      if (data?.postOnchain.__typename === "RelaySuccess") {
+        const result = await pollUntilIndexed({
+          forTxId: data?.postOnchain?.txId,
+        });
+
+        if (result === true) {
+          setGrantPosted(true);
+          setGrantStage(6);
+        } else {
+          console.error(result);
+        }
       }
     } catch (err: any) {
       console.error(err.message);
@@ -260,7 +289,6 @@ const useLaunch = () => {
     try {
       const data = await getPublications({
         limit: LimitType.Ten,
-        orderBy: PublicationsOrderByType.Latest,
         where: {
           from: lensProfile?.id,
           publicationTypes: [
@@ -271,20 +299,20 @@ const useLaunch = () => {
         },
       });
 
+      let id: number;
       if (!data || data?.data?.publications.items.length === 0) {
-        setGrantId(1);
+        id = 1;
       } else {
-        const id =
+        id =
           parseInt(data?.data?.publications.items[0].id?.split("-")?.[1], 16) +
           1;
-        setGrantId(id);
-        return id;
       }
+      setGrantId(id);
+      return id;
     } catch (err: any) {
       console.error(err.message);
     }
   };
-
 
   return {
     handleInputDateChange,

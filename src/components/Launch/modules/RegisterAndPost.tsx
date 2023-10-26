@@ -16,10 +16,10 @@ const RegisterAndPost: FunctionComponent<RegisterAndPostProps> = ({
   openConnectModal,
   profileId,
   connected,
-  signInLoading
+  signInLoading,
 }): JSX.Element => {
   return (
-    <div className="relative w-3/5 h-fit bg-offWhite flex flex-col rounded-b-sm items-center justify-center">
+    <div className="relative w-3/5 min-w-fit h-fit bg-offWhite flex flex-col rounded-b-sm items-center justify-center">
       <Bar title={`Register and Post`} />
       <div className="relative p-2 flex w-fit flex-col items-center justify-center gap-10 border border-black rounded-b-sm h-full font-dog">
         <div className="relative w-3/5 h-60 rounded-sm border border-black">
@@ -47,22 +47,22 @@ const RegisterAndPost: FunctionComponent<RegisterAndPostProps> = ({
                   ? "opacity-70"
                   : "cursor-pointer active:scale-95"
               }`}
+              onClick={() =>
+                !connected
+                  ? openConnectModal
+                  : connected && !profileId
+                  ? handleLensSignIn()
+                  : !grantRegistered &&
+                    !registerLoading &&
+                    handleRegisterGrant()
+              }
             >
               <div
                 className={`relative w-fit h-fit text-center text-white ${
                   registerLoading && "animate-spin"
                 }`}
-                onClick={() =>
-                  !connected
-                    ? openConnectModal
-                    : connected && !profileId
-                    ? handleLensSignIn()
-                    : !grantRegistered &&
-                      !registerLoading &&
-                      handleRegisterGrant()
-                }
               >
-                {(registerLoading || signInLoading) ? (
+                {registerLoading || signInLoading ? (
                   <AiOutlineLoading size={15} color={"white"} />
                 ) : !connected ? (
                   "Connect"
@@ -85,17 +85,17 @@ const RegisterAndPost: FunctionComponent<RegisterAndPostProps> = ({
                   ? "opacity-70"
                   : "cursor-pointer active:scale-95"
               }`}
+              onClick={() =>
+                !grantPosted &&
+                !postLoading &&
+                grantRegistered &&
+                handlePostGrant()
+              }
             >
               <div
                 className={`relative w-fit h-fit text-center font-dog text-white ${
                   postLoading && "animate-spin"
                 }`}
-                onClick={() =>
-                  !grantPosted &&
-                  !postLoading &&
-                  grantRegistered &&
-                  handlePostGrant()
-                }
               >
                 {postLoading ? (
                   <AiOutlineLoading size={15} color={"white"} />

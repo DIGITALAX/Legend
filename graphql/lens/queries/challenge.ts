@@ -6,7 +6,7 @@ import {
   ChallengeRequest,
 } from "../../generated";
 
-export const generateChallenge = (
+ const generateChallenge = (
   request: ChallengeRequest
 ): Promise<FetchResult<ChallengeQuery>> => {
   return authClient.query({

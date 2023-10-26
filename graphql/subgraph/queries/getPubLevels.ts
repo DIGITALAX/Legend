@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { graphLegendClient } from "../../../lib/graph/client";
+import { graphLegendClient } from "./../../../lib/graph/client";
 
 const LEVELS = `
   query {

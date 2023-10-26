@@ -3,7 +3,7 @@ import { LevelInfo, Milestone, PreviewProps } from "../types/launch.types";
 import Bar from "@/components/Common/modules/Bar";
 import Image from "next/legacy/image";
 import { INFURA_GATEWAY } from "../../../../lib/constants";
-import CollectItem from "./CollectItem";
+import CollectItem from "../../Common/modules/CollectItem";
 import LevelOne from "./LevelOne";
 
 const Preview: FunctionComponent<PreviewProps> = ({
@@ -16,13 +16,13 @@ const Preview: FunctionComponent<PreviewProps> = ({
 }): JSX.Element => {
   return (
     <div
-      className="relative flex flex-col w-full h-full overflow-y-scroll justify-start items-center"
+      className="relative flex flex-col w-full h-full overflow-y-scroll justify-start items-start"
       id="milestone"
     >
-      <div className="relative w-full h-fit flex flex-col gap-4 items-center justify-start">
-        <div className="relative w-full h-fit flex flex-col items-center justify-start">
+      <div className="relative w-full h-fit flex flex-col gap-4 items-start justify-start">
+        <div className="relative w-full h-fit flex flex-col items-start justify-start min-w-fit">
           <Bar title="Grant Preview" />
-          <div className="relative bg-offWhite w-full h-fit flex flex-col items-center justify-start p-3 gap-6 border border-black rounded-b-sm">
+          <div className="relative bg-offWhite w-full h-fit flex flex-col items-center justify-start p-3 gap-6 border border-black rounded-b-sm min-w-fit">
             <div className="relative w-full h-fit flex items-center justify-center text-center">
               <div className="bg-offWhite text-center flex items-center justify-center font-dog text-black text-sm">
                 {postInformation?.title} title
@@ -39,8 +39,8 @@ const Preview: FunctionComponent<PreviewProps> = ({
                   />
                 </div>
               </div>
-              <div className="relative w-full h-full flex items-start justify-center overflow-y-scroll">
-                <div className="bg-offWhite w-full h-full border border-black p-2 rounded-sm font-dog text-black text-xs">
+              <div className="relative w-full h-full flex items-start justify-center">
+                <div className="bg-offWhite w-full h-full border border-black p-2 rounded-sm font-dog text-black text-xs overflow-y-scroll">
                   {postInformation?.description}
                 </div>
               </div>
@@ -51,7 +51,7 @@ const Preview: FunctionComponent<PreviewProps> = ({
                   Maintenance Strategy
                 </div>
                 <div className="relative w-full h-44">
-                  <div className="bg-offWhite w-full h-full border border-black p-2 rounded-sm">
+                  <div className="bg-offWhite w-full h-full border border-black p-2 rounded-sm overflow-y-scroll">
                     {postInformation?.strategy}
                   </div>
                 </div>
@@ -60,8 +60,8 @@ const Preview: FunctionComponent<PreviewProps> = ({
                 <div className="relative w-fit h-fit flex justify-start items-start">
                   Tech Stack
                 </div>
-                <div className="relative w-full h-44">
-                  <div className="bg-offWhite w-full h-full border border-black p-2 rounded-sm">
+                <div className="relative w-full h-44 ">
+                  <div className="bg-offWhite w-full h-full border border-black p-2 rounded-sm overflow-y-scroll">
                     {postInformation?.tech}
                   </div>
                 </div>
@@ -73,7 +73,7 @@ const Preview: FunctionComponent<PreviewProps> = ({
                   Team Experience
                 </div>
                 <div className="relative w-full h-48">
-                  <div className="bg-offWhite w-full h-full border border-black p-2 rounded-sm">
+                  <div className="bg-offWhite w-full h-full border border-black p-2 rounded-sm overflow-y-scroll">
                     {postInformation?.experience}
                   </div>
                 </div>
@@ -83,7 +83,7 @@ const Preview: FunctionComponent<PreviewProps> = ({
                   Who's Involved
                 </div>
                 <div className="relative w-full h-48">
-                  <div className="bg-offWhite w-full h-full border border-black p-2 rounded-sm">
+                  <div className="bg-offWhite w-full h-full border border-black p-2 rounded-sm overflow-y-scroll">
                     {postInformation?.team}
                   </div>
                 </div>
@@ -148,10 +148,10 @@ const Preview: FunctionComponent<PreviewProps> = ({
                         />
                       </div>
                       <div
-                        className="relative w-full h-72 border border-black rounded-sm items-center justify-center flex overflow-y-scroll"
+                        className="relative w-full h-72 border border-black rounded-sm items-center justify-center flex overflow-y-scroll bg-quemo"
                         id="milestone"
                       >
-                        <div className="bg-quemo break-words p-2 text-amar font-dog text-xxs flex w-full h-full rounded-sm">
+                        <div className="break-words p-2 text-amar font-dog text-xxs flex w-full h-full rounded-sm">
                           {milestone.description}
                         </div>
                       </div>

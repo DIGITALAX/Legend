@@ -4,7 +4,10 @@ import { INFURA_GATEWAY } from "../../../../lib/constants";
 import Bar from "@/components/Common/modules/Bar";
 import { SuccessProps } from "../types/launch.types";
 
-const Success: FunctionComponent<SuccessProps> = ({ router, pubId }): JSX.Element => {
+const Success: FunctionComponent<SuccessProps> = ({
+  router,
+  pubId,
+}): JSX.Element => {
   return (
     <div className="relative w-3/5 h-fit bg-offWhite flex flex-col rounded-b-sm items-center justify-center">
       <Bar title={`Grant Live`} />
@@ -28,7 +31,9 @@ const Success: FunctionComponent<SuccessProps> = ({ router, pubId }): JSX.Elemen
           >
             <div
               className={`relative w-fit h-fit text-center font-dog text-white`}
-              onClick={() => router.push(`/grant/${pubId}`)}
+              onClick={() =>
+                router.push(`/grant/${Number(pubId)?.toString(16)}`)
+              }
             >
               Go to Grant
             </div>

@@ -11,13 +11,8 @@ import { Post } from "../../graphql/generated";
 import useInteractions from "@/components/Grants/hooks/useInteractions";
 
 export default function Home() {
-  const {
-    imageIndex,
-    setImageIndex,
-    setCollectChoice,
-    handleFetchMoreGrants,
-    collectChoice,
-  } = useGrants();
+  const { setCollectChoice, handleFetchMoreGrants, collectChoice } =
+    useGrants();
   const {
     commentGrant,
     mirrorGrant,
@@ -49,6 +44,7 @@ export default function Home() {
   const apparelItems = useSelector(
     (state: RootState) => state.app.publishedGrantsReducer.apparel
   );
+
   return (
     <div
       className="relative w-full h-full flex flex-col items-center justify-start p-2 overflow-auto flex-grow"
@@ -83,15 +79,12 @@ export default function Home() {
         loader={<></>}
         hasMore={true}
         next={handleFetchMoreGrants}
-        className={`w-full h-full items-start justify-center`}
+        className={`w-full h-full items-start justify-center gap-8 flex flex-col`}
       >
         {allPublications?.map((publication: Post, index: number) => {
           return (
             <Grant
               key={index}
-              imageIndex={imageIndex}
-              setImageIndex={setImageIndex}
-              index={0}
               publication={publication}
               collectChoice={collectChoice}
               commentGrant={commentGrant}

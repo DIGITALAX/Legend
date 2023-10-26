@@ -3,7 +3,10 @@ import generateChallenge from "../../../../graphql/lens/queries/challenge";
 import { useAccount, useSignMessage } from "wagmi";
 import { useDispatch, useSelector } from "react-redux";
 import { setWalletConnected } from "../../../../redux/reducers/walletConnectedSlice";
+import { splitSignature } from "ethers/lib/utils.js";
+import LensHubProxy from "./../../../../abi/LensHubProxy.json";
 import authenticate from "../../../../graphql/lens/mutations/authenticate";
+import { omit } from "lodash";
 import {
   getAuthenticationToken,
   isAuthExpired,
@@ -18,9 +21,17 @@ import createProfile from "../../../../graphql/lens/mutations/createProfile";
 import { RootState } from "../../../../redux/store";
 import { setCartAnim } from "../../../../redux/reducers/cartAnimSlice";
 import { profile } from "console";
+import profileManager from "../../../../graphql/lens/mutations/manager";
+import { createPublicClient, createWalletClient, custom, http } from "viem";
+import { polygonMumbai } from "viem/chains";
+import { LENS_HUB_PROXY } from "../../../../lib/constants";
 
 const useSignIn = () => {
   const dispatch = useDispatch();
+  const publicClient = createPublicClient({
+    chain: polygonMumbai,
+    transport: http(),
+  });
   const { signMessageAsync } = useSignMessage();
   const [signInLoading, setSignInLoading] = useState<boolean>(false);
   const [createProfileLoading, setCreateProfileLoading] =
@@ -79,6 +90,64 @@ const useSignIn = () => {
             ] as Profile
           )
         );
+        const { data } = await profileManager({
+          approveSignless: true,
+        });
+
+        const clientWallet = createWalletClient({
+          chain: polygonMumbai,
+          transport: custom((window as any).ethereum),
+        });
+
+        const signature: any = await clientWallet.signTypedData({
+          domain: omit(
+            data?.createChangeProfileManagersTypedData.typedData.domain,
+            ["__typename"]
+          ),
+          types: omit(
+            data?.createChangeProfileManagersTypedData.typedData.types,
+            ["__typename"]
+          ),
+          primaryType: "ChangeDelegatedExecutorsConfig" as any,
+          message: omit(
+            data?.createChangeProfileManagersTypedData.typedData.value,
+            ["__typename"]
+          ),
+          account: address as `0x${string}`,
+        });
+
+        const { v, r, s } = splitSignature(signature);
+
+        const { request } = await publicClient.simulateContract({
+          address: LENS_HUB_PROXY,
+          abi: LensHubProxy,
+          functionName: "changeDelegatedExecutorsConfigWithSig",
+          chain: polygonMumbai,
+          args: [
+            data?.createChangeProfileManagersTypedData.typedData.value
+              .delegatorProfileId,
+            data?.createChangeProfileManagersTypedData.typedData.value
+              .delegatedExecutors,
+            data?.createChangeProfileManagersTypedData.typedData.value
+              .approvals,
+            data?.createChangeProfileManagersTypedData.typedData.value
+              .configNumber,
+            data?.createChangeProfileManagersTypedData.typedData.value
+              .switchToGivenConfig,
+            {
+              signer: address,
+              v,
+              r,
+              s,
+              deadline:
+                data?.createChangeProfileManagersTypedData.typedData.value
+                  .deadline,
+            },
+          ],
+          account: address,
+        });
+        const res = await clientWallet.writeContract(request);
+        await publicClient.waitForTransactionReceipt({ hash: res });
       }
     } catch (err: any) {
       console.error(err.message);

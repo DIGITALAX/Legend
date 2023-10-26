@@ -3,9 +3,7 @@ import {
   LimitType,
   Post,
   Profile,
-  PublicationMetadataMainFocusType,
   PublicationType,
-  PublicationsOrderByType,
 } from "../../../../graphql/generated";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
@@ -22,6 +20,18 @@ import getProfile from "../../../../graphql/lens/queries/profile";
 import cachedProfiles from "../../../../lib/graph/helpers/cachedProfiles";
 import { setCachedProfiles } from "../../../../redux/reducers/cachedProfilesSlice";
 
+const numberToWord: {
+  [key: number]: string;
+} = {
+  1: "One",
+  2: "Two",
+  3: "Three",
+  4: "Four",
+  5: "Five",
+  6: "Six",
+  7: "Seven",
+};
+
 const useGrants = () => {
   const dispatch = useDispatch();
   const allPublications = useSelector(
@@ -37,7 +47,6 @@ const useGrants = () => {
     (state: RootState) => state.app.availablePubLevelsReducer.levels
   );
 
-  const [imageIndex, setImageIndex] = useState<number[]>([0]);
   const [collectChoice, setCollectChoice] = useState<
     {
       size: string;
@@ -49,14 +58,14 @@ const useGrants = () => {
     try {
       const data = await getPublications({
         limit: LimitType.Ten,
-        orderBy: PublicationsOrderByType.Latest,
         where: {
           publicationTypes: [PublicationType.Post],
           metadata: {
-            mainContentFocus: [PublicationMetadataMainFocusType.Image],
-            tags: {
-              all: ["legend", "legendgrant"],
-            },
+            // mainContentFocus: [PublicationMetadataMainFocusType.Image],
+            // tags: {
+            //   all: ["legend", "legendgrant"],
+            // },
+            publishedOn: ["legend"],
           },
         },
       });
@@ -98,14 +107,14 @@ const useGrants = () => {
       const data = await getPublications({
         cursor: allPublications.cursor,
         limit: LimitType.Ten,
-        orderBy: PublicationsOrderByType.Latest,
         where: {
           publicationTypes: [PublicationType.Post],
           metadata: {
-            mainContentFocus: [PublicationMetadataMainFocusType.Image],
+            // mainContentFocus: [PublicationMetadataMainFocusType.Image],
             tags: {
               all: ["legend", "legendgrant"],
             },
+            publishedOn: ["legend"],
           },
         },
       });
@@ -168,7 +177,7 @@ const useGrants = () => {
 
   const handleApparelMatch = async (
     sortedArr: Post[]
-  ): Promise<LevelInfo[][][] | undefined> => {
+  ): Promise<LevelInfo[][] | undefined> => {
     try {
       let apparelItems: LevelInfo[][] = [];
 
@@ -183,17 +192,19 @@ const useGrants = () => {
       const apparelPromises = sortedArr.map(async (post: Post) => {
         let levelInfoArray: LevelInfo[] = [];
         const matchingPubLevel = pubLevels.find(
-          (pubLevel) => pubLevel.pubId === post.id
+          (pubLevel) =>
+            Number(pubLevel.pubId) === parseInt(post.id.split("-")[1], 16)
         );
 
         if (matchingPubLevel) {
           for (let level = 2; level <= 7; level++) {
-            const levelKey = `level${level}` as keyof typeof matchingPubLevel;
+            const levelKey =
+              `level${numberToWord[level]}` as keyof typeof matchingPubLevel;
             const collectionIds: string[] = matchingPubLevel[
               levelKey
             ] as string[];
 
-            const itemPromises: Promise<PrintItem>[] = collectionIds.map(
+            const itemPromises: Promise<PrintItem>[] = collectionIds?.map(
               async (collectionId) => {
                 const { data } = await getOneCollection(collectionId);
                 const obj = data?.collectionCreateds?.[0];
@@ -234,16 +245,15 @@ const useGrants = () => {
               items,
             });
           }
-
           apparelItems.push(levelInfoArray);
         }
-
-        return apparelItems;
       });
+      await Promise.all(apparelPromises);
 
       dispatch(setCachedProfiles(profileCache));
 
-      return await Promise.all(apparelPromises);
+      // return ;
+      return apparelItems;
     } catch (err: any) {
       console.error(err.message);
     }
@@ -271,8 +281,6 @@ const useGrants = () => {
   }, []);
 
   return {
-    imageIndex,
-    setImageIndex,
     collectChoice,
     setCollectChoice,
     handleFetchMoreGrants,

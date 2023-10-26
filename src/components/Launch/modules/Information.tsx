@@ -30,7 +30,7 @@ const Information: FunctionComponent<InformationProps> = ({
                 className="relative rounded-sm w-full h-full flex"
               />
               {imageLoading && (
-                <div className="relative w-full h-full flex items-center justify-center">
+                <div className="absolute w-full h-full flex items-center justify-center">
                   <div
                     className={`animate-spin w-fit h-fit flex items-center justify-center`}
                   >
