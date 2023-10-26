@@ -1,17 +1,14 @@
 import { FunctionComponent } from "react";
 import Image from "next/legacy/image";
 import { INFURA_GATEWAY } from "../../../../lib/constants";
-import CollectItem from "./CollectItem";
 import Bar from "@/components/Common/modules/Bar";
 import { GrantProps } from "../types/grant.types";
 import { AiOutlineLoading } from "react-icons/ai";
 import { LevelInfo } from "@/components/Launch/types/launch.types";
+import CollectItem from "@/components/Common/modules/CollectItem";
 
 const Grant: FunctionComponent<GrantProps> = ({
   publication,
-  imageIndex,
-  setImageIndex,
-  index,
   collectChoice,
   commentGrant,
   likeGrant,
@@ -26,7 +23,7 @@ const Grant: FunctionComponent<GrantProps> = ({
   showMirrors,
   showQuotes,
   interactionsLoading,
-  apparelItems
+  apparelItems,
 }) => {
   return (
     <div className="relative h-fit w-[30rem] border border-black flex flex-col items-center justify-center">
@@ -58,10 +55,10 @@ const Grant: FunctionComponent<GrantProps> = ({
                     showQuotes,
                   ];
                   const loaders = [
-                    interactionsLoading.like,
-                    interactionsLoading.comment,
-                    interactionsLoading.mirror,
-                    interactionsLoading.quote,
+                    interactionsLoading?.like,
+                    interactionsLoading?.comment,
+                    interactionsLoading?.mirror,
+                    interactionsLoading?.quote,
                   ];
                   return (
                     <div
@@ -174,63 +171,33 @@ const Grant: FunctionComponent<GrantProps> = ({
           <div className="relative w-fit px-2 py-1 h-12 text-center flex items-center justify-center bg-lima border border-black font-gam uppercase text-6xl text-mar">
             collect grant
           </div>
-          <div className="relative w-full h-fit bg-offWhite p-2 rounded-sm border border-black overflow-x-hidden items-center justify-center flex flex-col">
-            <div className="relative w-fit h-fit flex flex-row gap-2 pb-2 items-center justify-center">
-              {[
-                ...apparelItems?.slice(imageIndex[index]),
-                ...apparelItems?.slice(0, imageIndex[index]),
-              ]?.map((item: LevelInfo, index: number) => {
+          <div
+            className="relative w-full h-fit bg-offWhite p-2 rounded-sm border border-black overflow-x-scroll items-start justify-start flex flex-col"
+            id="milestone"
+          >
+            <div className="relative w-fit h-fit flex flex-row gap-4 pb-2 items-start justify-start">
+              {apparelItems?.map((item: LevelInfo, index: number) => {
                 return (
                   <CollectItem
                     key={index}
-                    index={item.level}
-                    collectChoice={collectChoice}
-                    setCollectChoice={setCollectChoice}
+                  //   index={
+                  //  {   levelIndex: item.level,
+                  //     imageIndex: ,
+                  //     rate: ,
+                  //     currency: ,
+                  //     price: ,
+                  //     priceIndex: ,
+                  //     itemIndex: index}
+                  //   }
                     dispatch={dispatch}
                     cartItems={cartItems}
                     items={item.items}
                     id={publication?.id}
                     router={router}
+                    cart
                   />
                 );
               })}
-            </div>
-            <div className="relative w-12 h-7 flex flex-row bg-white border border-black rounded-x-xl items-center justify-between">
-              <div className="relative w-fit h-fit flex items-center justify-center p-1">
-                <div
-                  className="relative w-3 h-3 flex items-center justify-center cursor-pointer active:scale-95"
-                  onClick={() => {
-                    const newImageIndex = [...imageIndex];
-                    newImageIndex[index] =
-                      newImageIndex[index] === 0 ? 6 : newImageIndex[index] - 1;
-                    setImageIndex(newImageIndex);
-                  }}
-                >
-                  <Image
-                    layout="fill"
-                    src={`${INFURA_GATEWAY}/ipfs/QmcwhhhhfjDag6vJ6F5f9U25oGruB8kMiHzUL4yPQ9txyG`}
-                    draggable={false}
-                  />
-                </div>
-              </div>
-              <div className="relative bg-black h-full w-px flex"></div>
-              <div className="relative w-fit h-fit flex items-center justify-center p-1">
-                <div
-                  className="relative w-3 h-3 flex items-center justify-center rotate-180 cursor-pointer active:scale-95"
-                  onClick={() => {
-                    const newImageIndex = [...imageIndex];
-                    newImageIndex[index] =
-                      newImageIndex[index] === 6 ? 0 : newImageIndex[index] + 1;
-                    setImageIndex(newImageIndex);
-                  }}
-                >
-                  <Image
-                    layout="fill"
-                    src={`${INFURA_GATEWAY}/ipfs/QmcwhhhhfjDag6vJ6F5f9U25oGruB8kMiHzUL4yPQ9txyG`}
-                    draggable={false}
-                  />
-                </div>
-              </div>
             </div>
           </div>
         </div>

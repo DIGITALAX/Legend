@@ -25,18 +25,7 @@ const LevelOne: FunctionComponent<LevelOneProps> = ({
         <div className="relative flex items-center text-center justify-center w-fit text-sm font-net break-words">
           {`Quick Collect (No Prints)`}
         </div>
-        <Splits
-          designer={0}
-          fulfiller={0}
-          onlyGrantee
-          grantee={
-            (Number((index.price[index.priceIndex] / index.rate)?.toFixed(3)) /
-              Number(
-                (index.price[index.priceIndex] / index.rate)?.toFixed(3)
-              )) *
-            100
-          }
-        />
+        <Splits designer={0} fulfiller={0} onlyGrantee grantee={100} />
         <PurchaseTokens
           handleChangeCurrency={handleChangeCurrency}
           currency={index.currency}

@@ -1,13 +1,16 @@
-export const INFURA_GATEWAY: string = "https://chromadin.infura-ipfs.io";
+import { ethers } from "ethers";
 
+export const INFURA_GATEWAY: string = "https://chromadin.infura-ipfs.io";
 export const BASE_URL: string = "https://api-v2-mumbai.lens.dev/";
 
+export const LENS_HUB_PROXY: `0x${string}` =
+  "0xC1E77eE73403B8a7478884915aA599932A677870";
 export const GRANT_REGISTER_CONTRACT: `0x${string}` =
   "0xDCA5f61037d77188439D519117261ACbC14c3D7D";
 export const GRANT_MILESTONE_CLAIM_CONTRACT: `0x${string}` =
   "0xa6931B10156721F55e6bd7D8A980254952A78BaA";
-export const OPEN_ACION_CONTRACT: `0x${string}` =
-  "0xAD4b61776F60E4696eb540d395B45E5C31cf36eE";
+export const OPEN_ACTION_CONTRACT: `0x${string}` =
+  "0x0eb82Cc9df6DB90fb05aD515B53eC9C5222A08F0";
 export const SPLITS_CONTRACT: `0x${string}` =
   "0x6603eE13D851Fa4A74A99854dc17cD7192e0A21E";
 export const DIGITALAX_PROFILE_ID_LENS: string = "0x012d";
@@ -27,46 +30,27 @@ export const MILESTONE_COVERS: string[] = [
   "QmS8Cf5fMQ7rZ5cdrtBmJST5ejTkDZtfKYuqSyEB2QQhRU",
 ];
 
-export const LEVEL_INFO_ABI: [
+export const LEVEL_INFO_ABI: ethers.utils.ParamType[] = [
   {
-    type: string;
-    components: {
-      name: string;
-      type: string;
-      baseType: string;
-      indexed: boolean;
-    }[];
-  }
-] = [
-  {
-    type: "tuple[]",
+    name: 'collectionIds',
+    type: 'uint256[][6]',
+    baseType: 'tuple',
+    indexed: false,
     components: [
       {
-        name: "collectionIds",
-        type: "uint256[]",
-        baseType: "uint256[]",
+        name: 'collectionIds',
+        type: 'uint256[]',
+        baseType: 'uint256',
         indexed: false,
-      },
+      } as ethers.utils.ParamType,
       {
-        name: "amounts",
-        type: "uint256[]",
-        baseType: "uint256[]",
+        name: 'amounts',
+        type: 'uint256[]',
+        baseType: 'uint256',
         indexed: false,
-      },
-      {
-        name: "indexes",
-        type: "uint256[]",
-        baseType: "uint256[]",
-        indexed: false,
-      },
-      {
-        name: "totalPrice",
-        type: "uint256",
-        baseType: "uint256",
-        indexed: false,
-      },
+      } as ethers.utils.ParamType,
     ],
-  },
+  } as ethers.utils.ParamType,
 ];
 
 export const COLLECT_LEVEL_ABI: [
@@ -153,5 +137,4 @@ export const ACCEPTED_TOKENS_MUMBAI: string[][] = [
     "USDT",
     "0x07b722856369f6b923e1f276abca58dd3d15243d",
   ],
-
 ];

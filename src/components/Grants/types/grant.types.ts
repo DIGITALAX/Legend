@@ -8,9 +8,6 @@ import { CartItem } from "@/components/Checkout/types/checkout.types";
 export type GrantProps = {
   publication: ExplorePublication;
   apparelItems: LevelInfo[];
-  imageIndex: number[];
-  setImageIndex: (e: number[]) => void;
-  index: number;
   commentGrant: (id: number) => Promise<void>;
   likeGrant: (id: number) => Promise<void>;
   mirrorGrant: (id: number) => Promise<void>;

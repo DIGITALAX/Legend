@@ -131,7 +131,7 @@ const useCheckout = () => {
 
     try {
       const encodedData = ethers.utils.defaultAbiCoder.encode(
-        COLLECT_LEVEL_ABI,
+        COLLECT_LEVEL_ABI as any,
         [chosenCurrency, item.level, encryptedFulfillment]
       );
 
@@ -142,7 +142,7 @@ const useCheckout = () => {
             data: encodedData,
           },
         },
-        for: item.collectionId,
+        for: item.collectionId, // collection or pub id??
       });
       setItemCheckedOut((prev) => {
         const updatedArray = [...prev];

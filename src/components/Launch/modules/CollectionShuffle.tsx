@@ -1,7 +1,7 @@
 import Bar from "@/components/Common/modules/Bar";
 import { FunctionComponent } from "react";
 import { CollectionShuffleProps, LevelInfo } from "../types/launch.types";
-import CollectItem from "./CollectItem";
+import CollectItem from "../../Common/modules/CollectItem";
 import LevelOne from "./LevelOne";
 
 const CollectionShuffle: FunctionComponent<CollectionShuffleProps> = ({

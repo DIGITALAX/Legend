@@ -8,7 +8,6 @@ import {
   LimitType,
   PublicationReactionType,
   PublicationType,
-  PublicationsOrderByType,
 } from "../../../../graphql/generated";
 import { useEffect, useState } from "react";
 import getPublications from "../../../../graphql/lens/queries/publications";
@@ -276,12 +275,13 @@ const useInteractions = () => {
       try {
         const data = await getPublications({
           limit: LimitType.Fifty,
-          orderBy: PublicationsOrderByType.Latest,
           where: {
             publicationTypes: [PublicationType.Comment],
             commentOn: {
               id: id,
-              commentsRankingFilter: CommentRankingFilterType.Relevant,
+              ranking: {
+                filter: CommentRankingFilterType.Relevant,
+              },
             },
           },
         });
@@ -323,7 +323,6 @@ const useInteractions = () => {
       try {
         const data = await getPublications({
           limit: LimitType.Fifty,
-          orderBy: PublicationsOrderByType.Latest,
           where: {
             publicationTypes: [PublicationType.Mirror],
             mirrorOn: id,
@@ -367,7 +366,6 @@ const useInteractions = () => {
       try {
         const data = await getPublications({
           limit: LimitType.Fifty,
-          orderBy: PublicationsOrderByType.Latest,
           where: {
             publicationTypes: [PublicationType.Quote],
             quoteOn: id,
@@ -428,13 +426,14 @@ const useInteractions = () => {
     try {
       const data = await getPublications({
         limit: LimitType.Fifty,
-        orderBy: PublicationsOrderByType.Latest,
         cursor: reactBox?.comment?.cursor,
         where: {
           publicationTypes: [PublicationType.Comment],
           commentOn: {
             id: reactBox?.comment?.id,
-            commentsRankingFilter: CommentRankingFilterType.Relevant,
+            ranking: {
+              filter: CommentRankingFilterType.Relevant,
+            },
           },
         },
       });
@@ -465,7 +464,6 @@ const useInteractions = () => {
     try {
       const data = await getPublications({
         limit: LimitType.Fifty,
-        orderBy: PublicationsOrderByType.Latest,
         where: {
           publicationTypes: [PublicationType.Mirror],
           mirrorOn: reactBox.mirror.id,
@@ -499,7 +497,6 @@ const useInteractions = () => {
     try {
       const data = await getPublications({
         limit: LimitType.Fifty,
-        orderBy: PublicationsOrderByType.Latest,
         where: {
           publicationTypes: [PublicationType.Mirror],
           quoteOn: reactBox.quote.id,

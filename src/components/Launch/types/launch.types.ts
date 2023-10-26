@@ -2,6 +2,7 @@ import { NextRouter } from "next/router";
 import { ChangeEvent } from "react";
 import { AnyAction, Dispatch } from "redux";
 import { Profile } from "../../../../graphql/generated";
+import { CartItem } from "@/components/Checkout/types/checkout.types";
 
 export type MilestoneProps = {
   index: number;
@@ -40,7 +41,7 @@ export type PreviewProps = {
     imageIndex: number;
     rate: number;
     price: number[];
-    priceIndex: number
+    priceIndex: number;
     currency: string;
     itemIndex: number;
   }[];
@@ -148,7 +149,7 @@ export type LaunchSwitchProps = {
     imageIndex: number;
     rate: number;
     price: number[];
-    priceIndex: number
+    priceIndex: number;
     currency: string;
     itemIndex: number;
   }[];
@@ -191,7 +192,7 @@ export type CollectionShuffleProps = {
     imageIndex: number;
     rate: number;
     price: number[];
-    priceIndex: number
+    priceIndex: number;
     currency: string;
     itemIndex: number;
   }[];
@@ -214,7 +215,7 @@ export type CollectItemProps = {
     rate: number;
     currency: string;
     price: number[];
-    priceIndex: number
+    priceIndex: number;
     itemIndex: number;
   };
   handleChangeCurrency: (
@@ -225,6 +226,11 @@ export type CollectItemProps = {
   ) => void;
   handleChangeImage: (levelIndex: number, imageIndex: number) => void;
   handleChangeItem: (levelIndex: number, newItemIndex: number) => void;
+  cart?: boolean;
+  cartItems?: CartItem[],
+  router?: NextRouter,
+  dispatch?: Dispatch<AnyAction>,
+  id?: string,
 };
 
 export interface OracleData {
@@ -245,7 +251,7 @@ export type LevelOneProps = {
     rate: number;
     currency: string;
     price: number[];
-    priceIndex: number
+    priceIndex: number;
     itemIndex: number;
   };
   handleChangeCurrency: (

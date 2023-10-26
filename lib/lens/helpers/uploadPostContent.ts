@@ -2,6 +2,7 @@ import { PostInformation } from "@/components/Launch/types/launch.types";
 import { v4 as uuidv4 } from "uuid";
 import {
   ImageMetadataV3,
+  PublicationMetadataMainFocusType,
   PublicationMetadataMediaImage,
 } from "../../../graphql/generated";
 
@@ -13,15 +14,22 @@ const uploadPostContent = async (
     postInformation.coverImage,
     ...postInformation.milestones.map((item) => item.image),
   ]?.forEach((image) => {
-    newImages.push({
-      image: {
-        raw: {
-          uri: "ipfs://" + image,
-        },
-      },
+    newImages.push(
+      {
+        item: "ipfs://" + image,
+        type: "image/png",
+      }
 
-      altTag: image,
-    });
+      //   {
+      //   image: {
+      //     raw: {
+      //       uri: "ipfs://" + image,
+      //     },
+      //   },
+
+      //   altTag: image,
+      // }
+    );
   });
 
   const formattedText: string = `
@@ -45,28 +53,34 @@ const uploadPostContent = async (
     .join("\n\n")}
   `;
 
-  const data: ImageMetadataV3 = {
-    __typename: "ImageMetadataV3",
-    id: uuidv4(),
-    hideFromFeed: false,
-    locale: "en",
-    tags: ["legend", "legendgrant"],
-    appId: "legend",
-    attachments: newImages,
-    content: formattedText,
-    title: postInformation.title,
-    marketplace: {
-      description: formattedText,
-      externalURL: "legend.xyz",
-      image: {
-        raw: {
-          uri: newImages[0],
-        },
-      },
-      name: postInformation.title,
+  const data = {
+    $schema: "https://json-schemas.lens.dev/publications/image/3.0.0.json",
+    lens: {
+      mainContentFocus: PublicationMetadataMainFocusType.Image,
+      image: newImages[0],
+      title: postInformation.title,
+      content: formattedText,
+      attachments: newImages,
+      appId: "legend",
+      id: uuidv4(),
+      hideFromFeed: false,
+      locale: "en",
+      tags: ["legend", "legendgrant"],
     },
-    asset: newImages[0],
-    rawURI: ""
+    // __typename: "ImageMetadataV3",
+
+    // marketplace: {
+    //   description: formattedText,
+    //   externalURL: "legend.xyz",
+    //   image: {
+    //     raw: {
+    //       uri: newImages[0].image,
+    //     },
+    //   },
+    //   name: postInformation.title,
+    // },
+    // asset: newImages[0],
+    // rawURI: newImages[0].image,
   };
 
   try {

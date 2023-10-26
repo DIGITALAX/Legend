@@ -6,7 +6,7 @@ import {
   WhoReactedPublicationRequest,
 } from "../../generated";
 
-export const whoReactedPublication = (
+ const whoReactedPublication = (
   request: WhoReactedPublicationRequest
 ): Promise<FetchResult<WhoReactedPublicationQuery>> => {
   return authClient.query({

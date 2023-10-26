@@ -6,7 +6,7 @@ import {
   PublicationsRequest,
 } from "../../generated";
 
-export const getPublications = (
+ const getPublications = (
   request: PublicationsRequest
 ): Promise<FetchResult<PublicationsQuery>> => {
   return authClient.query({
