@@ -9,7 +9,7 @@ import {
 const onChainPost = async (
   request: OnchainPostRequest
 ): Promise<FetchResult<PostOnchainMutation>> => {
-  return apolloClient.mutate({
+  return await apolloClient.mutate({
     mutation: PostOnchainDocument,
     variables: {
       request: request,

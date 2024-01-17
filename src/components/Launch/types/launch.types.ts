@@ -82,8 +82,10 @@ export interface PrintItem {
     description: string;
     title: string;
     profileId: string;
+    microbrandCover: string;
     tags: string[];
     prompt: string;
+    communities: string[]
   };
   profile: Profile;
   prices: string[];
@@ -227,10 +229,10 @@ export type CollectItemProps = {
   handleChangeImage: (levelIndex: number, imageIndex: number) => void;
   handleChangeItem: (levelIndex: number, newItemIndex: number) => void;
   cart?: boolean;
-  cartItems?: CartItem[],
-  router?: NextRouter,
-  dispatch?: Dispatch<AnyAction>,
-  id?: string,
+  cartItems?: CartItem[];
+  router?: NextRouter;
+  dispatch?: Dispatch<AnyAction>;
+  id?: string;
 };
 
 export interface OracleData {

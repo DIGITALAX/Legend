@@ -22,7 +22,9 @@ import validateMetadata from "../../../../graphql/lens/queries/metadata";
 const useLaunch = () => {
   const publicClient = createPublicClient({
     chain: polygonMumbai,
-    transport: http(),
+    transport: http(
+      `https://polygon-mumbai.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_MUMBAI}`
+    ),
   });
   const { address } = useAccount();
   const lensProfile = useSelector(

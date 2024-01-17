@@ -15,8 +15,6 @@ const Header: FunctionComponent = (): JSX.Element => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { openConnectModal } = useConnectModal();
-  const { signInLoading, handleLensSignIn, checkoutOpen, setCheckoutOpen } =
-    useSignIn();
   const connected = useSelector(
     (state: RootState) => state.app.walletConnectedReducer.value
   );
@@ -29,6 +27,8 @@ const Header: FunctionComponent = (): JSX.Element => {
   const cartItems = useSelector(
     (state: RootState) => state.app.cartItemsReducer.items
   );
+  const { signInLoading, handleLensSignIn, checkoutOpen, setCheckoutOpen } =
+    useSignIn(dispatch, profile);
 
   return (
     <div className="relative bg-black h-12 p-2 justify-center items-center flex flex-row w-full h-fit">
@@ -59,7 +59,7 @@ const Header: FunctionComponent = (): JSX.Element => {
           );
         })}
       </div>
-      <div className="absolute flex items-center justify-center flex-row gap-2 mr-auto right-2">
+      <div className="absolute flex items-center justify-center flex-row gap-3 mr-auto right-2">
         <div className="relative flex flex-row gap-1.5 items-center justify-center w-fit h-fit">
           {Array.from(
             { length: 3 },
@@ -79,23 +79,39 @@ const Header: FunctionComponent = (): JSX.Element => {
             );
           })}
         </div>
-        <div className="relative flex justify-center items-center w-6 h-6 rounded-full border border-white">
+        <div
+          className="relative w-5 h-4 flex items-center justify-center cursor-pointer active:scale-95"
+          id={cartAnim ? "cartAnim" : ""}
+          onClick={() => setCheckoutOpen(!checkoutOpen)}
+        >
           <Image
+            src={`${INFURA_GATEWAY}/ipfs/QmcDmX2FmwjrhVDLpNii6NdZ4KisoPLMjpRUheB6icqZcV`}
             layout="fill"
-            src={`${INFURA_GATEWAY}/ipfs/${
-              profile?.metadata?.picture?.__typename === "ImageSet"
-                ? (profile.metadata.picture as ImageSet)?.raw.uri.split(
-                    "ipfs://"
-                  )[1]
-                : (
-                    profile?.metadata?.picture as NftImage
-                  )?.image.raw.uri?.split("ipfs://")[1]
-            }`}
+            objectFit="cover"
             draggable={false}
+            className="flex items-center justify-center"
           />
         </div>
+        {connected && profile && (
+          <div className="relative flex justify-center items-center w-6 h-6 rounded-full border border-white">
+            <Image
+              layout="fill"
+              src={`${INFURA_GATEWAY}/ipfs/${
+                profile?.metadata?.picture?.__typename === "ImageSet"
+                  ? (profile.metadata.picture as ImageSet)?.raw.uri.split(
+                      "ipfs://"
+                    )[1]
+                  : (
+                      profile?.metadata?.picture as NftImage
+                    )?.image.raw.uri?.split("ipfs://")[1]
+              }`}
+              className="rounded-full"
+              draggable={false}
+            />
+          </div>
+        )}
         <div
-          className={`relative w-24 h-7 items-center justify-center flex font-vcr cursor-pointer active:scale-95 border border-white rounded-sm text-sm ${
+          className={`relative w-20 h-6 items-center justify-center flex font-vcr cursor-pointer active:scale-95 border border-white rounded-sm text-sm ${
             connected && profile ? "text-black bg-white" : "text-white"
           }`}
           onClick={
@@ -121,19 +137,6 @@ const Header: FunctionComponent = (): JSX.Element => {
               "Account"
             )}
           </div>
-        </div>
-        <div
-          className="relative w-5 h-4 flex items-center justify-center cursor-pointer active:scale-95"
-          id={cartAnim ? "cartAnim" : ""}
-          onClick={() => setCheckoutOpen(!checkoutOpen)}
-        >
-          <Image
-            src={`${INFURA_GATEWAY}/ipfs/QmcDmX2FmwjrhVDLpNii6NdZ4KisoPLMjpRUheB6icqZcV`}
-            layout="fill"
-            objectFit="cover"
-            draggable={false}
-            className="flex items-center justify-center"
-          />
         </div>
       </div>
       {checkoutOpen && (

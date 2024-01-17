@@ -1,35 +1,19 @@
 import { PostInformation } from "@/components/Launch/types/launch.types";
 import { v4 as uuidv4 } from "uuid";
-import {
-  ImageMetadataV3,
-  PublicationMetadataMainFocusType,
-  PublicationMetadataMediaImage,
-} from "../../../graphql/generated";
+import { PublicationMetadataMainFocusType } from "../../../graphql/generated";
 
 const uploadPostContent = async (
   postInformation: PostInformation
 ): Promise<string | undefined> => {
-  let newImages: PublicationMetadataMediaImage[] = [];
+  let newImages: { item: string; type: string }[] = [];
   [
     postInformation.coverImage,
     ...postInformation.milestones.map((item) => item.image),
   ]?.forEach((image) => {
-    newImages.push(
-      {
-        item: "ipfs://" + image,
-        type: "image/png",
-      }
-
-      //   {
-      //   image: {
-      //     raw: {
-      //       uri: "ipfs://" + image,
-      //     },
-      //   },
-
-      //   altTag: image,
-      // }
-    );
+    newImages.push({
+      item: "ipfs://" + image,
+      type: "image/png",
+    });
   });
 
   const formattedText: string = `
@@ -67,20 +51,6 @@ const uploadPostContent = async (
       locale: "en",
       tags: ["legend", "legendgrant"],
     },
-    // __typename: "ImageMetadataV3",
-
-    // marketplace: {
-    //   description: formattedText,
-    //   externalURL: "legend.xyz",
-    //   image: {
-    //     raw: {
-    //       uri: newImages[0].image,
-    //     },
-    //   },
-    //   name: postInformation.title,
-    // },
-    // asset: newImages[0],
-    // rawURI: newImages[0].image,
   };
 
   try {

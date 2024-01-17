@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import Error from "./modules/Error";
 import MediaExpand from "./modules/MediaExpand";
+import ClaimProfile from "./modules/ClaimProfile";
 
 const Modals: FunctionComponent = (): JSX.Element => {
   const dispatch = useDispatch();
@@ -11,6 +12,9 @@ const Modals: FunctionComponent = (): JSX.Element => {
   );
   const imageExpandModal = useSelector(
     (state: RootState) => state.app.imageExpandReducer
+  );
+  const claimProfile = useSelector(
+    (state: RootState) => state.app.claimProfileReducer
   );
   return (
     <>
@@ -24,6 +28,7 @@ const Modals: FunctionComponent = (): JSX.Element => {
           dispatch={dispatch}
         />
       )}
+      {claimProfile?.value && <ClaimProfile dispatch={dispatch} />}
     </>
   );
 };

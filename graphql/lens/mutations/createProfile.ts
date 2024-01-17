@@ -9,7 +9,7 @@ import {
 const createProfile = async (
   request: CreateProfileWithHandleRequest
 ): Promise<FetchResult<CreateProfileWithHandleMutation>>=> {
-  return authClient.mutate({
+  return await authClient.mutate({
     mutation: CreateProfileWithHandleDocument,
     variables: {
       request: request,

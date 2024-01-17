@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 
 export const INFURA_GATEWAY: string = "https://chromadin.infura-ipfs.io";
-export const BASE_URL: string = "https://api-v2-mumbai.lens.dev/";
+export const BASE_URL: string = "https://api-v2-mumbai-live.lens.dev/";
 
 export const LENS_HUB_PROXY: `0x${string}` =
   "0xC1E77eE73403B8a7478884915aA599932A677870";

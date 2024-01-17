@@ -10,3 +10,7 @@ export type ErrorProps = {
   dispatch: Dispatch<AnyAction>;
   message: string;
 };
+
+export type ClaimProfileProps = {
+  dispatch: Dispatch<AnyAction>;
+};
