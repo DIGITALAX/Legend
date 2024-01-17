@@ -238,6 +238,7 @@ const useGrants = () => {
                   profileId: string;
                   tags: string[];
                   prompt: string;
+                  microbrandCover: string
                 } = await fetchIpfsJson((obj.uri as any)?.split("ipfs://")[1]);
                 let profile: Profile = profileCache[DIGITALAX_PROFILE_ID_LENS];
 

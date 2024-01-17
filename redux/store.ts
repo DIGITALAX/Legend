@@ -2,6 +2,7 @@ import { combineReducers } from "redux";
 import { configureStore } from "@reduxjs/toolkit";
 import walletConnectedReducer from "./reducers/walletConnectedSlice";
 import lensProfileReducer from "./reducers/lensProfileSlice";
+import claimProfileReducer from "./reducers/claimProfileSlice";
 import storeItemsReducer from "./reducers/storeItemsSlice";
 import publishedGrantsReducer from "./reducers/publishedGrantsSlice";
 import cartItemsReducer from "./reducers/cartItemsSlice";
@@ -33,7 +34,8 @@ const reducer = combineReducers({
   levelArrayReducer,
   availablePubLevelsReducer,
   cachedProfilesReducer,
-  oracleDataReducer
+  oracleDataReducer,
+  claimProfileReducer,
 });
 
 export const store = configureStore({

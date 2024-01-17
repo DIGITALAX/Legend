@@ -19,7 +19,7 @@ const COLLECTIONS = `
 `;
 
 export const getAllCollections = async (): Promise<any> => {
-  const queryPromise = graphPrintClient.query({
+  const queryPromise =  graphPrintClient.query({
     query: gql(COLLECTIONS),
     fetchPolicy: "no-cache",
     errorPolicy: "all",

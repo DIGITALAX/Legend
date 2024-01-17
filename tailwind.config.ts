@@ -27,7 +27,7 @@ const config: Config = {
         enferm: "#1301E9",
         gris: "#B3C4C4",
         arco: "#C9CBFB",
-        lig: "#FFF2CF"
+        lig: "#FFF2CF",
       },
       fontFamily: {
         dog: "Dogica",
@@ -40,8 +40,14 @@ const config: Config = {
         xxs: "0.6rem",
       },
       height: {
-        110: "30rem"
-      }
+        110: "30rem",
+      },
+      screens: {
+        tablet: "900px",
+        galaxy: "300px",
+        pre: "400px",
+        otro: "1350px",
+      },
     },
   },
   plugins: [],

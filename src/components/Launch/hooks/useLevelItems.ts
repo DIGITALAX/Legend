@@ -88,6 +88,7 @@ const useLevelItems = () => {
             profileId: string;
             tags: string[];
             prompt: string;
+            microbrandCover: string
           } = await fetchIpfsJson((obj.uri as any)?.split("ipfs://")[1]);
           let profile: Profile = profileCache[DIGITALAX_PROFILE_ID_LENS];
 
@@ -209,13 +210,12 @@ const useLevelItems = () => {
     dispatch(setLevelArray(levelArray));
   };
 
-  const handleOracles = async (): Promise<OracleData[] | undefined> => {
+  const handleOracles = async (): Promise<void> => {
     try {
       const { data } = await getOracleData();
 
       dispatch(setOracleData(data?.currencyAddeds));
 
-      return data?.currencyAddeds;
     } catch (err: any) {
       console.error(err.message);
     }

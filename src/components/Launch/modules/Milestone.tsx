@@ -140,40 +140,6 @@ const Milestone: FunctionComponent<MilestoneProps> = ({
             </div>
           </div>
         </div>
-        {/* <div className="relative w-fit h-fit flex flex-col gap-2">
-          <div className="relative w-fit h-fit text-black font-dog text-xs">
-            Activate Milestone Claim Period
-          </div>
-          <div className="relative w-full h-6 rounded-full bg-zana border border-black opacity-60"></div>
-          <div className="relative justify-between w-full h-fit flex flex-row items-center">
-            <div className="relative w-fit h-8 px-1 text-xxs cursor-pointer active:scale-95 border border-black text-black font-dog flex items-center justify-center bg-vela">
-              <div
-                className={`relative w-fit h-fit flex items-center justify-center ${
-                  activateMilestoneLoading[index] && "animate-spin"
-                }`}
-              >
-                {activateMilestoneLoading[index] ? (
-                  <AiOutlineLoading size={15} color={"black"} />
-                ) : (
-                  "Activate"
-                )}
-              </div>
-            </div>
-            <div className="relative w-fit h-8 px-1 text-xxs cursor-pointer active:scale-95 border border-black text-black font-dog flex items-center justify-center opacity-70">
-              <div
-                className={`relative w-fit h-fit flex items-center justify-center ${
-                  claimMilestoneLoading[index] && "animate-spin"
-                }`}
-              >
-                {claimMilestoneLoading[index] ? (
-                  <AiOutlineLoading size={15} color={"black"} />
-                ) : (
-                  "Claim"
-                )}
-              </div>
-            </div>
-          </div>
-        </div> */}
       </div>
     </div>
   );

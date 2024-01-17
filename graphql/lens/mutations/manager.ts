@@ -9,7 +9,7 @@ import {
 const profileManager = async (
   request: ChangeProfileManagersRequest
 ): Promise<FetchResult<CreateChangeProfileManagersTypedDataMutation>> => {
-  return apolloClient.mutate({
+  return await apolloClient.mutate({
     mutation: CreateChangeProfileManagersTypedDataDocument,
     variables: {
       request: request,

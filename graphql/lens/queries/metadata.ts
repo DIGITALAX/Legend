@@ -6,10 +6,10 @@ import {
   ValidatePublicationMetadataRequest,
 } from "../../generated";
 
-const validateMetadata = (
+const validateMetadata = async (
   request: ValidatePublicationMetadataRequest
 ): Promise<FetchResult<ValidatePublicationMetadataQuery>> => {
-  return authClient.query({
+  return await authClient.query({
     query: ValidatePublicationMetadataDocument,
     variables: {
       request: request,

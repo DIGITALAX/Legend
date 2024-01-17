@@ -14,7 +14,9 @@ import { setGrantee } from "../../../../redux/reducers/granteeSlice";
 const useMilestone = () => {
   const publicClient = createPublicClient({
     chain: polygonMumbai,
-    transport: http(),
+    transport: http(
+      `https://polygon-mumbai.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_MUMBAI}`
+    ),
   });
   const dispatch = useDispatch();
   const { address } = useAccount();

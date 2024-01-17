@@ -8,10 +8,10 @@ import {
   LensTransactionFailureType,
 } from "../../generated";
 
-const getIndexed = (
+const getIndexed = async (
   request: LensTransactionStatusRequest
 ): Promise<FetchResult<LensTransactionStatusQuery>> => {
-  return apolloClient.query({
+  return await apolloClient.query({
     query: LensTransactionStatusDocument,
     variables: {
       request: request,
