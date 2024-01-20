@@ -5,11 +5,15 @@ import {
   Profile,
   PublicationType,
 } from "../../../../graphql/generated";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
 import getPublications from "../../../../graphql/lens/queries/publications";
-import { setPublishedGrants } from "../../../../redux/reducers/publishedGrantsSlice";
-import { setInteractionsCount } from "../../../../redux/reducers/interactionsCountSlice";
+import {
+  PublishedGrantsState,
+  setPublishedGrants,
+} from "../../../../redux/reducers/publishedGrantsSlice";
+import {
+  InteractionsCountState,
+  setInteractionsCount,
+} from "../../../../redux/reducers/interactionsCountSlice";
 import { getPubLevels } from "../../../../graphql/subgraph/queries/getPubLevels";
 import { setAvailablePubLevels } from "../../../../redux/reducers/availablePubLevelsSlice";
 import { LevelInfo, PrintItem } from "@/components/Launch/types/launch.types";
@@ -19,6 +23,7 @@ import { DIGITALAX_PROFILE_ID_LENS } from "../../../../lib/constants";
 import getProfile from "../../../../graphql/lens/queries/profile";
 import cachedProfiles from "../../../../lib/graph/helpers/cachedProfiles";
 import { setCachedProfiles } from "../../../../redux/reducers/cachedProfilesSlice";
+import { Dispatch } from "redux";
 
 const numberToWord: {
   [key: number]: string;
@@ -32,21 +37,26 @@ const numberToWord: {
   7: "Seven",
 };
 
-const useGrants = () => {
-  const dispatch = useDispatch();
-  const allPublications = useSelector(
-    (state: RootState) => state.app.publishedGrantsReducer
-  );
-  const profiles = useSelector(
-    (state: RootState) => state.app.cachedProfilesReducer.profiles
-  );
-  const interactionsCount = useSelector(
-    (state: RootState) => state.app.interactionsCountReducer
-  );
-  const pubLevels = useSelector(
-    (state: RootState) => state.app.availablePubLevelsReducer.levels
-  );
-
+const useGrants = (
+  dispatch: Dispatch,
+  allPublications: PublishedGrantsState,
+  profiles:
+    | {
+        [key: string]: Profile;
+      }
+    | undefined,
+  interactionsCount: InteractionsCountState,
+  pubLevels: {
+    pubId: string;
+    profileId: string;
+    levelFive: string[];
+    levelFour: string[];
+    levelSeven: string[];
+    levelSix: string[];
+    levelThree: string[];
+    levelTwo: string[];
+  }[]
+) => {
   const [collectChoice, setCollectChoice] = useState<
     {
       size: string;
@@ -74,7 +84,6 @@ const useGrants = () => {
       itemIndex: 0,
     }))
   );
-
 
   const handleFetchGrants = async () => {
     try {
@@ -238,7 +247,7 @@ const useGrants = () => {
                   profileId: string;
                   tags: string[];
                   prompt: string;
-                  microbrandCover: string
+                  microbrandCover: string;
                 } = await fetchIpfsJson((obj.uri as any)?.split("ipfs://")[1]);
                 let profile: Profile = profileCache[DIGITALAX_PROFILE_ID_LENS];
 

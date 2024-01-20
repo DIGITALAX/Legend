@@ -1,6 +1,5 @@
-import { AnyAction } from "redux";
+import { AnyAction, Dispatch } from "redux";
 import { ExplorePublication, Profile } from "../../../../graphql/generated";
-import { Dispatch } from "react";
 import { NextRouter } from "next/router";
 import { LevelInfo, PrintItem } from "@/components/Launch/types/launch.types";
 import { CartItem } from "@/components/Checkout/types/checkout.types";

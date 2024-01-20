@@ -11,8 +11,34 @@ import { Post } from "../../graphql/generated";
 import useInteractions from "@/components/Grants/hooks/useInteractions";
 
 export default function Home() {
-  const { setCollectChoice, handleFetchMoreGrants, collectChoice } =
-    useGrants();
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const cartItems = useSelector(
+    (state: RootState) => state.app.cartItemsReducer.items
+  );
+  const reactBox = useSelector((state: RootState) => state.app.reactBoxReducer);
+  const apparelItems = useSelector(
+    (state: RootState) => state.app.publishedGrantsReducer.apparel
+  );
+  const allPublications = useSelector(
+    (state: RootState) => state.app.publishedGrantsReducer
+  );
+  const profiles = useSelector(
+    (state: RootState) => state.app.cachedProfilesReducer.profiles
+  );
+  const interactionsCount = useSelector(
+    (state: RootState) => state.app.interactionsCountReducer
+  );
+  const pubLevels = useSelector(
+    (state: RootState) => state.app.availablePubLevelsReducer.levels
+  );
+  const { setCollectChoice, handleFetchMoreGrants, collectChoice } = useGrants(
+    dispatch,
+    allPublications,
+    profiles,
+    interactionsCount,
+    pubLevels
+  );
   const {
     commentGrant,
     mirrorGrant,
@@ -31,18 +57,11 @@ export default function Home() {
     setGrantComment,
     grantQuote,
     setGrantQuote,
-  } = useInteractions();
-  const dispatch = useDispatch();
-  const router = useRouter();
-  const cartItems = useSelector(
-    (state: RootState) => state.app.cartItemsReducer.items
-  );
-  const reactBox = useSelector((state: RootState) => state.app.reactBoxReducer);
-  const allPublications = useSelector(
-    (state: RootState) => state.app.publishedGrantsReducer.items
-  );
-  const apparelItems = useSelector(
-    (state: RootState) => state.app.publishedGrantsReducer.apparel
+  } = useInteractions(
+    dispatch,
+    allPublications?.items,
+    interactionsCount,
+    reactBox
   );
 
   return (
@@ -75,13 +94,13 @@ export default function Home() {
         />
       )}
       <InfiniteScroll
-        dataLength={allPublications.length}
+        dataLength={allPublications?.items.length}
         loader={<></>}
         hasMore={true}
         next={handleFetchMoreGrants}
         className={`w-full h-full items-start justify-center gap-8 flex flex-col`}
       >
-        {allPublications?.map((publication: Post, index: number) => {
+        {allPublications?.items?.map((publication: Post, index: number) => {
           return (
             <Grant
               key={index}

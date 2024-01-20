@@ -1,31 +1,33 @@
 import likePost from "../../../../graphql/lens/mutations/like";
-import { setReactBox } from "../../../../redux/reducers/reactBoxSlice";
+import { ReactBoxState, setReactBox } from "../../../../redux/reducers/reactBoxSlice";
 import whoReactedPublication from "../../../../graphql/lens/queries/whoReacted";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import {
   CommentRankingFilterType,
   LimitType,
+  Post,
   PublicationReactionType,
   PublicationType,
 } from "../../../../graphql/generated";
 import { useEffect, useState } from "react";
 import getPublications from "../../../../graphql/lens/queries/publications";
-import { setInteractionsCount } from "../../../../redux/reducers/interactionsCountSlice";
+import {
+  InteractionsCountState,
+  setInteractionsCount,
+} from "../../../../redux/reducers/interactionsCountSlice";
 import mirrorPost from "../../../../graphql/lens/mutations/mirror";
 import quotePost from "../../../../graphql/lens/mutations/quote";
 import commentPost from "../../../../graphql/lens/mutations/comment";
 import uploadCommentQuoteContent from "../../../../lib/lens/helpers/uploadCommentQuote";
+import { Dispatch } from "redux";
 
-const useInteractions = () => {
-  const dispatch = useDispatch();
-  const reactBox = useSelector((state: RootState) => state.app.reactBoxReducer);
-  const allPublications = useSelector(
-    (state: RootState) => state.app.publishedGrantsReducer.items
-  );
-  const interactionsCount = useSelector(
-    (state: RootState) => state.app.interactionsCountReducer
-  );
+const useInteractions = (
+  dispatch: Dispatch,
+  allPublications: Post[],
+  interactionsCount: InteractionsCountState,
+  reactBox: ReactBoxState
+) => {
   const [grantComment, setGrantComment] = useState<string>("");
   const [grantQuote, setGrantQuote] = useState<string>("");
   const [interactionsLoading, setInteractionsLoading] = useState<

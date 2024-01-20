@@ -13,7 +13,7 @@ export default function Account() {
   );
   return (
     <div className="relative w-full h-full flex flex-row items-start justify-start p-5 gap-10">
-      {grantee && (
+      {/* {grantee && (
         <InfiniteScroll
           dataLength={14}
           loader={<></>}
@@ -25,7 +25,7 @@ export default function Account() {
             return <Grant key={index} grant={grant} />;
           })}
         </InfiniteScroll>
-      )}
+      )} */}
       <Orders />
     </div>
   );

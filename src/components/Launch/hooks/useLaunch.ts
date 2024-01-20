@@ -2,37 +2,30 @@ import { ChangeEvent, useState } from "react";
 import { isValid, parse, format } from "date-fns";
 import uploadPostContent from "../../../../lib/lens/helpers/uploadPostContent";
 import onChainPost from "../../../../graphql/lens/mutations/onchainPost";
-import { useAccount } from "wagmi";
-import { PostInformation } from "../types/launch.types";
+import { LevelInfo, PostInformation } from "../types/launch.types";
 import { ethers } from "ethers";
 import {
   GRANT_REGISTER_CONTRACT,
   OPEN_ACTION_CONTRACT,
 } from "../../../../lib/constants";
 import { polygonMumbai } from "viem/chains";
-import { createPublicClient, createWalletClient, custom, http } from "viem";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
+import { PublicClient, createWalletClient, custom } from "viem";
 import GrantRegisterAbi from "./../../../../abi/GrantRegisterAbi.json";
 import getPublications from "../../../../graphql/lens/queries/publications";
-import { LimitType, PublicationType } from "../../../../graphql/generated";
+import {
+  LimitType,
+  Profile,
+  PublicationType,
+} from "../../../../graphql/generated";
 import pollUntilIndexed from "../../../../graphql/lens/queries/indexer";
 import validateMetadata from "../../../../graphql/lens/queries/metadata";
 
-const useLaunch = () => {
-  const publicClient = createPublicClient({
-    chain: polygonMumbai,
-    transport: http(
-      `https://polygon-mumbai.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_MUMBAI}`
-    ),
-  });
-  const { address } = useAccount();
-  const lensProfile = useSelector(
-    (state: RootState) => state.app.lensProfileReducer.profile
-  );
-  const levelArray = useSelector(
-    (state: RootState) => state.app.levelArrayReducer.collections
-  );
+const useLaunch = (
+  publicClient: PublicClient,
+  address: `0x${string}` | undefined,
+  profile: Profile | undefined,
+  levelArray: LevelInfo[]
+) => {
   const [grantStage, setGrantStage] = useState<number>(0);
   const [grantId, setGrantId] = useState<number>();
   const [registerLoading, setRegisterLoading] = useState<boolean>(false);
@@ -149,7 +142,7 @@ const useLaunch = () => {
               )
             ),
             pubId: pubId,
-            profileId: parseInt(lensProfile?.id, 16),
+            profileId: parseInt(profile?.id, 16),
           },
         ],
         functionName: "registerGrant",
@@ -190,7 +183,6 @@ const useLaunch = () => {
           "uint256[][2]",
           "uint256[][2]",
           "uint256[][2]",
-          "address",
         ],
         [
           ...levelArray?.map((item) => [
@@ -292,7 +284,7 @@ const useLaunch = () => {
       const data = await getPublications({
         limit: LimitType.Ten,
         where: {
-          from: lensProfile?.id,
+          from: profile?.id,
           publicationTypes: [
             PublicationType.Comment,
             PublicationType.Post,

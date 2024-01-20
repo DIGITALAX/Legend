@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
 import { setLevelArray } from "../../../../redux/reducers/levelArraySlice";
 import { getAllCollections } from "../../../../graphql/subgraph/queries/getAllCollections";
 import { setAvailableCollections } from "../../../../redux/reducers/availableCollectionsSlice";
@@ -22,21 +20,23 @@ import {
 import { setCachedProfiles } from "../../../../redux/reducers/cachedProfilesSlice";
 import { getOracleData } from "../../../../graphql/subgraph/queries/getOracleData";
 import { setOracleData } from "../../../../redux/reducers/oracleDataSlice";
+import { Dispatch } from "redux";
 
-const useLevelItems = () => {
-  const dispatch = useDispatch();
-  const allCollections = useSelector(
-    (state: RootState) => state.app.availableCollectionsReducer.collections
-  );
-  const profiles = useSelector(
-    (state: RootState) => state.app.cachedProfilesReducer.profiles
-  );
-  const oracleData = useSelector(
-    (state: RootState) => state.app.oracleDataReducer.data
-  );
-  const levelItems = useSelector(
-    (state: RootState) => state.app.levelArrayReducer.collections
-  );
+const useLevelItems = (
+  dispatch: Dispatch,
+  allCollections:
+    | {
+        [key: string]: PrintItem[];
+      }
+    | undefined,
+  profiles:
+    | {
+        [key: string]: Profile;
+      }
+    | undefined,
+  oracleData: OracleData[],
+  levelItems: LevelInfo[]
+) => {
   const [allCollectionsLoading, setAllCollectionsLoading] =
     useState<boolean>(false);
   const [indexes, setIndexes] = useState<
@@ -88,7 +88,7 @@ const useLevelItems = () => {
             profileId: string;
             tags: string[];
             prompt: string;
-            microbrandCover: string
+            microbrandCover: string;
           } = await fetchIpfsJson((obj.uri as any)?.split("ipfs://")[1]);
           let profile: Profile = profileCache[DIGITALAX_PROFILE_ID_LENS];
 
@@ -215,7 +215,6 @@ const useLevelItems = () => {
       const { data } = await getOracleData();
 
       dispatch(setOracleData(data?.currencyAddeds));
-
     } catch (err: any) {
       console.error(err.message);
     }

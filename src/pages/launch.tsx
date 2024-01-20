@@ -7,8 +7,43 @@ import { RootState } from "../../redux/store";
 import useSignIn from "@/components/Layout/hooks/useSignIn";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import useLevelItems from "@/components/Launch/hooks/useLevelItems";
+import { createPublicClient, http } from "viem";
+import { polygonMumbai } from "viem/chains";
+import { useAccount } from "wagmi";
 
 export default function Launch() {
+  const { openConnectModal } = useConnectModal();
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const publicClient = createPublicClient({
+    chain: polygonMumbai,
+    transport: http(
+      `https://polygon-mumbai.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_MUMBAI}`
+    ),
+  });
+  const { address } = useAccount();
+  const profile = useSelector(
+    (state: RootState) => state.app.lensProfileReducer.profile
+  );
+  const levelArray = useSelector(
+    (state: RootState) => state.app.levelArrayReducer.collections
+  );
+  const connected = useSelector(
+    (state: RootState) => state.app.walletConnectedReducer.value
+  );
+  const allCollections = useSelector(
+    (state: RootState) => state.app.availableCollectionsReducer.collections
+  );
+  const profiles = useSelector(
+    (state: RootState) => state.app.cachedProfilesReducer.profiles
+  );
+
+  const oracleData = useSelector(
+    (state: RootState) => state.app.oracleDataReducer.data
+  );
+  const levelItems = useSelector(
+    (state: RootState) => state.app.levelArrayReducer.collections
+  );
   const {
     handleInputDateChange,
     handleDateSelect,
@@ -29,7 +64,7 @@ export default function Launch() {
     grantStage,
     setGrantStage,
     grantId,
-  } = useLaunch();
+  } = useLaunch(publicClient, address, profile, levelArray);
   const {
     handleShuffleCollectionLevels,
     indexes,
@@ -37,20 +72,8 @@ export default function Launch() {
     handleChangeImage,
     handleChangeItem,
     allCollectionsLoading,
-  } = useLevelItems();
-  const { handleLensSignIn, signInLoading } = useSignIn();
-  const { openConnectModal } = useConnectModal();
-  const router = useRouter();
-  const dispatch = useDispatch();
-  const profileId = useSelector(
-    (state: RootState) => state.app.lensProfileReducer.profile?.id
-  );
-  const levelArray = useSelector(
-    (state: RootState) => state.app.levelArrayReducer.collections
-  );
-  const connected = useSelector(
-    (state: RootState) => state.app.walletConnectedReducer.value
-  );
+  } = useLevelItems(dispatch, allCollections, profiles, oracleData, levelItems);
+  const { handleLensSignIn, signInLoading } = useSignIn(dispatch, profile);
   return (
     <div className="relative w-full h-full flex items-center justify-center p-5 overflow-y-hidden">
       <div
@@ -81,7 +104,7 @@ export default function Launch() {
           allCollectionsLoading={allCollectionsLoading}
           router={router}
           pubId={grantId}
-          profileId={profileId}
+          profileId={profile?.id}
           openConnectModal={openConnectModal}
           handleLensSignIn={handleLensSignIn}
           connected={connected}
