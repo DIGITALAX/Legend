@@ -80,7 +80,7 @@ const Preview: FunctionComponent<PreviewProps> = ({
               </div>
               <div className="relative flex flex-col justify-start items-start w-full h-full font-dog text-black text-xs gap-2">
                 <div className="relative w-fit h-fit flex justify-start items-start">
-                  Who's Involved
+                  Who&apos;s Involved
                 </div>
                 <div className="relative w-full h-48">
                   <div className="bg-offWhite w-full h-full border border-black p-2 rounded-sm overflow-y-scroll">

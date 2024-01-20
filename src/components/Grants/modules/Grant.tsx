@@ -176,7 +176,7 @@ const Grant: FunctionComponent<GrantProps> = ({
             id="milestone"
           >
             <div className="relative w-fit h-fit flex flex-row gap-4 pb-2 items-start justify-start">
-              {apparelItems?.map((item: LevelInfo, index: number) => {
+              {/* {apparelItems?.map((item: LevelInfo, index: number) => {
                 return (
                   <CollectItem
                     key={index}
@@ -197,7 +197,7 @@ const Grant: FunctionComponent<GrantProps> = ({
                     cart
                   />
                 );
-              })}
+              })} */}
             </div>
           </div>
         </div>

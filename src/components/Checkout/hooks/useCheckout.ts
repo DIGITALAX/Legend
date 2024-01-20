@@ -1,21 +1,15 @@
 import { useEffect, useState } from "react";
 import actOnGrant from "../../../../graphql/lens/mutations/actOn";
-import { RootState } from "../../../../redux/store";
-import { useSelector } from "react-redux";
-import { useAccount } from "wagmi";
 import { ethers } from "ethers";
 import { CartItem, Fulfillment } from "../types/checkout.types";
 import { COLLECT_LEVEL_ABI } from "../../../../lib/constants";
 import * as LitJsSDK from "@lit-protocol/lit-node-client";
 
-const useCheckout = () => {
-  const cartItems = useSelector(
-    (state: RootState) => state.app.cartItemsReducer.items
-  );
-  const litNodeClient = new LitNodeClient({
-    litNetwork: "cayenne",
-  });
-  const { address } = useAccount();
+const useCheckout = (
+  cartItems: CartItem[],
+  litNodeClient: LitJsSDK.LitNodeClient,
+  address: `0x${string}` | undefined
+) => {
   const [grantCheckoutLoading, setGrantCheckoutLoading] = useState<boolean[]>(
     []
   );

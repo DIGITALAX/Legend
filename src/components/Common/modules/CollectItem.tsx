@@ -240,7 +240,7 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
             (index?.price?.[index.priceIndex] / index?.rate)?.toFixed(2)
           )} ${index?.currency}`}
         </div>
-        {cart && (
+        {/* {cart && (
           <div
             className={`w-40 h-8 cursor-pointer rounded-sm cursor-pointer active:scale-95 border border-black flex items-center justify-center text-center font-gam text-xl ${
               !cartItems?.some(
@@ -285,7 +285,7 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
               ? "Go to Cart"
               : "Choose Level"}
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );
