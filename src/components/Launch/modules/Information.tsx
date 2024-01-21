@@ -2,8 +2,9 @@ import { FunctionComponent } from "react";
 import { InformationProps } from "../types/launch.types";
 import Bar from "@/components/Common/modules/Bar";
 import Image from "next/legacy/image";
-import { INFURA_GATEWAY } from "../../../../lib/constants";
+import { COVER_CONSTANTS, INFURA_GATEWAY } from "../../../../lib/constants";
 import { AiOutlineLoading } from "react-icons/ai";
+import { BsShuffle } from "react-icons/bs";
 
 const Information: FunctionComponent<InformationProps> = ({
   handleImageUpload,
@@ -42,8 +43,24 @@ const Information: FunctionComponent<InformationProps> = ({
                 type="file"
                 accept="image/png"
                 multiple={false}
+                hidden
                 onChange={(e) => handleImageUpload(e)}
               />
+              <div
+                className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center cursor-pointer rounded-full p-1 bg-black border border-acei active:scale-95"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  setPostInformation((prev) => ({
+                    ...prev,
+                    coverImage: COVER_CONSTANTS.sort(() => 0.5 - Math.random())[0],
+                  }));
+                }}
+              >
+                <div className="relative w-fit h-fit flex items-center justify-center">
+                  <BsShuffle size={10} color={"white"} />
+                </div>
+              </div>
             </label>
           </div>
           <div className="relative w-full h-fit flex flex-col justify-start items-center gap-4">

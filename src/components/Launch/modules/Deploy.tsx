@@ -1,6 +1,5 @@
 import { FunctionComponent } from "react";
 import { DeployProps } from "../types/launch.types";
-import { AiOutlineLoading } from "react-icons/ai";
 import { setErrorModal } from "../../../../redux/reducers/errorModalSlice";
 import validateObject from "../../../../lib/lens/helpers/validatePostInfo";
 import getRandomElement from "../../../../lib/lens/helpers/getRandomElement";

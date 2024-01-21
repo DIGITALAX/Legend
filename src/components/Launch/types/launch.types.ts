@@ -1,5 +1,5 @@
 import { NextRouter } from "next/router";
-import { ChangeEvent } from "react";
+import { ChangeEvent, SetStateAction } from "react";
 import { AnyAction, Dispatch } from "redux";
 import { Profile } from "../../../../graphql/generated";
 import { CartItem } from "@/components/Checkout/types/checkout.types";
@@ -16,16 +16,12 @@ export type MilestoneProps = {
   dateOpen: boolean[];
   setDateOpen: (e: boolean[]) => void;
   postInformation: PostInformation;
-  setPostInformation: (e: PostInformation) => void;
+  setPostInformation: (e: SetStateAction<PostInformation>) => void;
 };
 
 export type RegisterAndPostProps = {
-  handleRegisterGrant: () => Promise<void>;
-  grantRegistered: boolean;
   handlePostGrant: () => Promise<void>;
-  registerLoading: boolean;
   postLoading: boolean;
-  grantPosted: boolean;
   openConnectModal: (() => void) | undefined;
   handleLensSignIn: () => Promise<void>;
   profileId: string | undefined;
@@ -59,41 +55,37 @@ export type DeployProps = {
   grantStage: number;
   setGrantStage: (e: number) => void;
   postInformation: PostInformation;
-  setPostInformation: (e: PostInformation) => void;
+  setPostInformation: (e: SetStateAction<PostInformation>) => void;
   dispatch: Dispatch<AnyAction>;
 };
 
 export type InformationProps = {
   postInformation: PostInformation;
-  setPostInformation: (e: PostInformation) => void;
+  setPostInformation: (e: SetStateAction<PostInformation>) => void;
   handleImageUpload: (e: ChangeEvent<HTMLInputElement>) => Promise<void>;
   imageLoading: boolean;
 };
 
 export type GranteesProps = {
   postInformation: PostInformation;
-  setPostInformation: (e: PostInformation) => void;
+  setPostInformation: (e: SetStateAction<PostInformation>) => void;
 };
 
 export interface PrintItem {
   collectionId: string;
-  uri: {
+  collectionMetadata: {
     images: string[];
-    description: string;
+    sizes: string[];
+    colors: string[];
     title: string;
-    profileId: string;
-    microbrandCover: string;
-    tags: string[];
-    prompt: string;
-    communities: string[]
   };
   profile: Profile;
   prices: string[];
   printType: PrintType;
   fulfiller: string;
-  fulfillerPercent: string;
-  fulfillerBase: string;
-  designerPercent: string;
+  fulfillerPercent: number;
+  designerPercent: number;
+  fulfillerBase: number;
 }
 
 export enum PrintType {
@@ -119,7 +111,7 @@ export type LaunchSwitchProps = {
   postInformation: PostInformation;
   levelArray: LevelInfo[];
   handleShuffleCollectionLevels: () => void;
-  setPostInformation: (e: PostInformation) => void;
+  setPostInformation: (e: SetStateAction<PostInformation>) => void;
   grantStage: number;
   allCollectionsLoading: boolean;
   imageLoading: boolean;
@@ -133,12 +125,8 @@ export type LaunchSwitchProps = {
   selectedDate: (Date | undefined)[];
   inputDateValue: string[];
   handleImageUpload: (e: ChangeEvent<HTMLInputElement>) => Promise<void>;
-  handleRegisterGrant: () => Promise<void>;
-  grantRegistered: boolean;
   handlePostGrant: () => Promise<void>;
-  registerLoading: boolean;
   postLoading: boolean;
-  grantPosted: boolean;
   router: NextRouter;
   pubId: number | undefined;
   profileId: string | undefined;
@@ -176,11 +164,12 @@ export interface PostInformation {
   grantees: string[];
   splits: number[];
   milestones: Milestone[];
+  currencies: string[];
 }
 
 export interface Milestone {
   description: string;
-  amount: number;
+  currencyAmount: { currency: string; goal: number }[];
   submit: string;
   image: string;
 }

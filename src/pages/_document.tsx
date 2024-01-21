@@ -4,7 +4,6 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head>
-        <title>Legend</title>
         <meta name="og:url" content={`https://legend.irrevocable.dev/`} />
         <meta name="og:title" content={"Legend"} />
         <meta

@@ -14,3 +14,7 @@ export type ErrorProps = {
 export type ClaimProfileProps = {
   dispatch: Dispatch<AnyAction>;
 };
+
+export type IndexProps = {
+  message: string;
+};

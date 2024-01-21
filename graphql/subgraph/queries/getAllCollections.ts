@@ -3,17 +3,22 @@ import { graphPrintClient } from "../../../lib/graph/client";
 
 const COLLECTIONS = `
   query {
-    collectionCreateds(where: {unlimited: true, printType_not: "4"}) {
+    collectionCreateds(where: {origin: "0"}) {
       fulfiller
-      uri
       unlimited
       printType
       prices
-      fulfillerPercent
-      fulfillerBase
-      designerPercent
       collectionId
+      collectionMetadata {
+        sizes
+        colors
+        images
+        title
+      }
       amount
+      designerPercent
+      fulfillerBase
+      fulfillerPercent
     }
   }
 `;

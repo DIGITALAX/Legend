@@ -4,6 +4,7 @@ import { ErrorProps } from "../types/modals.types";
 import { INFURA_GATEWAY } from "../../../../lib/constants";
 import { ImCross } from "react-icons/im";
 import { setClaimProfile } from "../../../../redux/reducers/claimProfileSlice";
+import { setErrorModal } from "../../../../redux/reducers/errorModalSlice";
 
 const Error: FunctionComponent<ErrorProps> = ({
   message,
@@ -17,7 +18,13 @@ const Error: FunctionComponent<ErrorProps> = ({
             <ImCross
               color="#D07BF7"
               size={10}
-              onClick={() => dispatch(setClaimProfile(false))}
+              onClick={() =>
+                dispatch(
+                  setErrorModal({
+                    actionValue: false,
+                  })
+                )
+              }
             />
           </div>
           <div className="relative w-full h-fit items-center justify-center flex flex-col gap-3 pb-4">

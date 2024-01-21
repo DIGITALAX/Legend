@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import {
   LimitType,
   Post,
-  Profile,
   PublicationType,
 } from "../../../../graphql/generated";
 import getPublications from "../../../../graphql/lens/queries/publications";
@@ -18,11 +17,6 @@ import { getPubLevels } from "../../../../graphql/subgraph/queries/getPubLevels"
 import { setAvailablePubLevels } from "../../../../redux/reducers/availablePubLevelsSlice";
 import { LevelInfo, PrintItem } from "@/components/Launch/types/launch.types";
 import { getOneCollection } from "../../../../graphql/subgraph/queries/getOneCollection";
-import fetchIpfsJson from "../../../../lib/graph/helpers/fetchIPFSJson";
-import { DIGITALAX_PROFILE_ID_LENS } from "../../../../lib/constants";
-import getProfile from "../../../../graphql/lens/queries/profile";
-import cachedProfiles from "../../../../lib/graph/helpers/cachedProfiles";
-import { setCachedProfiles } from "../../../../redux/reducers/cachedProfilesSlice";
 import { Dispatch } from "redux";
 
 const numberToWord: {
@@ -40,11 +34,6 @@ const numberToWord: {
 const useGrants = (
   dispatch: Dispatch,
   allPublications: PublishedGrantsState,
-  profiles:
-    | {
-        [key: string]: Profile;
-      }
-    | undefined,
   interactionsCount: InteractionsCountState,
   pubLevels: {
     pubId: string;
@@ -212,14 +201,6 @@ const useGrants = (
     try {
       let apparelItems: LevelInfo[][] = [];
 
-      let profileCache: { [key: string]: Profile } = {};
-
-      if (!profiles) {
-        profileCache = (await cachedProfiles()) as { [key: string]: Profile };
-      } else {
-        profileCache = profiles;
-      }
-
       const apparelPromises = sortedArr.map(async (post: Post) => {
         let levelInfoArray: LevelInfo[] = [];
         const matchingPubLevel = pubLevels.find(
@@ -238,36 +219,7 @@ const useGrants = (
             const itemPromises: Promise<PrintItem>[] = collectionIds?.map(
               async (collectionId) => {
                 const { data } = await getOneCollection(collectionId);
-                const obj = data?.collectionCreateds?.[0];
-
-                const uri: {
-                  images: string[];
-                  description: string;
-                  title: string;
-                  profileId: string;
-                  tags: string[];
-                  prompt: string;
-                  microbrandCover: string;
-                } = await fetchIpfsJson((obj.uri as any)?.split("ipfs://")[1]);
-                let profile: Profile = profileCache[DIGITALAX_PROFILE_ID_LENS];
-
-                if (uri?.profileId) {
-                  if (!profileCache[uri.profileId]) {
-                    const { data } = await getProfile({
-                      forProfileId: uri.profileId,
-                    });
-                    profileCache[uri.profileId] = data?.profile?.id;
-                  }
-                  profile = profileCache[uri.profileId];
-                }
-
-                return {
-                  ...obj,
-                  uri: {
-                    ...uri,
-                    profile,
-                  },
-                };
+                return data?.collectionCreateds?.[0];
               }
             );
 
@@ -281,8 +233,6 @@ const useGrants = (
         }
       });
       await Promise.all(apparelPromises);
-
-      dispatch(setCachedProfiles(profileCache));
 
       // return ;
       return apparelItems;

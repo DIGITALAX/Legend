@@ -4,7 +4,13 @@ import { PublicationMetadataMainFocusType } from "../../../graphql/generated";
 
 const uploadPostContent = async (
   postInformation: PostInformation
-): Promise<string | undefined> => {
+): Promise<
+  | {
+      grantURI: string;
+      postURI: string;
+    }
+  | undefined
+> => {
   let newImages: { item: string; type: string }[] = [];
   [
     postInformation.coverImage,
@@ -16,26 +22,7 @@ const uploadPostContent = async (
     });
   });
 
-  const formattedText: string = `
-  ${postInformation.title}
-  \n\n
-  ${postInformation.description}
-  \n\n
-  ${postInformation.strategy}
-  \n\n
-  ${postInformation.tech}
-  \n\n
-  ${postInformation.team}
-  \n\n
-  ${postInformation.experience}
-  \n\n
-  ${postInformation.milestones
-    .map((milestone, index) => {
-      return `Milestone ${index + 1}
-    ${milestone.description}\n\n${milestone.amount}\n\n${milestone.submit}\n\n`;
-    })
-    .join("\n\n")}
-  `;
+  const formattedText: string = postInformation.description;
 
   const data = {
     $schema: "https://json-schemas.lens.dev/publications/image/3.0.0.json",
@@ -58,9 +45,30 @@ const uploadPostContent = async (
       method: "POST",
       body: JSON.stringify(data),
     });
-    if (response.status === 200) {
+
+    const grantResponse = await fetch("/api/ipfs", {
+      method: "POST",
+      body: JSON.stringify({
+        title: postInformation.title,
+        description: postInformation.description,
+        team: postInformation.team,
+        tech: postInformation.tech,
+        strategy: postInformation.strategy,
+        cover: "ipfs://" + postInformation.coverImage,
+        experience: postInformation.experience,
+        milestones: postInformation.milestones.map((mil) => ({
+          description: mil.description,
+          cover: "ipfs://" + mil.image,
+        })),
+      }),
+    });
+    if (response.status === 200 && grantResponse.status === 200) {
       let responseJSON = await response.json();
-      return "ipfs://" + responseJSON.cid;
+      let grantJSON = await grantResponse.json();
+      return {
+        grantURI: "ipfs://" + grantJSON.cid,
+        postURI: "ipfs://" + responseJSON.cid,
+      };
     }
   } catch (err: any) {
     console.error(err.message);

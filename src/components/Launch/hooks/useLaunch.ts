@@ -1,43 +1,37 @@
 import { ChangeEvent, useState } from "react";
 import { isValid, parse, format } from "date-fns";
 import uploadPostContent from "../../../../lib/lens/helpers/uploadPostContent";
-import onChainPost from "../../../../graphql/lens/mutations/onchainPost";
 import { LevelInfo, PostInformation } from "../types/launch.types";
 import { ethers } from "ethers";
-import {
-  GRANT_REGISTER_CONTRACT,
-  OPEN_ACTION_CONTRACT,
-} from "../../../../lib/constants";
+import { LEGEND_OPEN_ACTION_CONTRACT } from "../../../../lib/constants";
 import { polygonMumbai } from "viem/chains";
 import { PublicClient, createWalletClient, custom } from "viem";
-import GrantRegisterAbi from "./../../../../abi/GrantRegisterAbi.json";
 import getPublications from "../../../../graphql/lens/queries/publications";
 import {
   LimitType,
   Profile,
   PublicationType,
 } from "../../../../graphql/generated";
-import pollUntilIndexed from "../../../../graphql/lens/queries/indexer";
 import validateMetadata from "../../../../graphql/lens/queries/metadata";
+import { Dispatch } from "redux";
+import lensPost from "../../../../lib/graph/helpers/lensPost";
 
 const useLaunch = (
   publicClient: PublicClient,
   address: `0x${string}` | undefined,
   profile: Profile | undefined,
-  levelArray: LevelInfo[]
+  levelArray: LevelInfo[],
+  dispatch: Dispatch
 ) => {
   const [grantStage, setGrantStage] = useState<number>(0);
   const [grantId, setGrantId] = useState<number>();
-  const [registerLoading, setRegisterLoading] = useState<boolean>(false);
   const [postLoading, setPostLoading] = useState<boolean>(false);
-  const [grantRegistered, setGrantRegistered] = useState<boolean>(false);
   const [activateMilestoneLoading, setActivateMilestoneLoading] = useState<
     boolean[]
   >(Array.from({ length: 3 }, () => false));
   const [claimMilestoneLoading, setClaimMilestoneLoading] = useState<boolean[]>(
     Array.from({ length: 3 }, () => false)
   );
-  const [grantPosted, setGrantPosted] = useState<boolean>(false);
   const [postInformation, setPostInformation] = useState<PostInformation>({
     title: "",
     description: "",
@@ -48,9 +42,10 @@ const useLaunch = (
     team: "",
     grantees: [],
     splits: [],
+    currencies: [],
     milestones: Array.from({ length: 3 }, () => ({
       description: "",
-      amount: 0,
+      currencyAmount: [],
       submit: new Date(
         new Date().setMonth(new Date().getMonth() + 1)
       ).toDateString(),
@@ -110,58 +105,8 @@ const useLaunch = (
     }
   };
 
-  const handleRegisterGrant = async () => {
-    setRegisterLoading(true);
-
-    const clientWallet = createWalletClient({
-      chain: polygonMumbai,
-      transport: custom((window as any).ethereum),
-    });
-
-    let simulateContract;
-    try {
-      const pubId = await getLastPost();
-
-      simulateContract = await publicClient.simulateContract({
-        address: GRANT_REGISTER_CONTRACT,
-        abi: GrantRegisterAbi,
-        args: [
-          {
-            granteeAddresses: postInformation.grantees,
-            splitAmounts: postInformation.splits.map((item) => item * 100),
-            amounts: postInformation.milestones.map(
-              (item) => item.amount * 10 ** 18
-            ),
-            submitBy: postInformation.milestones.map((date) =>
-              Math.floor(
-                new Date(
-                  2000 + parseInt(date.submit.split("-")[2]),
-                  Number(date.submit.split("-")[1]) - 1,
-                  Number(date.submit.split("-")[0])
-                ).getTime() / 1000
-              )
-            ),
-            pubId: pubId,
-            profileId: parseInt(profile?.id, 16),
-          },
-        ],
-        functionName: "registerGrant",
-        chain: polygonMumbai,
-        account: address,
-      });
-    } catch (err: any) {
-      console.error(err.message);
-      setRegisterLoading(false);
-      return;
-    }
-
-    const res = await clientWallet.writeContract(simulateContract.request);
-    await publicClient.waitForTransactionReceipt({ hash: res });
-    setGrantRegistered(true);
-    setRegisterLoading(false);
-  };
-
   const handlePostGrant = async () => {
+    if (!address) return;
     setPostLoading(true);
 
     try {
@@ -177,45 +122,58 @@ const useLaunch = (
 
       const encodedData: string = ethers.utils.defaultAbiCoder.encode(
         [
-          "uint256[][2]",
-          "uint256[][2]",
-          "uint256[][2]",
-          "uint256[][2]",
-          "uint256[][2]",
-          "uint256[][2]",
+          "tuple(tuple(uint256[] collectionIds, uint256[] amounts, uint8 level)[6] levelInfo, uint256[][3] goalToCurrency, address[] acceptedCurrencies, address[] granteeAddresses, uint256[] splitAmounts, uint256[3] submitBys, string uri)",
         ],
         [
-          ...levelArray?.map((item) => [
-            item.items.map((value) => Number(value.collectionId)),
-            item.items.map((_) => 1),
-          ]),
-          address,
+          {
+            levelInfo: levelArray?.map((item, index: number) => ({
+              level: index + 2,
+              collectionIds: item?.items?.map((item) =>
+                Number(item?.collectionId)
+              ),
+              amounts: Array.from({ length: item?.items?.length }, () => 1),
+            })),
+
+            goalToCurrency: postInformation?.milestones?.map((mil) =>
+              mil.currencyAmount?.map((cur) =>
+                (Number(cur?.goal) * 10 ** 18).toString()
+              )
+            ),
+            acceptedCurrencies: postInformation.currencies,
+            granteeAddresses: postInformation?.grantees,
+            splitAmounts: postInformation?.splits?.map((item) =>
+              (Number(item) * 10 ** 18).toString()
+            ),
+            submitBys: postInformation?.milestones?.map((mil) =>
+              Math.floor(new Date(`20${mil}`).getTime() / 1000)
+            ),
+            uri: contentURIValue?.grantURI
+          },
         ]
       );
 
-      const { data } = await onChainPost({
-        contentURI: contentURIValue,
-        openActionModules: [
+      const clientWallet = createWalletClient({
+        chain: polygonMumbai,
+        transport: custom((window as any).ethereum),
+      });
+
+      await lensPost(
+        contentURIValue?.postURI!,
+        dispatch,
+        [
           {
             unknownOpenAction: {
-              address: OPEN_ACTION_CONTRACT,
+              address: LEGEND_OPEN_ACTION_CONTRACT,
               data: encodedData,
             },
           },
         ],
-      });
-      if (data?.postOnchain.__typename === "RelaySuccess") {
-        const result = await pollUntilIndexed({
-          forTxId: data?.postOnchain?.txId,
-        });
+        address,
+        clientWallet,
+        publicClient
+      );
 
-        if (result === true) {
-          setGrantPosted(true);
-          setGrantStage(6);
-        } else {
-          console.error(result);
-        }
-      }
+      setGrantStage(6);
     } catch (err: any) {
       console.error(err.message);
     }
@@ -315,12 +273,8 @@ const useLaunch = (
     inputDateValue,
     dateOpen,
     setDateOpen,
-    handleRegisterGrant,
     handlePostGrant,
     postLoading,
-    registerLoading,
-    grantPosted,
-    grantRegistered,
     imageLoading,
     handleImageUpload,
     postInformation,
