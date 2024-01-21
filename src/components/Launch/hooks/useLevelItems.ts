@@ -3,21 +3,14 @@ import { setLevelArray } from "../../../../redux/reducers/levelArraySlice";
 import { getAllCollections } from "../../../../graphql/subgraph/queries/getAllCollections";
 import { setAvailableCollections } from "../../../../redux/reducers/availableCollectionsSlice";
 import { Profile } from "../../../../graphql/generated";
-import getProfile from "../../../../graphql/lens/queries/profile";
 import {
   LevelInfo,
   OracleData,
   PrintItem,
   PrintType,
 } from "../types/launch.types";
-import fetchIpfsJson from "../../../../lib/graph/helpers/fetchIPFSJson";
 import pickRandomItem from "../../../../lib/graph/helpers/pickRandomItem";
-import cachedProfiles from "../../../../lib/graph/helpers/cachedProfiles";
-import {
-  ACCEPTED_TOKENS_MUMBAI,
-  DIGITALAX_PROFILE_ID_LENS,
-} from "../../../../lib/constants";
-import { setCachedProfiles } from "../../../../redux/reducers/cachedProfilesSlice";
+import { ACCEPTED_TOKENS_MUMBAI } from "../../../../lib/constants";
 import { getOracleData } from "../../../../graphql/subgraph/queries/getOracleData";
 import { setOracleData } from "../../../../redux/reducers/oracleDataSlice";
 import { Dispatch } from "redux";
@@ -27,11 +20,6 @@ const useLevelItems = (
   allCollections:
     | {
         [key: string]: PrintItem[];
-      }
-    | undefined,
-  profiles:
-    | {
-        [key: string]: Profile;
       }
     | undefined,
   oracleData: OracleData[],
@@ -65,58 +53,6 @@ const useLevelItems = (
     setAllCollectionsLoading(true);
     try {
       const { data } = await getAllCollections();
-      let profileCache: { [key: string]: Profile } = {};
-
-      if (!profiles || typeof profiles !== "object") {
-        profileCache = (await cachedProfiles()) as { [key: string]: Profile };
-      } else {
-        profileCache = profiles;
-      }
-
-      const collectionPromises = data?.collectionCreateds?.map(
-        async (obj: {
-          collectionId: string;
-          uri: string;
-          prices: string[];
-          printType: string;
-          fulfiller: string;
-        }) => {
-          const uri: {
-            images: string[];
-            description: string;
-            title: string;
-            profileId: string;
-            tags: string[];
-            prompt: string;
-            microbrandCover: string;
-          } = await fetchIpfsJson((obj.uri as any)?.split("ipfs://")[1]);
-          let profile: Profile = profileCache[DIGITALAX_PROFILE_ID_LENS];
-
-          if (uri?.profileId) {
-            if (!profileCache[uri.profileId]) {
-              const { data } = await getProfile({
-                forProfileId: uri.profileId,
-              });
-              profileCache[uri.profileId] = data?.profile?.id;
-            }
-            profile = profileCache[uri.profileId];
-          }
-
-          const modifiedObj = {
-            ...obj,
-            uri: {
-              ...uri,
-              profile,
-            },
-          };
-
-          return modifiedObj;
-        }
-      );
-
-      dispatch(setCachedProfiles(profileCache));
-
-      const promised = await Promise.all(collectionPromises);
 
       const categorizedCollections: { [key: string]: PrintItem[] } = {
         [PrintType.Sticker]: [],
@@ -124,10 +60,27 @@ const useLevelItems = (
         [PrintType.Shirt]: [],
         [PrintType.Hoodie]: [],
       };
-      promised?.forEach((item) => {
-        categorizedCollections[item.printType].push(item);
-      });
 
+      data?.collectionCreateds?.forEach(
+        (item: {
+          printType: string;
+          designerPercent: string;
+          fulfillerBase: string;
+          fulfillerPercent: string;
+        }) => {
+          const fulfillerBase = Number(item?.fulfillerBase || 0) / 10 ** 18;
+          const fulfillerPercent = Number(item?.fulfillerPercent || 0) / 10000;
+
+          const designerPercent = Number(item?.designerPercent || 0) / 10000;
+
+          categorizedCollections[item.printType].push({
+            ...item,
+            designerPercent,
+            fulfillerBase,
+            fulfillerPercent,
+          } as PrintItem);
+        }
+      );
       dispatch(setAvailableCollections(categorizedCollections));
     } catch (err: any) {
       console.error(err.message);
@@ -201,7 +154,7 @@ const useLevelItems = (
           index === 0
             ? [10 ** 18]
             : levelArray[index - 1]?.items?.map((item) =>
-                Number(item.prices[0])
+                Number(item?.prices[0])
               ),
         itemIndex: 0,
       }))
@@ -231,7 +184,7 @@ const useLevelItems = (
     items[levelIndex].priceIndex = priceIndex;
     if (levelIndex != 0) {
       items[levelIndex].price[priceIndex] = Number(
-        levelItems[levelIndex - 1].items[itemIndex].prices[priceIndex]
+        levelItems[levelIndex - 1].items[itemIndex]?.prices[priceIndex]
       );
     }
 

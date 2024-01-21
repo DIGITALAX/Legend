@@ -22,7 +22,7 @@ const validateObject = (obj: PostInformation): boolean => {
   const areMilestonesValid = obj.milestones.every(
     (milestone) =>
       milestone.description.trim() !== "" &&
-      milestone.amount > 0 &&
+      milestone.currencyAmount?.length > 0 &&
       milestone.submit.trim() !== "" &&
       milestone.image.trim() !== ""
   );

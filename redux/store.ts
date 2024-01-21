@@ -15,8 +15,8 @@ import imageExpandReducer from "./reducers/mediaExpandSlice";
 import availableCollectionsReducer from "./reducers/availableCollectionsSlice";
 import levelArrayReducer from "./reducers/levelArraySlice";
 import availablePubLevelsReducer from "./reducers/availablePubLevelsSlice";
-import cachedProfilesReducer from "./reducers/cachedProfilesSlice";
 import oracleDataReducer from "./reducers/oracleDataSlice";
+import indexerReducer from "./reducers/indexerSlice";
 
 const reducer = combineReducers({
   walletConnectedReducer,
@@ -33,9 +33,9 @@ const reducer = combineReducers({
   availableCollectionsReducer,
   levelArrayReducer,
   availablePubLevelsReducer,
-  cachedProfilesReducer,
   oracleDataReducer,
   claimProfileReducer,
+  indexerReducer
 });
 
 export const store = configureStore({

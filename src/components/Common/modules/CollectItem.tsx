@@ -11,8 +11,6 @@ import {
 import { CollectItemProps, PrintType } from "../../Launch/types/launch.types";
 import PurchaseTokens from "@/components/Common/modules/PurchaseTokens";
 import Splits from "../../Launch/modules/Splits";
-import { setCartAnim } from "../../../../redux/reducers/cartAnimSlice";
-import { setCartItems } from "../../../../redux/reducers/cartItemsSlice";
 
 const CollectItem: FunctionComponent<CollectItemProps> = ({
   index,
@@ -27,17 +25,14 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
   dispatch,
   id,
 }): JSX.Element => {
-  const fulfillerBase =
-    Number(item?.items?.[index?.itemIndex]?.fulfillerBase) / 10 ** 18;
-  const fulfillerPercent =
-    Number(item?.items?.[index?.itemIndex]?.fulfillerPercent) / 10000;
-  const designerPercent =
-    Number(item?.items?.[index?.itemIndex]?.designerPercent) / 10000;
   const total = index?.price?.[index?.priceIndex] / 10 ** 18;
-
   const fulfillerShare =
-    fulfillerPercent * (total - fulfillerBase) + fulfillerBase;
-  const designerShare = designerPercent * (total - fulfillerBase);
+    item?.items?.[index.itemIndex]?.fulfillerPercent *
+      (total - item?.items?.[index.itemIndex]?.fulfillerBase) +
+    item?.items?.[index.itemIndex]?.fulfillerBase;
+  const designerShare =
+    item?.items?.[index.itemIndex]?.designerPercent *
+    (total - item?.items?.[index.itemIndex]?.fulfillerBase);
   const granteeShare = total - designerShare - fulfillerShare;
 
   return (
@@ -83,15 +78,17 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
               </div>
             )}
             <div className="relative w-52 h-52 rounded-sm border border-black flex items-center justify-center">
-              {item?.items?.[index?.itemIndex]?.uri?.images?.[
+              {item?.items?.[index?.itemIndex]?.collectionMetadata?.images?.[
                 index?.imageIndex
               ]?.split("ipfs://")[1] && (
                 <Image
                   layout="fill"
                   src={`${INFURA_GATEWAY}/ipfs/${
-                    item?.items?.[index.itemIndex]?.uri?.images?.[
-                      index?.imageIndex
-                    ]?.split("ipfs://")[1]
+                    item?.items?.[
+                      index.itemIndex
+                    ]?.collectionMetadata?.images?.[index?.imageIndex]?.split(
+                      "ipfs://"
+                    )[1]
                   }`}
                   draggable={false}
                   className="rounded-sm"
@@ -107,7 +104,9 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                       handleChangeImage(
                         index.levelIndex,
                         index.imageIndex <
-                          item.items[index.itemIndex]?.uri.images.length - 1
+                          item.items[index.itemIndex]?.collectionMetadata.images
+                            .length -
+                            1
                           ? index.imageIndex + 1
                           : 0
                       )
@@ -129,7 +128,8 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                         index.levelIndex,
                         index.imageIndex > 0
                           ? index.imageIndex - 1
-                          : item.items[index.itemIndex]?.uri.images.length - 1
+                          : item.items[index.itemIndex]?.collectionMetadata
+                              .images.length - 1
                       )
                     }
                   >
@@ -145,14 +145,15 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
           </div>
         )}
         <div className="relative flex items-center text-center justify-center w-fit text-sm font-net break-words">
-          {item?.items?.[index?.itemIndex]?.uri?.title}
+          {item?.items?.[index?.itemIndex]?.collectionMetadata?.title}
         </div>
         <div className="relative flex flex-col gap-1.5 justify-start items-center text-black font-dog text-xxs">
           <div className="relative flex justify-start items-center">Sizes</div>
           <div className="relative flex flex-row gap-1 items-center justify-center">
             {(item?.items?.[index?.itemIndex]?.printType === PrintType.Sticker
               ? STICKER_SIZE
-              : item?.items?.[index?.itemIndex]?.printType === PrintType.Shirt ||
+              : item?.items?.[index?.itemIndex]?.printType ===
+                  PrintType.Shirt ||
                 item?.items?.[index?.itemIndex]?.printType === PrintType.Hoodie
               ? APPAREL_SIZE
               : POSTER_SIZE
@@ -163,7 +164,8 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                   className={`relative ${
                     item?.items?.[index.itemIndex]?.printType !==
                       PrintType.Shirt &&
-                    item?.items?.[index.itemIndex]?.printType !== PrintType.Hoodie
+                    item?.items?.[index.itemIndex]?.printType !==
+                      PrintType.Hoodie
                       ? "w-fit h-fit rounded-sm"
                       : "w-6 h-6 rounded-full border-black"
                   } p-1 flex items-center justify-center text-white text-center text-super bg-mar border uppercase  ${

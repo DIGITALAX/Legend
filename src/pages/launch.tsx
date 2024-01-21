@@ -34,10 +34,6 @@ export default function Launch() {
   const allCollections = useSelector(
     (state: RootState) => state.app.availableCollectionsReducer.collections
   );
-  const profiles = useSelector(
-    (state: RootState) => state.app.cachedProfilesReducer.profiles
-  );
-
   const oracleData = useSelector(
     (state: RootState) => state.app.oracleDataReducer.data
   );
@@ -51,12 +47,8 @@ export default function Launch() {
     inputDateValue,
     dateOpen,
     setDateOpen,
-    handleRegisterGrant,
     handlePostGrant,
     postLoading,
-    registerLoading,
-    grantPosted,
-    grantRegistered,
     imageLoading,
     handleImageUpload,
     postInformation,
@@ -64,7 +56,7 @@ export default function Launch() {
     grantStage,
     setGrantStage,
     grantId,
-  } = useLaunch(publicClient, address, profile, levelArray);
+  } = useLaunch(publicClient, address, profile, levelArray, dispatch);
   const {
     handleShuffleCollectionLevels,
     indexes,
@@ -72,7 +64,7 @@ export default function Launch() {
     handleChangeImage,
     handleChangeItem,
     allCollectionsLoading,
-  } = useLevelItems(dispatch, allCollections, profiles, oracleData, levelItems);
+  } = useLevelItems(dispatch, allCollections, oracleData, levelItems);
   const { handleLensSignIn, signInLoading } = useSignIn(dispatch, profile);
   return (
     <div className="relative w-full h-full flex items-center justify-center p-5 overflow-y-hidden">
@@ -94,11 +86,7 @@ export default function Launch() {
           imageLoading={imageLoading}
           handleImageUpload={handleImageUpload}
           postLoading={postLoading}
-          registerLoading={registerLoading}
           signInLoading={signInLoading}
-          grantPosted={grantPosted}
-          grantRegistered={grantRegistered}
-          handleRegisterGrant={handleRegisterGrant}
           handlePostGrant={handlePostGrant}
           handleShuffleCollectionLevels={handleShuffleCollectionLevels}
           allCollectionsLoading={allCollectionsLoading}

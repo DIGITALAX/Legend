@@ -23,9 +23,6 @@ export default function Home() {
   const allPublications = useSelector(
     (state: RootState) => state.app.publishedGrantsReducer
   );
-  const profiles = useSelector(
-    (state: RootState) => state.app.cachedProfilesReducer.profiles
-  );
   const interactionsCount = useSelector(
     (state: RootState) => state.app.interactionsCountReducer
   );
@@ -35,7 +32,6 @@ export default function Home() {
   const { setCollectChoice, handleFetchMoreGrants, collectChoice } = useGrants(
     dispatch,
     allPublications,
-    profiles,
     interactionsCount,
     pubLevels
   );

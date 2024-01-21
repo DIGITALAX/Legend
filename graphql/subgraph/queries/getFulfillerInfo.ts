@@ -2,32 +2,30 @@ import { gql } from "@apollo/client";
 import { graphPrintClient } from "../../../lib/graph/client";
 
 const COLLECTIONS = `
-query($collectionId: String!) {
-  collectionCreateds(where: {collectionId: $collectionId}) {
-    fulfiller
-    unlimited
-    printType
-    prices
-    profileId
-    pubId
-    collectionId
-    collectionMetadata {
-      sizes
-      colors
-      title
-      images
+  query {
+    collectionCreateds(where: {origin: "0"}) {
+      fulfiller
+      unlimited
+      printType
+      prices
+      collectionId
+      designerSplit
+      fulfillerBase
+      fulfillerSplit
+      collectionMetadata {
+        sizes
+        colors
+        images
+        title
+      }
+      amount
     }
-    amount
   }
-}
 `;
 
-export const getOneCollection = async (collectionId: string): Promise<any> => {
-  const queryPromise = graphPrintClient.query({
+export const getAllCollections = async (): Promise<any> => {
+  const queryPromise =  graphPrintClient.query({
     query: gql(COLLECTIONS),
-    variables: {
-      collectionId,
-    },
     fetchPolicy: "no-cache",
     errorPolicy: "all",
   });
