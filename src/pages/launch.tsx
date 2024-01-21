@@ -69,7 +69,7 @@ export default function Launch() {
   return (
     <div className="relative w-full h-full flex items-center justify-center p-5 overflow-y-hidden">
       <div
-        className="relative w-3/5 h-4/5 items-start justify-center gap-4 flex overflow-y-scroll"
+        className="relative w-full h-4/5 items-start justify-center gap-4 flex overflow-y-scroll"
         id="milestone"
       >
         <LaunchSwitch
