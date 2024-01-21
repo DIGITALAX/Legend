@@ -19,7 +19,7 @@ const Preview: FunctionComponent<PreviewProps> = ({
 }): JSX.Element => {
   return (
     <div
-      className="relative flex flex-col w-full h-full overflow-y-scroll justify-start items-start"
+      className="relative flex flex-col w-3/5 h-full overflow-y-scroll justify-start items-start"
       id="milestone"
     >
       <div className="relative w-full h-fit flex flex-col gap-4 items-start justify-start">

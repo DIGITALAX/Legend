@@ -7,7 +7,7 @@ const Grantees: FunctionComponent<GranteesProps> = ({
   setPostInformation,
 }): JSX.Element => {
   return (
-    <div className="relative w-full min-w-fit h-full flex items-start justify-center flex-col overflow-x-scroll" id="milestone">
+    <div className="relative w-3/5 min-w-fit h-full flex items-start justify-center flex-col overflow-x-scroll" id="milestone">
       <Bar title="Grantee Info" />
       <div className="relative w-full h-full flex flex-row justify-start items-start p-4 gap-4 bg-offWhite border border-black rounded-b-sm">
         <div className="relative w-full h-full flex flex-col items-start justify-between gap-6">
