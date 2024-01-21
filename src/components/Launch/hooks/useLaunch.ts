@@ -145,9 +145,9 @@ const useLaunch = (
               (Number(item) * 10 ** 18).toString()
             ),
             submitBys: postInformation?.milestones?.map((mil) =>
-              Math.floor(new Date(`20${mil}`).getTime() / 1000)
+              Math.floor(new Date(`20${mil.submit}`).getTime() / 1000)
             ),
-            uri: contentURIValue?.grantURI
+            uri: contentURIValue?.grantURI,
           },
         ]
       );

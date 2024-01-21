@@ -17,7 +17,7 @@ const RegisterAndPost: FunctionComponent<RegisterAndPostProps> = ({
   return (
     <div className="relative w-3/5 min-w-fit h-fit bg-offWhite flex flex-col rounded-b-sm items-center justify-center">
       <Bar title={`Post Grant`} />
-      <div className="relative p-2 flex w-fit flex-col items-center justify-center gap-10 border border-black rounded-b-sm h-full font-dog">
+      <div className="relative p-2 flex w-full flex-col items-center justify-center gap-10 border border-black rounded-b-sm h-full font-dog">
         <div className="relative w-3/5 h-60 rounded-sm border border-black">
           <Image
             layout="fill"
@@ -34,11 +34,12 @@ const RegisterAndPost: FunctionComponent<RegisterAndPostProps> = ({
           <div
             className={`relative w-40 h-8 bg-viol border border-white rounded-md items-center justify-center flex px-1.5 cursor-pointer active:scale-95`}
             onClick={() =>
-              !connected
-                ? openConnectModal
-                : connected && !profileId
-                ? handleLensSignIn()
-                : handlePostGrant()
+              // !connected
+              //   ? openConnectModal
+              //   : connected && !profileId
+              //   ? handleLensSignIn()
+              //   : 
+                handlePostGrant()
             }
           >
             <div
