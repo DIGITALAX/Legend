@@ -13,7 +13,7 @@ const Information: FunctionComponent<InformationProps> = ({
   setPostInformation,
 }): JSX.Element => {
   return (
-    <div className="relative w-full min-w-fit h-fit flex flex-col items-center justify-start">
+    <div className="relative w-3/5 min-w-fit h-fit flex flex-col items-center justify-start">
       <Bar title="Grant Info" />
       <div className="relative bg-offWhite w-full min-w-fit h-fit flex flex-col items-center justify-start p-3 gap-6 border border-black rounded-b-sm">
         <div className="relative flex flex-row items-center justify-center gap-5 w-full h-fit">

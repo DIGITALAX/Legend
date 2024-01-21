@@ -55,7 +55,7 @@ const LaunchSwitch: FunctionComponent<LaunchSwitchProps> = ({
       );
     case 1:
       return (
-        <div className="relative w-full h-full flex flex-col items-center justify-center gap-6">
+        <div className="relative w-3/5 h-full flex flex-col items-center justify-center gap-6">
           <div className="relative w-full min-w-fit h-fit flex flex-col items-center justify-start">
             <Bar title="Accepted Currencies" />
             <div className="relative bg-offWhite w-full h-fit flex flex-col items-center justify-start p-3 gap-4 border border-black rounded-b-sm">
