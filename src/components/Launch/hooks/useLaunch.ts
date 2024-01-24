@@ -3,16 +3,13 @@ import { isValid, parse, format } from "date-fns";
 import uploadPostContent from "../../../../lib/lens/helpers/uploadPostContent";
 import { LevelInfo, PostInformation } from "../types/launch.types";
 import { ethers } from "ethers";
-import { LEGEND_OPEN_ACTION_CONTRACT } from "../../../../lib/constants";
+import {
+  ACCEPTED_TOKENS_MUMBAI,
+  LEGEND_OPEN_ACTION_CONTRACT,
+} from "../../../../lib/constants";
 import { polygonMumbai } from "viem/chains";
 import { PublicClient, createWalletClient, custom } from "viem";
-import getPublications from "../../../../graphql/lens/queries/publications";
-import {
-  LimitType,
-  Profile,
-  PublicationType,
-} from "../../../../graphql/generated";
-import validateMetadata from "../../../../graphql/lens/queries/metadata";
+import { Profile } from "../../../../graphql/generated";
 import { Dispatch } from "redux";
 import lensPost from "../../../../lib/graph/helpers/lensPost";
 
@@ -111,14 +108,36 @@ const useLaunch = (
 
     try {
       const contentURIValue = await uploadPostContent(postInformation);
-      const metadata = await validateMetadata({
-        rawURI: contentURIValue,
-      });
 
-      if (!metadata?.data?.validatePublicationMetadata.valid) {
-        setPostLoading(false);
-        return;
-      }
+      console.log({
+        levelInfo: levelArray?.map((item, index: number) => ({
+          level: index + 2,
+          collectionIds: item?.items?.map((item) =>
+            isNaN(Number(item?.collectionId)) ? 1 : Number(item?.collectionId)
+          ),
+          amounts: Array.from({ length: item?.items?.length }, () => 1),
+        })),
+        goalToCurrency: postInformation?.milestones?.map((mil) =>
+          mil.currencyAmount?.map((cur, index) =>
+            index ==
+            postInformation.currencies.findIndex(
+              (c) =>
+                c?.toLowerCase() == ACCEPTED_TOKENS_MUMBAI[3][2]?.toLowerCase()
+            )
+              ? (Number(cur?.goal) * 10 ** 6).toString()
+              : (Number(cur?.goal) * 10 ** 18).toString()
+          )
+        ),
+        acceptedCurrencies: postInformation.currencies,
+        granteeAddresses: postInformation?.grantees,
+        splitAmounts: postInformation?.splits?.map((item) =>
+          (Number(item) * 10 ** 18).toString()
+        ),
+        submitBys: postInformation?.milestones?.map((mil) =>
+          Math.floor(new Date(`20${mil.submit}`).getTime() / 1000)
+        ),
+        uri: contentURIValue?.grantURI,
+      });
 
       const encodedData: string = ethers.utils.defaultAbiCoder.encode(
         [
@@ -129,14 +148,22 @@ const useLaunch = (
             levelInfo: levelArray?.map((item, index: number) => ({
               level: index + 2,
               collectionIds: item?.items?.map((item) =>
-                Number(item?.collectionId)
+                isNaN(Number(item?.collectionId))
+                  ? 1
+                  : Number(item?.collectionId)
               ),
               amounts: Array.from({ length: item?.items?.length }, () => 1),
             })),
-
             goalToCurrency: postInformation?.milestones?.map((mil) =>
-              mil.currencyAmount?.map((cur) =>
-                (Number(cur?.goal) * 10 ** 18).toString()
+              mil.currencyAmount?.map((cur, index) =>
+                index ==
+                postInformation.currencies.findIndex(
+                  (c) =>
+                    c?.toLowerCase() ==
+                    ACCEPTED_TOKENS_MUMBAI[3][2]?.toLowerCase()
+                )
+                  ? (Number(cur?.goal) * 10 ** 6).toString()
+                  : (Number(cur?.goal) * 10 ** 18).toString()
               )
             ),
             acceptedCurrencies: postInformation.currencies,
@@ -173,6 +200,26 @@ const useLaunch = (
         publicClient
       );
 
+      setPostInformation({
+        title: "",
+        description: "",
+        coverImage: "",
+        tech: "",
+        strategy: "",
+        experience: "",
+        team: "",
+        grantees: [],
+        splits: [],
+        currencies: [],
+        milestones: Array.from({ length: 3 }, () => ({
+          description: "",
+          currencyAmount: [],
+          submit: new Date(
+            new Date().setMonth(new Date().getMonth() + 1)
+          ).toDateString(),
+          image: "",
+        })),
+      });
       setGrantStage(6);
     } catch (err: any) {
       console.error(err.message);
@@ -235,35 +282,6 @@ const useLaunch = (
       newArray[index] = false;
       return newArray;
     });
-  };
-
-  const getLastPost = async () => {
-    try {
-      const data = await getPublications({
-        limit: LimitType.Ten,
-        where: {
-          from: profile?.id,
-          publicationTypes: [
-            PublicationType.Comment,
-            PublicationType.Post,
-            PublicationType.Quote,
-          ],
-        },
-      });
-
-      let id: number;
-      if (!data || data?.data?.publications.items.length === 0) {
-        id = 1;
-      } else {
-        id =
-          parseInt(data?.data?.publications.items[0].id?.split("-")?.[1], 16) +
-          1;
-      }
-      setGrantId(id);
-      return id;
-    } catch (err: any) {
-      console.error(err.message);
-    }
   };
 
   return {

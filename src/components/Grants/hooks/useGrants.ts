@@ -13,7 +13,7 @@ import {
   InteractionsCountState,
   setInteractionsCount,
 } from "../../../../redux/reducers/interactionsCountSlice";
-import { getPubLevels } from "../../../../graphql/subgraph/queries/getPubLevels";
+import { getAllGrants } from "../../../../graphql/subgraph/queries/getAllGrants";
 import { setAvailablePubLevels } from "../../../../redux/reducers/availablePubLevelsSlice";
 import { LevelInfo, PrintItem } from "@/components/Launch/types/launch.types";
 import { getOneCollection } from "../../../../graphql/subgraph/queries/getOneCollection";
@@ -203,7 +203,7 @@ const useGrants = (
 
       const apparelPromises = sortedArr.map(async (post: Post) => {
         let levelInfoArray: LevelInfo[] = [];
-        const matchingPubLevel = pubLevels.find(
+        const matchingPubLevel = pubLevels?.find(
           (pubLevel) =>
             Number(pubLevel.pubId) === parseInt(post.id.split("-")[1], 16)
         );
@@ -243,7 +243,7 @@ const useGrants = (
 
   const handleFetchApparelLevels = async () => {
     try {
-      const { data } = await getPubLevels();
+      const { data } = await getAllGrants();
       dispatch(setAvailablePubLevels(data?.levelsAddeds));
     } catch (err: any) {
       console.error(err.message);
@@ -251,13 +251,13 @@ const useGrants = (
   };
 
   useEffect(() => {
-    if (pubLevels.length > 0) {
+    if (pubLevels?.length > 0) {
       handleFetchGrants();
     }
-  }, [pubLevels.length]);
+  }, [pubLevels?.length]);
 
   useEffect(() => {
-    if (pubLevels.length < 1) {
+    if (pubLevels?.length < 1) {
       handleFetchApparelLevels();
     }
   }, []);

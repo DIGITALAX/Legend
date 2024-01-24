@@ -108,7 +108,7 @@ const Milestone: FunctionComponent<MilestoneProps> = ({
                           ]?.currencyAmount?.findIndex(
                             (item) => item.currency == currency
                           )
-                        ]?.goal
+                        ]?.goal || 0
                       }
                     />
                   </div>

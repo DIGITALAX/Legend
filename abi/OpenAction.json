@@ -2,6 +2,11 @@
   {
     "inputs": [
       {
+        "internalType": "string",
+        "name": "_metadataDetails",
+        "type": "string"
+      },
+      {
         "internalType": "address",
         "name": "_hub",
         "type": "address"
@@ -13,7 +18,7 @@
       },
       {
         "internalType": "address",
-        "name": "_printAccessControlAddress",
+        "name": "_legendAccessControlAddress",
         "type": "address"
       },
       {
@@ -38,7 +43,7 @@
       },
       {
         "internalType": "address",
-        "name": "_legendRegisterAddress",
+        "name": "_legendDataAddress",
         "type": "address"
       }
     ],
@@ -58,6 +63,11 @@
   {
     "inputs": [],
     "name": "InvalidAmounts",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidLengths",
     "type": "error"
   },
   {
@@ -145,67 +155,9 @@
     "name": "MODULE_GLOBALS",
     "outputs": [
       {
-        "internalType": "contract IModuleGlobals",
+        "internalType": "contract IModuleRegistry",
         "name": "",
         "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_pubId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_profileId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_level",
-        "type": "uint256"
-      }
-    ],
-    "name": "getGrantLevelCollectionAmounts",
-    "outputs": [
-      {
-        "internalType": "uint256[]",
-        "name": "",
-        "type": "uint256[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_pubId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_profileId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_level",
-        "type": "uint256"
-      }
-    ],
-    "name": "getGrantLevelCollectionIds",
-    "outputs": [
-      {
-        "internalType": "uint256[]",
-        "name": "",
-        "type": "uint256[]"
       }
     ],
     "stateMutability": "view",
@@ -236,6 +188,19 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "getModuleMetadataURI",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -249,7 +214,7 @@
       },
       {
         "internalType": "address",
-        "name": "_granteeAddress",
+        "name": "_executor",
         "type": "address"
       },
       {
@@ -271,10 +236,10 @@
   },
   {
     "inputs": [],
-    "name": "legendMilestone",
+    "name": "legendAccessControl",
     "outputs": [
       {
-        "internalType": "address",
+        "internalType": "contract LegendAccessControl",
         "name": "",
         "type": "address"
       }
@@ -284,10 +249,23 @@
   },
   {
     "inputs": [],
-    "name": "legendRegister",
+    "name": "legendData",
     "outputs": [
       {
-        "internalType": "contract LegendRegister",
+        "internalType": "contract LegendData",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "legendMilestone",
+    "outputs": [
+      {
+        "internalType": "contract LegendMilestoneEscrow",
         "name": "",
         "type": "address"
       }
@@ -301,19 +279,6 @@
     "outputs": [
       {
         "internalType": "contract MarketCreator",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "printAccessControl",
-    "outputs": [
-      {
-        "internalType": "contract PrintAccessControl",
         "name": "",
         "type": "address"
       }
@@ -417,11 +382,11 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_newLegendMilestoneAddress",
+        "name": "_newLegendAccessControlAddress",
         "type": "address"
       }
     ],
-    "name": "setLegendMilestoneAddress",
+    "name": "setLegendAccessControlAddress",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -430,11 +395,24 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_newLegendRegisterAddress",
+        "name": "_newLegendDataAddress",
         "type": "address"
       }
     ],
-    "name": "setLegendRegisterAddress",
+    "name": "setLegendDataAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_newLegendMilestoneAddress",
+        "type": "address"
+      }
+    ],
+    "name": "setLegendMilestoneAddress",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -456,11 +434,11 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_newPrintAccessControlAddress",
+        "name": "_newPrintDesignDataAddress",
         "type": "address"
       }
     ],
-    "name": "setPrintAccessControlAddress",
+    "name": "setPrintDesignDataAddress",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -469,13 +447,32 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_newPrintDesignDataAddress",
+        "name": "_newPrintSplitsDataAddress",
         "type": "address"
       }
     ],
-    "name": "setPrintDesignDataAddress",
+    "name": "setPrintSplitsDataAddress",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes4",
+        "name": "interfaceId",
+        "type": "bytes4"
+      }
+    ],
+    "name": "supportsInterface",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   }
 ]

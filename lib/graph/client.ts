@@ -1,7 +1,7 @@
 import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
 
 const httpLinkLegend = new HttpLink({
-  uri: "https://api.studio.thegraph.com/query/37770/legend_draft/version/latest",
+  uri: "https://api.thegraph.com/subgraphs/name/emmajane1313/legend-mumbai",
 });
 
 export const graphLegendClient = new ApolloClient({
