@@ -16,6 +16,7 @@ const COLLECTIONS = `
         title
       }
       amount
+      uri
       designerPercent
       fulfillerBase
       fulfillerPercent

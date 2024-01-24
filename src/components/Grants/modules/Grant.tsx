@@ -6,90 +6,119 @@ import { GrantProps } from "../types/grant.types";
 import { AiOutlineLoading } from "react-icons/ai";
 import { LevelInfo } from "@/components/Launch/types/launch.types";
 import CollectItem from "@/components/Common/modules/CollectItem";
+import { ImageMetadataV3 } from "../../../../graphql/generated";
+import numeral from "numeral";
 
 const Grant: FunctionComponent<GrantProps> = ({
-  publication,
-  collectChoice,
-  commentGrant,
-  likeGrant,
-  mirrorGrant,
-  quoteGrant,
-  setCollectChoice,
-  cartItems,
-  dispatch,
+  grant,
+  mirror,
+  like,
+  bookmark,
   router,
-  showComments,
-  showLikes,
-  showMirrors,
-  showQuotes,
   interactionsLoading,
-  apparelItems,
+  dispatch,
+  setMirrorChoiceOpen,
+  mirrorChoiceOpen,
+  index,
 }) => {
   return (
-    <div className="relative h-fit w-[30rem] border border-black flex flex-col items-center justify-center">
-      <Bar title={publication?.metadata?.marketplace?.name!} />
+    <div className="relative h-fit w-[30rem] border border-black flex flex-col items-center justify-center bg-black">
+      <Bar title={(grant?.publication?.metadata as ImageMetadataV3)?.title!} />
       <div className="relative w-full h-fit flex flex-col gap-8" id="grant">
         <div className="p-5 relative w-full h-fit flex items-center justify-center flex-row gap-5">
           <div className="relative w-full h-fit flex break-words font-vcr text-black p-2 justify-start items-center rounded-sm border border-black bg-offWhite p-2 flex-col gap-4">
             <div className="relative w-full h-40 flex items-center justify-start gap-6">
               <div className="relative w-full overflow-y-scroll h-full ustify-start items-center">
-                {publication?.metadata?.marketplace?.description}
+                {(grant?.publication?.metadata as ImageMetadataV3)?.content}
               </div>
               <div className="relative w-24 h-fit border border-black rounded-md flex flex-col gap-2 p-2 items-center justify-center">
                 {[
-                  "QmRQVbnK1VajkBzjz9w2zFSSbC9fAdKRo7m53VuvhyvHa4",
-                  "QmVFm5onDqzKCV6v9XbGTQirXsWFmRgihsYcXVBbLMxneL",
-                  "QmRsAM1oJfiv1Py92uoYk7VMdrnPfWDsgH3Y2tPWVDqxHw",
-                  "",
-                ].map((image: string, index: number) => {
-                  const functions = [
-                    likeGrant,
-                    commentGrant,
-                    mirrorGrant,
-                    quoteGrant,
-                  ];
-                  const show = [
-                    showLikes,
-                    showComments,
-                    showMirrors,
-                    showQuotes,
-                  ];
-                  const loaders = [
-                    interactionsLoading?.like,
-                    interactionsLoading?.comment,
-                    interactionsLoading?.mirror,
-                    interactionsLoading?.quote,
-                  ];
-                  return (
-                    <div
-                      key={index}
-                      className="relative w-fit h-fit flex flex-row items-center justify-center gap-3 font-vcr text-black text-center"
-                      onClick={() =>
-                        !loaders[index] && functions[index](publication?.id)
-                      }
-                    >
-                      {loaders[index] ? (
-                        <div className="relative w-fit h-fit animate-spin flex items-center justify-center">
-                          <AiOutlineLoading size={15} color="white" />
-                        </div>
-                      ) : (
-                        <div className="relative w-4 h-3 flex items-center justify-center cursor-pointer active:scale-95">
-                          <Image
-                            layout="fill"
-                            src={`${INFURA_GATEWAY}/ipfs/${image}`}
-                            draggable={false}
-                          />
-                        </div>
-                      )}
+                  {
+                    image: "QmRQVbnK1VajkBzjz9w2zFSSbC9fAdKRo7m53VuvhyvHa4",
+                    title: "Like",
+                    function: () =>
+                      like(
+                        grant?.publication?.id,
+                        grant?.publication?.operations?.hasReacted!,
+                        false
+                      ),
+                    loader: interactionsLoading?.[index]?.like,
+                    amount: grant?.publication?.stats?.reactions || 0,
+                  },
+                  {
+                    image: "QmVFm5onDqzKCV6v9XbGTQirXsWFmRgihsYcXVBbLMxneL",
+                    title: "Bookmark",
+                    function: () => bookmark(grant?.publication?.id),
+                    loader: interactionsLoading?.[index]?.bookmark,
+                    amount: grant?.publication?.stats?.bookmarks || 0,
+                  },
+                  {
+                    image: "QmRsAM1oJfiv1Py92uoYk7VMdrnPfWDsgH3Y2tPWVDqxHw",
+                    title: "Mirror",
+                    function: () =>
+                      setMirrorChoiceOpen((prev) => {
+                        const old = [...prev];
+                        !old[index];
+                        return old;
+                      }),
+                    loader: false,
+                    amount:
+                      (grant?.publication?.stats?.mirrors || 0) +
+                      (grant?.publication?.stats?.quotes || 0),
+                  },
+                  {
+                    image: "QmRQVbnK1VajkBzjz9w2zFSSbC9fAdKRo7m53VuvhyvHa4",
+                    title: "Contributors",
+                    function: () =>
+                      router.push(`/grant/${grant?.publication?.id}`),
+                    loader: false,
+                    amount: grant?.publication?.stats?.countOpenActions || 0,
+                  },
+                  {
+                    image: "QmRQVbnK1VajkBzjz9w2zFSSbC9fAdKRo7m53VuvhyvHa4",
+                    title: "Comments",
+                    function: () =>
+                      router.push(`/grant/${grant?.publication?.id}`),
+                    loader: false,
+                    amount: grant?.publication?.stats?.comments || 0,
+                  },
+                ].map(
+                  (
+                    item: {
+                      image: string;
+                      title: string;
+                      function: () => void;
+                      loader: boolean;
+                      amount: number;
+                    },
+                    indexTwo: number
+                  ) => {
+                    return (
                       <div
-                        className="relative w-fit h-fit items-center justify-center flex cursor-pointer"
-                        onClick={() => show[index](publication?.id)}
+                        key={indexTwo}
+                        className="relative w-fit h-fit flex flex-row items-center justify-center gap-3 font-vcr text-black text-center"
+                        onClick={() => !item?.loader && item?.function()}
                       >
-                        2K
+                        {item?.loader ? (
+                          <div className="relative w-fit h-fit animate-spin flex items-center justify-center">
+                            <AiOutlineLoading size={15} color="white" />
+                          </div>
+                        ) : (
+                          <div className="relative w-4 h-3 flex items-center justify-center cursor-pointer active:scale-95">
+                            <Image
+                              layout="fill"
+                              src={`${INFURA_GATEWAY}/ipfs/${item?.image}`}
+                              draggable={false}
+                            />
+                          </div>
+                        )}
+                        <div className="relative w-fit h-fit items-center justify-center flex cursor-pointer">
+                          {numeral(item.amount).format("0a")}
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  }
+                )}
               </div>
             </div>
             <div className="relative w-full h-fit flex justify-start items-start flex-col ml-0 gap-2">
@@ -138,7 +167,11 @@ const Grant: FunctionComponent<GrantProps> = ({
                   <div className="relative h-full overflow-y-scroll w-full flex items-start justify-start p-1.5"></div>
                   <div className="relative w-60 h-full border border-marron flex items-center justify-center rounded-sm bg-virg">
                     <Image
-                      src={`${INFURA_GATEWAY}/ipfs/${publication?.metadata.marketplace?.image?.raw.uri}`}
+                      src={`${INFURA_GATEWAY}/ipfs/${
+                        grant?.publication?.metadata.marketplace?.image?.raw.uri?.split(
+                          "ipfs://"
+                        )?.[1]
+                      }`}
                       layout="fill"
                       className="rounded-sm w-full h-full"
                       objectFit="cover"
@@ -176,28 +209,18 @@ const Grant: FunctionComponent<GrantProps> = ({
             id="milestone"
           >
             <div className="relative w-fit h-fit flex flex-row gap-4 pb-2 items-start justify-start">
-              {/* {apparelItems?.map((item: LevelInfo, index: number) => {
+              {grant?.levelInfo?.map((level: LevelInfo, index: number) => {
                 return (
                   <CollectItem
                     key={index}
-                  //   index={
-                  //  {   levelIndex: item.level,
-                  //     imageIndex: ,
-                  //     rate: ,
-                  //     currency: ,
-                  //     price: ,
-                  //     priceIndex: ,
-                  //     itemIndex: index}
-                  //   }
                     dispatch={dispatch}
-                    cartItems={cartItems}
-                    items={item.items}
-                    id={publication?.id}
+                    levelInfo={level}
+                    id={grant?.publication?.id}
                     router={router}
                     cart
                   />
                 );
-              })} */}
+              })}
             </div>
           </div>
         </div>

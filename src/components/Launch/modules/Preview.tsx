@@ -238,11 +238,11 @@ const Preview: FunctionComponent<PreviewProps> = ({
               index={indexes[0]}
               handleChangeCurrency={handleChangeCurrency}
             />
-            {levelArray?.map((item: LevelInfo, index: number) => {
+            {levelArray?.map((levelInfo: LevelInfo, index: number) => {
               return (
                 <CollectItem
                   key={index}
-                  item={item}
+                  levelInfo={levelInfo}
                   index={indexes[index + 1]}
                   handleChangeCurrency={handleChangeCurrency}
                   handleChangeImage={handleChangeImage}

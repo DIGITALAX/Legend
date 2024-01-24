@@ -109,36 +109,6 @@ const useLaunch = (
     try {
       const contentURIValue = await uploadPostContent(postInformation);
 
-      console.log({
-        levelInfo: levelArray?.map((item, index: number) => ({
-          level: index + 2,
-          collectionIds: item?.items?.map((item) =>
-            isNaN(Number(item?.collectionId)) ? 1 : Number(item?.collectionId)
-          ),
-          amounts: Array.from({ length: item?.items?.length }, () => 1),
-        })),
-        goalToCurrency: postInformation?.milestones?.map((mil) =>
-          mil.currencyAmount?.map((cur, index) =>
-            index ==
-            postInformation.currencies.findIndex(
-              (c) =>
-                c?.toLowerCase() == ACCEPTED_TOKENS_MUMBAI[3][2]?.toLowerCase()
-            )
-              ? (Number(cur?.goal) * 10 ** 6).toString()
-              : (Number(cur?.goal) * 10 ** 18).toString()
-          )
-        ),
-        acceptedCurrencies: postInformation.currencies,
-        granteeAddresses: postInformation?.grantees,
-        splitAmounts: postInformation?.splits?.map((item) =>
-          (Number(item) * 10 ** 18).toString()
-        ),
-        submitBys: postInformation?.milestones?.map((mil) =>
-          Math.floor(new Date(`20${mil.submit}`).getTime() / 1000)
-        ),
-        uri: contentURIValue?.grantURI,
-      });
-
       const encodedData: string = ethers.utils.defaultAbiCoder.encode(
         [
           "tuple(tuple(uint256[] collectionIds, uint256[] amounts, uint8 level)[6] levelInfo, uint256[][3] goalToCurrency, address[] acceptedCurrencies, address[] granteeAddresses, uint256[] splitAmounts, uint256[3] submitBys, string uri)",
@@ -147,12 +117,15 @@ const useLaunch = (
           {
             levelInfo: levelArray?.map((item, index: number) => ({
               level: index + 2,
-              collectionIds: item?.items?.map((item) =>
+              collectionIds: item?.collectionIds?.map((item) =>
                 isNaN(Number(item?.collectionId))
                   ? 1
                   : Number(item?.collectionId)
               ),
-              amounts: Array.from({ length: item?.items?.length }, () => 1),
+              amounts: Array.from(
+                { length: item?.collectionIds?.length },
+                () => 1
+              ),
             })),
             goalToCurrency: postInformation?.milestones?.map((mil) =>
               mil.currencyAmount?.map((cur, index) =>

@@ -220,10 +220,6 @@ export const COLLECT_LEVEL_ABI: [
   },
 ];
 
-export const APPAREL_SIZE: string[] = ["xs", "s", "m", "l", "xl"];
-export const STICKER_SIZE: string[] = ['11"x17"', '18"x24"', '24"x36"'];
-export const POSTER_SIZE: string[] = ['2"x2"', '4"x4"', '6"x6"'];
-
 export const ACCEPTED_TOKENS: string[][] = [
   [
     "QmYYUQ8nGDnyuk8jQSung1WmTksvLEQBXjnCctdRrKtsNk",

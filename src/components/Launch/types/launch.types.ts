@@ -79,6 +79,7 @@ export interface PrintItem {
     colors: string[];
     title: string;
   };
+  uri: string;
   profile: Profile;
   prices: string[];
   printType: PrintType;
@@ -97,7 +98,8 @@ export enum PrintType {
 
 export interface LevelInfo {
   level: number;
-  items: PrintItem[];
+  collectionIds: PrintItem[];
+  amounts: number[];
 }
 
 export type SplitsProps = {
@@ -198,8 +200,8 @@ export type CollectionShuffleProps = {
 };
 
 export type CollectItemProps = {
-  allCollectionsLoading?: boolean;
-  item: LevelInfo;
+  levelsLoading?: boolean;
+  levelInfo: LevelInfo;
   index: {
     levelIndex: number;
     imageIndex: number;

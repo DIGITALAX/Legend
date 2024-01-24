@@ -2,9 +2,8 @@ import { gql } from "@apollo/client";
 import { graphLegendClient } from "../../../lib/graph/client";
 
 const LEVELS = `
-  query {
-    grantCreateds {
-      id
+  query($first: Int, $skip: Int) {
+    grantCreateds(first: $first, skip: $skip) {
       grantId
       creator
       pubId
@@ -44,9 +43,16 @@ const LEVELS = `
   }
 `;
 
-export const getAllGrants = async (): Promise<any> => {
+export const getAllGrants = async (
+  first: number,
+  skip: number
+): Promise<any> => {
   const queryPromise = graphLegendClient.query({
     query: gql(LEVELS),
+    variables: {
+      first,
+      skip,
+    },
     fetchPolicy: "no-cache",
     errorPolicy: "all",
   });
