@@ -3,17 +3,17 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_legendRegisterAddress",
+        "name": "_legendDataAddress",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "_printAccessControlAddress",
+        "name": "_legendAccessControlAddress",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "_printSplitsDataAddress",
+        "name": "_machineCreditSwapAddress",
         "type": "address"
       }
     ],
@@ -37,45 +37,61 @@
   },
   {
     "inputs": [],
+    "name": "InvalidAddress",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "InvalidClaim",
     "type": "error"
   },
   {
-    "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
         "internalType": "address",
-        "name": "claimer",
+        "name": "_currency",
         "type": "address"
       },
       {
-        "indexed": false,
         "internalType": "uint256",
-        "name": "milestone",
+        "name": "_amount",
         "type": "uint256"
       },
       {
-        "indexed": false,
         "internalType": "uint256",
-        "name": "pubId",
+        "name": "_grantId",
         "type": "uint256"
       }
     ],
-    "name": "MilestoneClaimed",
-    "type": "event"
+    "name": "fundGrant",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_pubId",
+        "name": "_grantId",
+        "type": "uint256"
+      }
+    ],
+    "name": "grantRecallCheck",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_grantId",
         "type": "uint256"
       },
       {
-        "internalType": "uint256",
+        "internalType": "uint8",
         "name": "_milestone",
-        "type": "uint256"
+        "type": "uint8"
       }
     ],
     "name": "initiateMilestoneClaim",
@@ -85,10 +101,10 @@
   },
   {
     "inputs": [],
-    "name": "legendRegister",
+    "name": "legendAccessControl",
     "outputs": [
       {
-        "internalType": "contract LegendRegister",
+        "internalType": "contract LegendAccessControl",
         "name": "",
         "type": "address"
       }
@@ -98,10 +114,10 @@
   },
   {
     "inputs": [],
-    "name": "printAccessControl",
+    "name": "legendData",
     "outputs": [
       {
-        "internalType": "contract PrintAccessControl",
+        "internalType": "contract LegendData",
         "name": "",
         "type": "address"
       }
@@ -111,12 +127,38 @@
   },
   {
     "inputs": [],
-    "name": "printSplitsData",
+    "name": "legendOpenAction",
     "outputs": [
       {
-        "internalType": "contract PrintSplitsData",
+        "internalType": "address",
         "name": "",
         "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "machineCreditSwap",
+    "outputs": [
+      {
+        "internalType": "contract LegendMachineCreditSwap",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "name",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
       }
     ],
     "stateMutability": "view",
@@ -126,11 +168,11 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_newLegendRegisterAddress",
+        "name": "_newLegendAccessControlAddress",
         "type": "address"
       }
     ],
-    "name": "setLegendRegisterAddress",
+    "name": "setLegendAccessControlAddress",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -139,11 +181,11 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_newPrintAccessControlAddress",
+        "name": "_newLegendDataAddress",
         "type": "address"
       }
     ],
-    "name": "setPrintAccessControlAddress",
+    "name": "setLegendDataAddress",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -152,13 +194,39 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_newPrintSplitsDataAddress",
+        "name": "_newLegendOpenActionAddress",
         "type": "address"
       }
     ],
-    "name": "setPrintSplitsDataAddress",
+    "name": "setLegendOpenActionAddress",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_newMachineCreditSwapAddress",
+        "type": "address"
+      }
+    ],
+    "name": "setMachineCreditSwapAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "symbol",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   }
 ]

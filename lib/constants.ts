@@ -4,11 +4,11 @@ export const INFURA_GATEWAY: string = "https://chromadin.infura-ipfs.io";
 export const BASE_URL: string = "https://api-v2-mumbai-live.lens.dev/";
 
 export const LENS_HUB_PROXY: `0x${string}` =
-  "0xC1E77eE73403B8a7478884915aA599932A677870";
-export const GRANT_MILESTONE_CLAIM_CONTRACT: `0x${string}` =
-  "0xa6931B10156721F55e6bd7D8A980254952A78BaA";
+  "0x4fbffF20302F3326B20052ab9C217C44F6480900";
+export const LEGEND_MILESTONE_ESCROW_CONTRACT: `0x${string}` =
+  "0xf340B1610FeE6c0e6b19299403CAb40b6BDE65b2";
 export const LEGEND_OPEN_ACTION_CONTRACT: `0x${string}` =
-  "0x0eb82Cc9df6DB90fb05aD515B53eC9C5222A08F0";
+  "0x639b8178DCf393Fb37B2212a0C2431A262622f98";
 export const DIGITALAX_PROFILE_ID_LENS: string = "0x012d";
 
 export const COVER_CONSTANTS: string[] = [
