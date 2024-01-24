@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { setLevelArray } from "../../../../redux/reducers/levelArraySlice";
 import { getAllCollections } from "../../../../graphql/subgraph/queries/getAllCollections";
 import { setAvailableCollections } from "../../../../redux/reducers/availableCollectionsSlice";
-import { Profile } from "../../../../graphql/generated";
 import {
   LevelInfo,
   OracleData,
@@ -14,6 +13,7 @@ import { ACCEPTED_TOKENS_MUMBAI } from "../../../../lib/constants";
 import { getOracleData } from "../../../../graphql/subgraph/queries/getOracleData";
 import { setOracleData } from "../../../../redux/reducers/oracleDataSlice";
 import { Dispatch } from "redux";
+import fetchIpfsJson from "../../../../lib/graph/helpers/fetchIPFSJson";
 
 const useLevelItems = (
   dispatch: Dispatch,
@@ -61,25 +61,30 @@ const useLevelItems = (
         [PrintType.Hoodie]: [],
       };
 
-      data?.collectionCreateds?.forEach(
-        (item: {
-          printType: string;
-          designerPercent: string;
-          fulfillerBase: string;
-          fulfillerPercent: string;
-        }) => {
-          const fulfillerBase = Number(item?.fulfillerBase || 0) / 10 ** 18;
-          const fulfillerPercent = Number(item?.fulfillerPercent || 0) / 10000;
+      const promises = await Promise.all(
+        data?.collectionCreateds?.forEach(
+          async (item: PrintItem) => {
+            const fulfillerBase = Number(item?.fulfillerBase || 0) / 10 ** 18;
+            const fulfillerPercent =
+              Number(item?.fulfillerPercent || 0) / 10000;
 
-          const designerPercent = Number(item?.designerPercent || 0) / 10000;
+            const designerPercent = Number(item?.designerPercent || 0) / 10000;
 
-          categorizedCollections[item.printType].push({
-            ...item,
-            designerPercent,
-            fulfillerBase,
-            fulfillerPercent,
-          } as PrintItem);
-        }
+            if (!item?.collectionMetadata) {
+              item = {
+                ...item,
+                collectionMetadata: await fetchIpfsJson(item?.uri),
+              };
+            }
+
+            categorizedCollections[item.printType].push({
+              ...item,
+              designerPercent,
+              fulfillerBase,
+              fulfillerPercent,
+            } as PrintItem);
+          }
+        )
       );
       dispatch(setAvailableCollections(categorizedCollections));
     } catch (err: any) {
@@ -92,30 +97,30 @@ const useLevelItems = (
     const levelArray: LevelInfo[] = [];
 
     for (let level = 2; level <= 7; level++) {
-      const levelObj: LevelInfo = { level, items: [] };
+      const levelObj: LevelInfo = { level, collectionIds: [], amounts: [] };
       switch (level) {
         case 2:
-          levelObj.items.push(
+          levelObj.collectionIds.push(
             pickRandomItem(allCollections?.[PrintType.Sticker]!)
           );
           break;
         case 3:
-          levelObj.items.push(
+          levelObj.collectionIds.push(
             pickRandomItem(allCollections?.[PrintType.Poster]!)
           );
           break;
         case 4:
-          levelObj.items.push(
+          levelObj.collectionIds.push(
             pickRandomItem(allCollections?.[PrintType.Shirt]!)
           );
           break;
         case 5:
-          levelObj.items.push(
+          levelObj.collectionIds.push(
             pickRandomItem(allCollections?.[PrintType.Hoodie]!)
           );
           break;
         case 6:
-          levelObj.items.push(
+          levelObj.collectionIds.push(
             pickRandomItem(allCollections?.[PrintType.Sticker]!),
             pickRandomItem(allCollections?.[PrintType.Poster]!),
             pickRandomItem(allCollections?.[PrintType.Hoodie]!),
@@ -123,7 +128,7 @@ const useLevelItems = (
           );
           break;
         case 7:
-          levelObj.items.push(
+          levelObj.collectionIds.push(
             pickRandomItem(allCollections?.[PrintType.Sticker]!),
             pickRandomItem(allCollections?.[PrintType.Sticker]!),
             pickRandomItem(allCollections?.[PrintType.Poster]!),
@@ -153,7 +158,7 @@ const useLevelItems = (
         price:
           index === 0
             ? [10 ** 18]
-            : levelArray[index - 1]?.items?.map((item) =>
+            : levelArray[index - 1]?.collectionIds?.map((item) =>
                 Number(item?.prices[0])
               ),
         itemIndex: 0,
@@ -184,7 +189,7 @@ const useLevelItems = (
     items[levelIndex].priceIndex = priceIndex;
     if (levelIndex != 0) {
       items[levelIndex].price[priceIndex] = Number(
-        levelItems[levelIndex - 1].items[itemIndex]?.prices[priceIndex]
+        levelItems[levelIndex - 1].collectionIds[itemIndex]?.prices[priceIndex]
       );
     }
 

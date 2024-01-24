@@ -3,39 +3,33 @@ import { configureStore } from "@reduxjs/toolkit";
 import walletConnectedReducer from "./reducers/walletConnectedSlice";
 import lensProfileReducer from "./reducers/lensProfileSlice";
 import claimProfileReducer from "./reducers/claimProfileSlice";
-import storeItemsReducer from "./reducers/storeItemsSlice";
-import publishedGrantsReducer from "./reducers/publishedGrantsSlice";
 import cartItemsReducer from "./reducers/cartItemsSlice";
 import cartAnimReducer from "./reducers/cartAnimSlice";
-import interactionsCountReducer from "./reducers/interactionsCountSlice";
-import reactBoxReducer from "./reducers/reactBoxSlice";
 import granteeReducer from "./reducers/granteeSlice";
 import errorModalReducer from "./reducers/errorModalSlice";
 import imageExpandReducer from "./reducers/mediaExpandSlice";
 import availableCollectionsReducer from "./reducers/availableCollectionsSlice";
 import levelArrayReducer from "./reducers/levelArraySlice";
-import availablePubLevelsReducer from "./reducers/availablePubLevelsSlice";
+import allGrantsReducer from "./reducers/allGrantsSlice";
 import oracleDataReducer from "./reducers/oracleDataSlice";
 import indexerReducer from "./reducers/indexerSlice";
+import collectionsCacheReducer from "./reducers/collectionsCacheSlice";
 
 const reducer = combineReducers({
   walletConnectedReducer,
   lensProfileReducer,
-  storeItemsReducer,
-  publishedGrantsReducer,
   cartItemsReducer,
   cartAnimReducer,
-  interactionsCountReducer,
-  reactBoxReducer,
   granteeReducer,
   errorModalReducer,
   imageExpandReducer,
   availableCollectionsReducer,
   levelArrayReducer,
-  availablePubLevelsReducer,
+  allGrantsReducer,
   oracleDataReducer,
   claimProfileReducer,
-  indexerReducer
+  indexerReducer,
+  collectionsCacheReducer,
 });
 
 export const store = configureStore({

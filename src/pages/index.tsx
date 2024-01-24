@@ -4,122 +4,112 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { useRouter } from "next/router";
-import LikeBox from "@/components/Grants/modules/LikeBox";
-import MirrorBox from "@/components/Grants/modules/MirrorBox";
-import CommentBox from "@/components/Grants/modules/CommentBox";
-import { Post } from "../../graphql/generated";
+import { Grant as GrantType } from "@/components/Grants/types/grant.types";
 import useInteractions from "@/components/Grants/hooks/useInteractions";
+import { useAccount } from "wagmi";
+import { polygonMumbai } from "viem/chains";
+import { createPublicClient, http } from "viem";
 
 export default function Home() {
   const dispatch = useDispatch();
   const router = useRouter();
-  const cartItems = useSelector(
-    (state: RootState) => state.app.cartItemsReducer.items
+  const { address } = useAccount();
+  const publicClient = createPublicClient({
+    chain: polygonMumbai,
+    transport: http(
+      `https://polygon-mumbai.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_MUMBAI}`
+    ),
+  });
+  const collectionsCache = useSelector(
+    (state: RootState) => state.app.collectionsCacheReducer.value
   );
-  const reactBox = useSelector((state: RootState) => state.app.reactBoxReducer);
-  const apparelItems = useSelector(
-    (state: RootState) => state.app.publishedGrantsReducer.apparel
+  const lensConnected = useSelector(
+    (state: RootState) => state.app.lensProfileReducer?.profile
   );
-  const allPublications = useSelector(
-    (state: RootState) => state.app.publishedGrantsReducer
+  const allGrants = useSelector(
+    (state: RootState) => state.app.allGrantsReducer.levels
   );
-  const interactionsCount = useSelector(
-    (state: RootState) => state.app.interactionsCountReducer
-  );
-  const pubLevels = useSelector(
-    (state: RootState) => state.app.availablePubLevelsReducer.levels
-  );
-  const { setCollectChoice, handleFetchMoreGrants, collectChoice } = useGrants(
+  const { handleFetchMoreGrants, allGrantsLoading, grantInfo } = useGrants(
     dispatch,
-    allPublications,
-    interactionsCount,
-    pubLevels
+    allGrants,
+    collectionsCache,
+    lensConnected
   );
+
   const {
-    commentGrant,
-    mirrorGrant,
-    likeGrant,
-    quoteGrant,
-    showComments,
-    showLikes,
-    showMirrors,
-    showQuotes,
-    showMoreComments,
-    showMoreLikes,
-    showMoreMirrors,
-    showMoreQuotes,
+    mirror,
+    like,
+    bookmark,
     interactionsLoading,
-    grantComment,
-    setGrantComment,
-    grantQuote,
-    setGrantQuote,
+    mirrorChoiceOpen,
+    setMirrorChoiceOpen,
+    profileHovers,
+    setProfileHovers,
+    followProfile,
+    unfollowProfile,
+    mainInteractionsLoading,
   } = useInteractions(
+    lensConnected,
     dispatch,
-    allPublications?.items,
-    interactionsCount,
-    reactBox
+    address,
+    publicClient,
+    allGrants
   );
+
+  console.log({ allGrants });
 
   return (
     <div
       className="relative w-full h-full flex flex-col items-center justify-start p-2 overflow-auto flex-grow"
       id="milestone"
     >
-      {reactBox?.comment?.id !== "" && (
-        <CommentBox
-          showMoreComments={showMoreComments}
-          comments={reactBox?.comment?.profiles}
-          grantComment={grantComment}
-          setGrantComment={setGrantComment}
-        />
-      )}
-      {(reactBox?.mirror?.id !== "" || reactBox?.quote?.id !== "") && (
-        <MirrorBox
-          showMoreMirrors={showMoreMirrors}
-          showMoreQuotes={showMoreQuotes}
-          mirrors={reactBox?.mirror?.profiles}
-          quotes={reactBox?.quote?.profiles}
-          grantQuote={grantQuote}
-          setGrantQuote={setGrantQuote}
-        />
-      )}
-      {reactBox?.like?.id !== "" && (
-        <LikeBox
-          showMoreLikes={showMoreLikes}
-          likes={reactBox?.like?.profiles}
-        />
-      )}
-      <InfiniteScroll
-        dataLength={allPublications?.items.length}
-        loader={<></>}
-        hasMore={true}
-        next={handleFetchMoreGrants}
-        className={`w-full h-full items-start justify-center gap-8 flex flex-col`}
-      >
-        {allPublications?.items?.map((publication: Post, index: number) => {
-          return (
-            <Grant
-              key={index}
-              publication={publication}
-              collectChoice={collectChoice}
-              commentGrant={commentGrant}
-              likeGrant={likeGrant}
-              mirrorGrant={mirrorGrant}
-              quoteGrant={quoteGrant}
-              setCollectChoice={setCollectChoice}
-              cartItems={cartItems}
-              dispatch={dispatch}
-              router={router}
-              showComments={showComments}
-              showLikes={showLikes}
-              showMirrors={showMirrors}
-              showQuotes={showQuotes}
-              interactionsLoading={interactionsLoading[index]}
-              apparelItems={apparelItems?.[index]}
-            />
-          );
-        })}
-      </InfiniteScroll>
+      <div className="relative w-full h-fit overflow-y-scroll flex items-start justify-center">
+        {allGrantsLoading ? (
+          <div className="w-full h-full items-start justify-center gap-8 flex flex-col">
+            {Array.from({ length: 10 }).map((_, index) => {
+              return (
+                <div
+                  key={index}
+                  className="relative h-fit w-[30rem] border border-black flex flex-col items-center justify-center"
+                >
+                  <div
+                    className="relative w-full h-fit flex flex-col"
+                    id="grant"
+                  ></div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <InfiniteScroll
+            dataLength={allGrants?.length}
+            loader={<></>}
+            hasMore={grantInfo?.hasMore}
+            next={handleFetchMoreGrants}
+            className={`w-full h-full items-start justify-center gap-8 flex flex-col`}
+          >
+            {allGrants?.map((grant: GrantType, index: number) => {
+              return (
+                <Grant
+                  key={index}
+                  grant={grant}
+                  index={index}
+                  interactionsLoading={interactionsLoading}
+                  mirror={mirror}
+                  like={like}
+                  bookmark={bookmark}
+                  setMirrorChoiceOpen={setMirrorChoiceOpen}
+                  mirrorChoiceOpen={mirrorChoiceOpen}
+                  dispatch={dispatch}
+                  router={router}
+                  followProfile={followProfile}
+                  unfollowProfile={unfollowProfile}
+                />
+              );
+            })}
+          </InfiniteScroll>
+        )}
+      </div>
     </div>
   );
 }

@@ -5,9 +5,6 @@ import { RootState } from "../../redux/store";
 import Orders from "@/components/Account/modules/Orders";
 
 export default function Account() {
-  const publishedGrants = useSelector(
-    (state: RootState) => state.app.publishedGrantsReducer.items
-  );
   const grantee = useSelector(
     (state: RootState) => state.app.granteeReducer.value
   );

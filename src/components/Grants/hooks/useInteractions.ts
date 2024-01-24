@@ -1,562 +1,378 @@
-import likePost from "../../../../graphql/lens/mutations/like";
-import { ReactBoxState, setReactBox } from "../../../../redux/reducers/reactBoxSlice";
-import whoReactedPublication from "../../../../graphql/lens/queries/whoReacted";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
 import {
-  CommentRankingFilterType,
-  LimitType,
+  Comment,
   Post,
-  PublicationReactionType,
-  PublicationType,
+  Profile,
+  PublicationOperations,
+  PublicationStats,
+  SimpleCollectOpenActionSettings,
 } from "../../../../graphql/generated";
-import { useEffect, useState } from "react";
-import getPublications from "../../../../graphql/lens/queries/publications";
-import {
-  InteractionsCountState,
-  setInteractionsCount,
-} from "../../../../redux/reducers/interactionsCountSlice";
-import mirrorPost from "../../../../graphql/lens/mutations/mirror";
-import quotePost from "../../../../graphql/lens/mutations/quote";
-import commentPost from "../../../../graphql/lens/mutations/comment";
-import uploadCommentQuoteContent from "../../../../lib/lens/helpers/uploadCommentQuote";
 import { Dispatch } from "redux";
+import { useEffect, useState } from "react";
+import { PublicClient, createWalletClient, custom } from "viem";
+import { polygon } from "viem/chains";
+import { Grant } from "../types/grant.types";
+import lensBookmark from "../../../../lib/lens/helpers/lensBookmark";
+import lensMirror from "../../../../lib/lens/helpers/lensMirror";
+import lensLike from "../../../../lib/lens/helpers/lensLike";
+import errorChoice from "../../../../lib/lens/helpers/errorChoice";
+import lensFollow from "../../../../lib/lens/helpers/lensFollow";
+import refetchProfile from "../../../../lib/lens/helpers/refetchProfile";
+import lensUnfollow from "../../../../lib/lens/helpers/lensUnfollow";
+import { setAllGrants } from "../../../../redux/reducers/allGrantsSlice";
 
 const useInteractions = (
+  lensConnected: Profile | undefined,
   dispatch: Dispatch,
-  allPublications: Post[],
-  interactionsCount: InteractionsCountState,
-  reactBox: ReactBoxState
+  address: `0x${string}` | undefined,
+  publicClient: PublicClient,
+  feed?: Grant[]
 ) => {
-  const [grantComment, setGrantComment] = useState<string>("");
-  const [grantQuote, setGrantQuote] = useState<string>("");
+  const [mirrorChoiceOpen, setMirrorChoiceOpen] = useState<boolean[]>([]);
+  const [mainInteractionsLoading, setMainInteractionsLoading] = useState<{
+    mirror: boolean;
+    bookmark: boolean;
+    like: boolean;
+    unfollow: boolean[];
+    follow: boolean[];
+  }>({
+    follow: [],
+    unfollow: [],
+    mirror: false,
+    bookmark: false,
+    like: false,
+  });
+  const [profileHovers, setProfileHovers] = useState<boolean[]>([]);
   const [interactionsLoading, setInteractionsLoading] = useState<
     {
-      like: boolean;
       mirror: boolean;
-      quote: boolean;
-      comment: boolean;
+      bookmark: boolean;
+      like: boolean;
+      unfollow: boolean[];
+      follow: boolean[];
     }[]
   >([]);
 
-  const likeGrant = async (id: number) => {
-    const index = allPublications.findIndex((pub) => pub.id === id);
-    if (index === -1) {
+  const bookmark = async (id: string) => {
+    if (!lensConnected?.id) return;
+
+    const index = feed?.findIndex((pub) => pub?.publication?.id === id);
+
+    if (index == -1) {
       return;
     }
-
-    setInteractionsLoading((prev) => {
-      const updatedArray = [...prev];
-      updatedArray[index] = { ...updatedArray[index], like: true };
-      return updatedArray;
-    });
 
     try {
-      await likePost({
-        for: id,
-        reaction: PublicationReactionType.Upvote,
-      });
-
-      dispatch(
-        setInteractionsCount({
-          actionLikes: interactionsCount.likes.map((obj, ind) =>
-            ind === index ? obj + 1 : obj
-          ),
-          actionMirrors: interactionsCount.mirrors,
-          actionQuotes: interactionsCount.quotes,
-          actionCollects: interactionsCount.collects,
-          actionComments: interactionsCount.comments,
-          actionHasLiked: interactionsCount.hasLiked.map((obj, ind) =>
-            ind === index ? true : obj
-          ),
-          actionHasMirrored: interactionsCount.hasMirrored,
-          actionHasCollected: interactionsCount.hasCollected,
-        })
-      );
-    } catch (err: any) {
-      console.error(err.message);
-    }
-
-    setInteractionsLoading((prev) => {
-      const updatedArray = [...prev];
-      updatedArray[index] = { ...updatedArray[index], like: true };
-      return updatedArray;
-    });
-  };
-
-  const mirrorGrant = async (id: number) => {
-    const index = allPublications.findIndex((pub) => pub.id === id);
-    if (index === -1) {
-      return;
-    }
-
-    setInteractionsLoading((prev) => {
-      const updatedArray = [...prev];
-      updatedArray[index] = { ...updatedArray[index], mirror: true };
-      return updatedArray;
-    });
-
-    try {
-      await mirrorPost({
-        mirrorOn: id,
-      });
-
-      dispatch(
-        setInteractionsCount({
-          actionLikes: interactionsCount.likes,
-          actionMirrors: interactionsCount.mirrors.map((obj, ind) =>
-            ind === index ? obj + 1 : obj
-          ),
-          actionQuotes: interactionsCount.quotes,
-          actionCollects: interactionsCount.collects,
-          actionComments: interactionsCount.comments,
-          actionHasLiked: interactionsCount.hasLiked,
-          actionHasMirrored: interactionsCount.hasMirrored.map((obj, ind) =>
-            ind === index ? true : obj
-          ),
-          actionHasCollected: interactionsCount.hasCollected,
-        })
-      );
-    } catch (err: any) {
-      console.error(err.message);
-    }
-    setInteractionsLoading((prev) => {
-      const updatedArray = [...prev];
-      updatedArray[index] = { ...updatedArray[index], mirror: false };
-      return updatedArray;
-    });
-  };
-
-  const quoteGrant = async (id: number) => {
-    const index = allPublications.findIndex((pub) => pub.id === id);
-    if (index === -1) {
-      return;
-    }
-
-    setInteractionsLoading((prev) => {
-      const updatedArray = [...prev];
-      updatedArray[index] = { ...updatedArray[index], quote: true };
-      return updatedArray;
-    });
-
-    try {
-      const contentURI = await uploadCommentQuoteContent(grantQuote);
-
-      await quotePost({
-        contentURI,
-        quoteOn: id,
-      });
-
-      dispatch(
-        setInteractionsCount({
-          actionLikes: interactionsCount.likes,
-          actionMirrors: interactionsCount.mirrors,
-          actionQuotes: interactionsCount.quotes.map((obj, ind) =>
-            ind === index ? obj + 1 : obj
-          ),
-          actionCollects: interactionsCount.collects,
-          actionComments: interactionsCount.comments,
-          actionHasLiked: interactionsCount.hasLiked,
-          actionHasMirrored: interactionsCount.hasMirrored.map((obj, ind) =>
-            ind === index ? true : obj
-          ),
-          actionHasCollected: interactionsCount.hasCollected,
-        })
-      );
-    } catch (err: any) {
-      console.error(err.message);
-    }
-    setInteractionsLoading((prev) => {
-      const updatedArray = [...prev];
-      updatedArray[index] = { ...updatedArray[index], quote: false };
-      return updatedArray;
-    });
-  };
-
-  const commentGrant = async (id: number) => {
-    const index = allPublications.findIndex((pub) => pub.id === id);
-    if (index === -1) {
-      return;
-    }
-
-    setInteractionsLoading((prev) => {
-      const updatedArray = [...prev];
-      updatedArray[index] = { ...updatedArray[index], comment: true };
-      return updatedArray;
-    });
-
-    try {
-      const contentURI = await uploadCommentQuoteContent(grantComment);
-
-      await commentPost({
-        contentURI,
-        commentOn: id,
-      });
-
-      dispatch(
-        setInteractionsCount({
-          actionLikes: interactionsCount.likes,
-          actionMirrors: interactionsCount.mirrors,
-          actionQuotes: interactionsCount.quotes,
-          actionCollects: interactionsCount.collects,
-          actionComments: interactionsCount.comments.map((obj, ind) =>
-            ind === index ? obj + 1 : obj
-          ),
-          actionHasLiked: interactionsCount.hasLiked,
-          actionHasMirrored: interactionsCount.hasMirrored,
-          actionHasCollected: interactionsCount.hasCollected,
-        })
-      );
-    } catch (err: any) {
-      console.error(err.message);
-    }
-
-    setInteractionsLoading((prev) => {
-      const updatedArray = [...prev];
-      updatedArray[index] = { ...updatedArray[index], comment: false };
-      return updatedArray;
-    });
-  };
-
-  const showLikes = async (id: string) => {
-    if (id === reactBox.like?.id) {
-      dispatch(
-        setReactBox({
-          actionMirror: reactBox.mirror,
-          actionQuote: reactBox.quote,
-          actionLike: {
-            id: "",
-            cursor: undefined,
-            profiles: undefined,
-          },
-          actionComment: reactBox.comment,
-        })
-      );
-      return;
-    } else {
-      try {
-        const data = await whoReactedPublication({
-          for: id,
-          limit: LimitType.TwentyFive,
-        });
-
-        dispatch(
-          setReactBox({
-            actionMirror: reactBox.mirror,
-            actionQuote: reactBox.quote,
-            actionLike: {
-              id: id,
-              cursor: data.data?.whoReactedPublication.pageInfo.next,
-              profiles: data?.data?.whoReactedPublication?.items,
-            },
-            actionComment: reactBox.comment,
-          })
-        );
-      } catch (err: any) {
-        console.error(err.message);
-      }
-    }
-  };
-
-  const showComments = async (id: string) => {
-    if (id === reactBox.comment?.id) {
-      dispatch(
-        setReactBox({
-          actionMirror: reactBox.mirror,
-          actionQuote: reactBox.quote,
-          actionLike: reactBox.like,
-          actionComment: {
-            id: "",
-            cursor: undefined,
-            profiles: undefined,
-          },
-        })
-      );
-      return;
-    } else {
-      try {
-        const data = await getPublications({
-          limit: LimitType.Fifty,
-          where: {
-            publicationTypes: [PublicationType.Comment],
-            commentOn: {
-              id: id,
-              ranking: {
-                filter: CommentRankingFilterType.Relevant,
-              },
-            },
-          },
-        });
-
-        dispatch(
-          setReactBox({
-            actionMirror: reactBox.mirror,
-            actionQuote: reactBox.quote,
-            actionLike: reactBox.like,
-            actionComment: {
-              id: id,
-              cursor: data.data?.publications.pageInfo.next,
-              profiles: data?.data?.publications?.items,
-            },
-          })
-        );
-      } catch (err: any) {
-        console.error(err.message);
-      }
-    }
-  };
-
-  const showMirrors = async (id: string) => {
-    if (id === reactBox.mirror?.id) {
-      dispatch(
-        setReactBox({
-          actionMirror: {
-            id: "",
-            cursor: undefined,
-            profiles: undefined,
-          },
-          actionQuote: reactBox.quote,
-          actionLike: reactBox.like,
-          actionComment: reactBox.comment,
-        })
-      );
-      return;
-    } else {
-      try {
-        const data = await getPublications({
-          limit: LimitType.Fifty,
-          where: {
-            publicationTypes: [PublicationType.Mirror],
-            mirrorOn: id,
-          },
-        });
-
-        dispatch(
-          setReactBox({
-            actionQuote: reactBox.quote,
-            actionMirror: {
-              id: id,
-              cursor: data.data?.publications.pageInfo.next,
-              profiles: data?.data?.publications?.items,
-            },
-            actionLike: reactBox.like,
-            actionComment: reactBox.comment,
-          })
-        );
-      } catch (err: any) {
-        console.error(err.message);
-      }
-    }
-  };
-
-  const showQuotes = async (id: string) => {
-    if (id === reactBox.quote?.id) {
-      dispatch(
-        setReactBox({
-          actionQuote: {
-            id: "",
-            cursor: undefined,
-            profiles: undefined,
-          },
-          actionMirror: reactBox.mirror,
-          actionLike: reactBox.like,
-          actionComment: reactBox.comment,
-        })
-      );
-      return;
-    } else {
-      try {
-        const data = await getPublications({
-          limit: LimitType.Fifty,
-          where: {
-            publicationTypes: [PublicationType.Quote],
-            quoteOn: id,
-          },
-        });
-
-        dispatch(
-          setReactBox({
-            actionQuote: {
-              id: id,
-              cursor: data.data?.publications.pageInfo.next,
-              profiles: data?.data?.publications?.items,
-            },
-            actionMirror: reactBox.mirror,
-            actionLike: reactBox.like,
-            actionComment: reactBox.comment,
-          })
-        );
-      } catch (err: any) {
-        console.error(err.message);
-      }
-    }
-  };
-
-  const showMoreLikes = async () => {
-    if (!reactBox.like?.cursor) return;
-
-    try {
-      const data = await whoReactedPublication({
-        for: reactBox.like.id,
-        limit: LimitType.TwentyFive,
-        cursor: reactBox.like?.cursor,
-      });
-
-      dispatch(
-        setReactBox({
-          actionMirror: reactBox.mirror,
-          actionQuote: reactBox.quote,
-          actionLike: {
-            id: reactBox.like.id,
-            cursor: data.data?.whoReactedPublication.pageInfo.next,
-            profiles: [
-              ...(reactBox.like.profiles || []),
-              ...(data?.data?.whoReactedPublication?.items || []),
-            ],
-          },
-          actionComment: reactBox.comment,
-        })
-      );
-    } catch (err: any) {
-      console.error(err.message);
-    }
-  };
-
-  const showMoreComments = async () => {
-    if (!reactBox.comment?.cursor) return;
-
-    try {
-      const data = await getPublications({
-        limit: LimitType.Fifty,
-        cursor: reactBox?.comment?.cursor,
-        where: {
-          publicationTypes: [PublicationType.Comment],
-          commentOn: {
-            id: reactBox?.comment?.id,
-            ranking: {
-              filter: CommentRankingFilterType.Relevant,
-            },
-          },
+      await lensBookmark(id, dispatch);
+      updateInteractions(
+        index!,
+        {
+          hasBookmarked: true,
         },
-      });
-
-      dispatch(
-        setReactBox({
-          actionMirror: reactBox.mirror,
-          actionLike: reactBox.like,
-          actionQuote: reactBox.quote,
-          actionComment: {
-            id: reactBox?.comment?.id,
-            cursor: data.data?.publications.pageInfo.next,
-            profiles: [
-              ...(reactBox?.comment?.profiles || []),
-              ...(data?.data?.publications?.items || []),
-            ],
-          },
-        })
+        "bookmarks"
       );
     } catch (err: any) {
-      console.error(err.message);
+      errorChoice(
+        err,
+        () =>
+          updateInteractions(
+            index!,
+            {
+              hasBookmarked: true,
+            },
+            "bookmarks"
+          ),
+        dispatch
+      );
     }
   };
 
-  const showMoreMirrors = async () => {
-    if (!reactBox.mirror?.cursor) return;
+  const mirror = async (id: string, main?: boolean) => {
+    if (!lensConnected?.id) return;
+
+    let index = 0;
+
+    if (!main) {
+      index = feed?.findIndex((pub) => pub?.publication?.id === id)!;
+
+      if (index == -1) {
+        return;
+      }
+    }
+
+    setInteractionsLoading((prev) => {
+      const updatedArray = [...prev];
+      updatedArray[index!] = { ...updatedArray[index!], mirror: true };
+      return updatedArray;
+    });
 
     try {
-      const data = await getPublications({
-        limit: LimitType.Fifty,
-        where: {
-          publicationTypes: [PublicationType.Mirror],
-          mirrorOn: reactBox.mirror.id,
-        },
-        cursor: reactBox.mirror.cursor,
+      const clientWallet = createWalletClient({
+        chain: polygon,
+        transport: custom((window as any).ethereum),
       });
-
-      dispatch(
-        setReactBox({
-          actionQuote: reactBox.quote,
-          actionMirror: {
-            id: reactBox.mirror.id,
-            cursor: data.data?.publications.pageInfo.next,
-            profiles: [
-              ...(reactBox.mirror.profiles || []),
-              ...(data?.data?.publications?.items || []),
-            ],
-          },
-          actionLike: reactBox.like,
-          actionComment: reactBox.comment,
-        })
+      await lensMirror(
+        id,
+        dispatch,
+        address as `0x${string}`,
+        clientWallet,
+        publicClient
+      );
+      updateInteractions(
+        index!,
+        {
+          hasMirrored: true,
+        },
+        "mirrors"
       );
     } catch (err: any) {
-      console.error(err.message);
+      errorChoice(
+        err,
+        () =>
+          updateInteractions(
+            index!,
+            {
+              hasMirrored: true,
+            },
+            "mirrors"
+          ),
+        dispatch
+      );
+    }
+
+    setInteractionsLoading((prev) => {
+      const updatedArray = [...prev];
+      updatedArray[index!] = { ...updatedArray[index!], mirror: false };
+      return updatedArray;
+    });
+  };
+
+  const like = async (id: string, hasReacted: boolean, main?: boolean) => {
+    if (!lensConnected?.id) return;
+
+    let index = 0;
+
+    if (!main) {
+      index = feed?.findIndex((pub) => pub?.publication?.id === id)!;
+
+      if (index == -1) {
+        return;
+      }
+    }
+
+    setInteractionsLoading((prev) => {
+      const updatedArray = [...prev];
+      updatedArray[index!] = { ...updatedArray[index!], like: true };
+      return updatedArray;
+    });
+
+    try {
+      await lensLike(id, dispatch, hasReacted!);
+      updateInteractions(
+        index!,
+        {
+          hasReacted: hasReacted ? false : true,
+        },
+        "reactions"
+      );
+    } catch (err: any) {
+      errorChoice(
+        err,
+        () =>
+          updateInteractions(
+            index!,
+            {
+              hasReacted: hasReacted ? false : true,
+            },
+            "reactions"
+          ),
+        dispatch
+      );
+    }
+
+    setInteractionsLoading((prev) => {
+      const updatedArray = [...prev];
+      updatedArray[index!] = { ...updatedArray[index!], like: false };
+      return updatedArray;
+    });
+  };
+
+  const followProfile = async (
+    id: string,
+    index: number,
+    innerIndex: number,
+    main?: boolean
+  ) => {
+    if (!lensConnected?.id) return;
+
+    if (index == -1) {
+      return;
+    }
+
+    if (main) {
+      setMainInteractionsLoading((prev) => {
+        const old = { ...prev };
+        old.follow[innerIndex] = true;
+        return old;
+      });
+    } else {
+      setInteractionsLoading((prev) => {
+        const updatedArray = [...prev];
+        updatedArray[index!] = { ...updatedArray[index!] };
+        updatedArray[index!].follow[innerIndex] = true;
+        return updatedArray;
+      });
+    }
+
+    try {
+      const clientWallet = createWalletClient({
+        chain: polygon,
+        transport: custom((window as any).ethereum),
+      });
+
+      await lensFollow(
+        id,
+        dispatch,
+        undefined,
+        address as `0x${string}`,
+        clientWallet,
+        publicClient
+      );
+      await refetchProfile(dispatch, lensConnected?.id, lensConnected?.id);
+    } catch (err: any) {
+      errorChoice(err, () => {}, dispatch);
+    }
+
+    if (main) {
+      setMainInteractionsLoading((prev) => {
+        const old = { ...prev };
+        old.follow[innerIndex] = false;
+        return old;
+      });
+    } else {
+      setInteractionsLoading((prev) => {
+        const updatedArray = [...prev];
+        updatedArray[index!] = { ...updatedArray[index!] };
+        updatedArray[index!].unfollow[innerIndex] = false;
+        return updatedArray;
+      });
     }
   };
 
-  const showMoreQuotes = async () => {
-    if (!reactBox.quote?.cursor) return;
+  const unfollowProfile = async (
+    id: string,
+    index: number,
+    innerIndex: number,
+    main?: boolean
+  ) => {
+    if (!lensConnected?.id) return;
+
+    if (index == -1) {
+      return;
+    }
+
+    if (main) {
+      setMainInteractionsLoading((prev) => {
+        const old = { ...prev };
+        old.unfollow[innerIndex] = true;
+        return old;
+      });
+    } else {
+      setInteractionsLoading((prev) => {
+        const updatedArray = [...prev];
+        updatedArray[index!] = { ...updatedArray[index!] };
+        updatedArray[index!].unfollow[innerIndex] = true;
+        return updatedArray;
+      });
+    }
 
     try {
-      const data = await getPublications({
-        limit: LimitType.Fifty,
-        where: {
-          publicationTypes: [PublicationType.Mirror],
-          quoteOn: reactBox.quote.id,
-        },
-        cursor: reactBox.quote.cursor,
+      const clientWallet = createWalletClient({
+        chain: polygon,
+        transport: custom((window as any).ethereum),
       });
 
-      dispatch(
-        setReactBox({
-          actionMirror: reactBox.mirror,
-          actionQuote: {
-            id: reactBox.quote.id,
-            cursor: data.data?.publications.pageInfo.next,
-            profiles: [
-              ...(reactBox.quote.profiles || []),
-              ...(data?.data?.publications?.items || []),
-            ],
-          },
-          actionLike: reactBox.like,
-          actionComment: reactBox.comment,
-        })
+      await lensUnfollow(
+        id,
+        dispatch,
+        address as `0x${string}`,
+        clientWallet,
+        publicClient
       );
+      await refetchProfile(dispatch, lensConnected?.id, lensConnected?.id);
     } catch (err: any) {
-      console.error(err.message);
+      errorChoice(err, () => {}, dispatch);
     }
+    if (main) {
+      setMainInteractionsLoading((prev) => {
+        const old = { ...prev };
+        old.unfollow[innerIndex] = false;
+        return old;
+      });
+    } else {
+      setInteractionsLoading((prev) => {
+        const updatedArray = [...prev];
+        updatedArray[index!] = { ...updatedArray[index!] };
+        updatedArray[index!].unfollow[innerIndex] = false;
+        return updatedArray;
+      });
+    }
+  };
+
+  const updateInteractions = (index: number, value: Object, type: string) => {
+    if (!feed) return;
+    const newItems = [...feed];
+
+    if (index !== -1 && newItems[index]?.publication) {
+      newItems[index] = {
+        ...newItems[index],
+        publication: {
+          ...(newItems[index]?.publication as Post),
+          operations: {
+            ...newItems[index]?.publication?.operations,
+            ...value,
+          } as PublicationOperations,
+          stats: {
+            ...newItems[index]?.publication?.stats,
+            [type]:
+              newItems[index]?.publication?.stats?.[
+                type as keyof PublicationStats
+              ] + 1,
+          } as PublicationStats,
+        },
+      };
+    }
+
+    dispatch(setAllGrants(newItems));
   };
 
   useEffect(() => {
-    if (allPublications.length > 0) {
+    if (feed) {
       setInteractionsLoading(
-        Array.from({ length: allPublications.length }, () => ({
-          like: false,
+        Array.from({ length: feed?.length }, () => ({
           mirror: false,
-          comment: false,
-          quote: false,
+          bookmark: false,
+          like: false,
+          follow: [],
+          unfollow: [],
         }))
       );
+      setMirrorChoiceOpen(Array.from({ length: feed?.length }, () => false));
+      setProfileHovers(Array.from({ length: feed?.length }, () => false));
     }
-  }, [allPublications.length]);
+  }, [feed]);
 
   return {
-    commentGrant,
-    likeGrant,
-    mirrorGrant,
-    quoteGrant,
-    showComments,
-    showLikes,
-    showMirrors,
-    showQuotes,
-    showMoreComments,
-    showMoreLikes,
-    showMoreMirrors,
-    showMoreQuotes,
+    mirror,
+    like,
+    bookmark,
     interactionsLoading,
-    grantComment,
-    setGrantComment,
-    grantQuote,
-    setGrantQuote,
+    mirrorChoiceOpen,
+    setMirrorChoiceOpen,
+    profileHovers,
+    setProfileHovers,
+    followProfile,
+    unfollowProfile,
+    mainInteractionsLoading,
   };
 };
 
