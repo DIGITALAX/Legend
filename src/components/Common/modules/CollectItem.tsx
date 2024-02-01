@@ -6,6 +6,9 @@ import { INFURA_GATEWAY } from "../../../../lib/constants";
 import { CollectItemProps, PrintType } from "../../Launch/types/launch.types";
 import PurchaseTokens from "@/components/Common/modules/PurchaseTokens";
 import Splits from "../../Launch/modules/Splits";
+import { setCartAnim } from "../../../../redux/reducers/cartAnimSlice";
+import { setCartItems } from "../../../../redux/reducers/cartItemsSlice";
+import { CartItem } from "@/components/Checkout/types/checkout.types";
 
 const CollectItem: FunctionComponent<CollectItemProps> = ({
   index,
@@ -15,6 +18,12 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
   handleChangeImage,
   handleChangeItem,
   cart,
+  handleCheckout,
+  dispatch,
+  cartItems,
+  id,
+  router,
+  simpleCollectLoading,
 }): JSX.Element => {
   const total = index?.price?.[index?.priceIndex] / 10 ** 18;
   const fulfillerShare =
@@ -146,9 +155,9 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
         <div className="relative flex flex-col gap-1.5 justify-start items-center text-black font-dog text-xxs">
           <div className="relative flex justify-start items-center">Sizes</div>
           <div className="relative flex flex-row gap-1 items-center justify-center">
-            {(levelInfo?.collectionIds?.[
+            {levelInfo?.collectionIds?.[
               index?.itemIndex
-            ]?.collectionMetadata?.sizes)?.map(
+            ]?.collectionMetadata?.sizes?.map(
               (value: string, indexThree: number) => {
                 return (
                   <div
@@ -175,14 +184,23 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                     onClick={() =>
                       handleChangeCurrency(
                         index.levelIndex,
-                        index.itemIndex,
                         levelInfo?.collectionIds[index.itemIndex]?.printType ===
                           PrintType.Shirt ||
                           levelInfo?.collectionIds[index.itemIndex]
                             ?.printType === PrintType.Hoodie
                           ? 0
                           : indexThree,
-                        index.currency
+                        index.currency,
+                        Number(
+                          levelInfo?.collectionIds[index.itemIndex]?.prices[
+                            levelInfo?.collectionIds[index.itemIndex]
+                              ?.printType === PrintType.Shirt ||
+                            levelInfo?.collectionIds[index.itemIndex]
+                              ?.printType === PrintType.Hoodie
+                              ? 0
+                              : indexThree
+                          ]
+                        )
                       )
                     }
                   >
@@ -239,33 +257,46 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
             (index?.price?.[index.priceIndex] / index?.rate)?.toFixed(2)
           )} ${index?.currency}`}
         </div>
-        {/* {cart && (
+        {cart && (
           <div
             className={`w-40 h-8 cursor-pointer rounded-sm cursor-pointer active:scale-95 border border-black flex items-center justify-center text-center font-gam text-xl ${
               !cartItems?.some(
-                (item) => item.collectionId === id && index.levelIndex === index
+                (item) =>
+                  item.collectionId === id &&
+                  index.levelIndex === index?.levelIndex
               )
                 ? "bg-lima"
                 : "bg-viol"
             }`}
             onClick={() => {
               const newItem = {
-                ...collectChoice[index],
+                ...levelInfo,
                 id: id,
-                amount: item?.prices,
+                amount:
+                  levelInfo?.collectionIds?.[index?.itemIndex]?.prices?.[
+                    index?.priceIndex
+                  ],
                 level: index,
-                fulfiller: item.fulfiller,
+                fulfiller:
+                  levelInfo?.collectionIds?.[index?.itemIndex].fulfiller,
               };
+
+              if (index?.levelIndex == 0) {
+                handleCheckout!(newItem as CartItem);
+                return;
+              }
 
               if (
                 cartItems?.some(
-                  (item) => item.collectionId === id && item.level === index
+                  (item) =>
+                    item.collectionId === id &&
+                    levelInfo?.level === index?.levelIndex
                 )
               ) {
                 router!.push("/checkout");
               } else {
                 const itemIndex = cartItems!.findIndex(
-                  (cartItem) => cartItem.collectionId === id
+                  (cartItem) => cartItem?.collectionId === id
                 );
                 if (cartItems?.some((item) => item.collectionId === id)) {
                   const newCartItems = [...cartItems];
@@ -278,13 +309,24 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
               dispatch!(setCartAnim(true));
             }}
           >
-            {cartItems?.some(
-              (item) => item.collectionId === id && item.level === index
-            )
-              ? "Go to Cart"
-              : "Choose Level"}
+            <div
+              className={`relative w-fit h-fit flex items-center justify-center ${
+                simpleCollectLoading && index.levelIndex == 0 && "animate-spin"
+              }`}
+            >
+              {simpleCollectLoading && index.levelIndex == 0 ? (
+                <AiOutlineLoading color={"black"} size={15} />
+              ) : cartItems?.some(
+                  (item) =>
+                    item.collectionId === id && item.level === index?.levelIndex
+                ) ? (
+                "Go to Cart"
+              ) : (
+                "Choose Level"
+              )}
+            </div>
           </div>
-        )} */}
+        )}
       </div>
     </div>
   );

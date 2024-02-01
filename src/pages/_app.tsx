@@ -8,6 +8,7 @@ import {
   darkTheme,
   Theme,
 } from "@rainbow-me/rainbowkit";
+import { LitNodeClient } from "@lit-protocol/lit-node-client";
 import { Provider } from "react-redux";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import { polygonMumbai } from "wagmi/chains";
@@ -26,6 +27,7 @@ const { chains, publicClient } = configureChains(
   [polygonMumbai],
   [alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY! })]
 );
+const client = new LitNodeClient({ litNetwork: "cayenne", debug: false });
 
 const { connectors } = getDefaultWallets({
   appName: "Cypher Search",
@@ -46,7 +48,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <Provider store={store}>
           <div className="relative w-full h-screen flex flex-col overflow-hidden">
             <Header />
-            <Component {...pageProps} />
+            <Component {...pageProps} client={client} />
             <Modals />
           </div>
         </Provider>

@@ -15,13 +15,12 @@ import fetchIpfsJson from "../../../../lib/graph/helpers/fetchIPFSJson";
 
 const useLevelItems = (
   dispatch: Dispatch,
-  allCollections:
+  oracleData: OracleData[],
+  allCollections?:
     | {
         [key: string]: PrintItem[];
       }
-    | undefined,
-  oracleData: OracleData[],
-  levelItems: LevelInfo[]
+    | undefined
 ) => {
   const [allCollectionsLoading, setAllCollectionsLoading] =
     useState<boolean>(false);
@@ -175,17 +174,15 @@ const useLevelItems = (
 
   const handleChangeCurrency = (
     levelIndex: number,
-    itemIndex: number,
     priceIndex: number,
-    checkoutCurrency: string
+    checkoutCurrency: string,
+    checkoutPrice: number
   ): void => {
     const items = [...indexes];
     items[levelIndex].currency = checkoutCurrency;
     items[levelIndex].priceIndex = priceIndex;
     if (levelIndex != 0) {
-      items[levelIndex].price[priceIndex] = Number(
-        levelItems[levelIndex - 1].collectionIds[itemIndex]?.prices[priceIndex]
-      );
+      items[levelIndex].price[priceIndex] = checkoutPrice;
     }
 
     items[levelIndex].rate = Number(
@@ -211,9 +208,9 @@ const useLevelItems = (
     items[levelIndex].itemIndex = newItemIndex;
     handleChangeCurrency(
       levelIndex,
-      newItemIndex,
       0,
-      items[levelIndex].currency
+      items[levelIndex].currency,
+      items[levelIndex].price?.[0]
     );
     setIndexes(items);
   };
@@ -225,7 +222,7 @@ const useLevelItems = (
   }, [allCollections]);
 
   useEffect(() => {
-    if (allCollections && Object.keys(allCollections)?.length < 1) {
+    if (!allCollections || Object.keys(allCollections)?.length < 1) {
       getAllAvailableCollections();
     }
   }, []);

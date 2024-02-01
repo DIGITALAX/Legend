@@ -24,22 +24,22 @@
 
 body {
   background-color: black;
-  background-image: url("https://chromadin.infura-ipfs.io/ipfs/QmWDqwGn7JgWzFsvUuC6pR7P58v6ab1npPueJ9Vfaez8iW");
+  background-image: url("https://thedial.infura-ipfs.io/ipfs/QmWDqwGn7JgWzFsvUuC6pR7P58v6ab1npPueJ9Vfaez8iW");
 }
 
 #bar {
-  background-image: url("https://chromadin.infura-ipfs.io/ipfs/QmeQ2sdjGXxUCQHCnK6kHU2c9Do3rjs557hU87jGorAvTs");
+  background-image: url("https://thedial.infura-ipfs.io/ipfs/QmeQ2sdjGXxUCQHCnK6kHU2c9Do3rjs557hU87jGorAvTs");
   background-size: cover;
 }
 
 #imageCover {
-  background-image: url("https://chromadin.infura-ipfs.io/ipfs/Qmak9Amfys6xPL1uk8juyBYtsELwNYPZ6pg4b5Yf6HbyS2");
+  background-image: url("https://thedial.infura-ipfs.io/ipfs/Qmak9Amfys6xPL1uk8juyBYtsELwNYPZ6pg4b5Yf6HbyS2");
   background-size: cover;
 }
 
 #grant {
-  background-image: url("https://chromadin.infura-ipfs.io/ipfs/QmSGW3JvdMuWFtNqk7QHYTfWbDcixT4MW3KGsqPdUJYxoJ");
-  background-size: contain;
+  background-image: url("https://thedial.infura-ipfs.io/ipfs/QmSGW3JvdMuWFtNqk7QHYTfWbDcixT4MW3KGsqPdUJYxoJ");
+  background-size:initial
 }
 
 input[type="number"]::-webkit-inner-spin-button,
@@ -155,4 +155,26 @@ option {
 
 #side::-webkit-scrollbar-track {
   background-color: transparent;
+}
+
+.infinite-scroll-component__outerdiv {
+  width: 100%;
+}
+
+
+div::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+}
+
+div::-webkit-scrollbar {
+  width: 0px;
+}
+
+div::-webkit-scrollbar-track:active {
+  background-color: transparent !important;
+}
+
+div::-webkit-scrollbar-thumb:active {
+  background-color: transparent !important;
 }
