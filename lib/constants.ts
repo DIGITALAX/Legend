@@ -1,6 +1,8 @@
+import { PrintType } from "@/components/Launch/types/launch.types";
 import { ethers } from "ethers";
 
 export const INFURA_GATEWAY: string = "https://chromadin.infura-ipfs.io";
+export const IPFS_REGEX: RegExp = /\b(Qm[1-9A-Za-z]{44}|ba[A-Za-z2-7]{57})\b/;
 export const BASE_URL: string = "https://api-v2-mumbai-live.lens.dev/";
 
 export const LENS_HUB_PROXY: `0x${string}` =
@@ -265,3 +267,52 @@ export const ACCEPTED_TOKENS_MUMBAI: string[][] = [
     "0x07b722856369f6b923e1f276abca58dd3d15243d",
   ],
 ];
+
+
+export const printTypeToNumber: { [key in PrintType]: string } = {
+  [PrintType.Sticker]: "0",
+  [PrintType.Poster]: "1",
+  [PrintType.Shirt]: "2",
+  [PrintType.Hoodie]: "3",
+  [PrintType.Sleeve]: "4",
+  [PrintType.Crop]: "5",
+  [PrintType.NFTOnly]: "6",
+  [PrintType.Custom]: "7",
+  [PrintType.Other]: "8",
+};
+
+export const numberToPrintType: { [key in number]: PrintType } = {
+  0: PrintType.Sticker,
+  1: PrintType.Poster,
+  2: PrintType.Shirt,
+  3: PrintType.Hoodie,
+  4: PrintType.Sleeve,
+  5: PrintType.Crop,
+  6: PrintType.NFTOnly,
+  7: PrintType.Custom,
+  8: PrintType.Other,
+};
+
+export const printTypeToString: { [key in PrintType]: string } = {
+  [PrintType.Sticker]: "sticker",
+  [PrintType.Poster]: "poster",
+  [PrintType.Shirt]: "shirt",
+  [PrintType.Hoodie]: "hoodie",
+  [PrintType.Sleeve]: "sleeve",
+  [PrintType.Crop]: "crop",
+  [PrintType.NFTOnly]: "nftOnly",
+  [PrintType.Custom]: "custom",
+  [PrintType.Other]: "other",
+};
+
+export const printStringToNumber: { [key: string]: string } = {
+  ["Sticker"]: "0",
+  ["Poster"]: "1",
+  ["Shirt"]: "2",
+  ["Hoodie"]: "3",
+  ["Sleeve"]: "4",
+  ["Crop"]: "5",
+  ["NFTOnly"]: "6",
+  ["Custom"]: "7",
+  ["Other"]: "8",
+};

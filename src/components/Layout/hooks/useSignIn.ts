@@ -18,8 +18,15 @@ import { Dispatch } from "redux";
 import authenticate from "../../../../graphql/lens/mutations/authenticate";
 import getDefaultProfile from "../../../../graphql/lens/queries/defaultProfile";
 import { setClaimProfile } from "../../../../redux/reducers/claimProfileSlice";
+import { getOracleData } from "../../../../graphql/subgraph/queries/getOracleData";
+import { setOracleData } from "../../../../redux/reducers/oracleDataSlice";
+import { OracleData } from "@/components/Launch/types/launch.types";
 
-const useSignIn = (dispatch: Dispatch, lensConnected: Profile | undefined) => {
+const useSignIn = (
+  dispatch: Dispatch,
+  lensConnected: Profile | undefined,
+  oracleData: OracleData[]
+) => {
   const { signMessageAsync } = useSignMessage();
   const [signInLoading, setSignInLoading] = useState<boolean>(false);
   const [checkoutOpen, setCheckoutOpen] = useState<boolean>(false);
@@ -85,6 +92,16 @@ const useSignIn = (dispatch: Dispatch, lensConnected: Profile | undefined) => {
     }
   };
 
+  const handleOracles = async (): Promise<void> => {
+    try {
+      const { data } = await getOracleData();
+
+      dispatch(setOracleData(data?.currencyAddeds));
+    } catch (err: any) {
+      console.error(err.message);
+    }
+  };
+
   useEffect(() => {
     const handleAuthentication = async () => {
       const token = getAuthenticationToken();
@@ -113,6 +130,12 @@ const useSignIn = (dispatch: Dispatch, lensConnected: Profile | undefined) => {
       }, 3000);
     }
   }, [cartAnim]);
+
+  useEffect(() => {
+    if (oracleData?.length < 1) {
+      handleOracles();
+    }
+  }, []);
 
   return {
     handleLensSignIn,

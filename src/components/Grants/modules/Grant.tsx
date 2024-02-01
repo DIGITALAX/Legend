@@ -6,8 +6,9 @@ import { GrantProps } from "../types/grant.types";
 import { AiOutlineLoading } from "react-icons/ai";
 import { LevelInfo } from "@/components/Launch/types/launch.types";
 import CollectItem from "@/components/Common/modules/CollectItem";
-import { ImageMetadataV3 } from "../../../../graphql/generated";
+import { ImageMetadataV3, Profile } from "../../../../graphql/generated";
 import numeral from "numeral";
+import createProfilePicture from "../../../../lib/lens/helpers/createProfilePicture";
 
 const Grant: FunctionComponent<GrantProps> = ({
   grant,
@@ -19,6 +20,10 @@ const Grant: FunctionComponent<GrantProps> = ({
   dispatch,
   setMirrorChoiceOpen,
   mirrorChoiceOpen,
+  handleChangeCurrency,
+  handleChangeImage,
+  handleChangeItem,
+  indexes,
   index,
 }) => {
   return (
@@ -126,20 +131,37 @@ const Grant: FunctionComponent<GrantProps> = ({
                 Grant Team
               </div>
               <div className="relative w-full items-center justify-between flex flex-row gap-2">
-                <div className="relative w-6 h-6 flex items-center justify-center">
-                  <Image
-                    draggable={false}
-                    layout="fill"
-                    src={`${INFURA_GATEWAY}/ipfs/QmPe1QiaErMPHPRU3hQK4HsW4KeKjXVG8y8x7aKHNXcRh8`}
-                  />
-                </div>
                 <div className="relative mr-0 w-fit h-fit items-center justify-end flex flex-row gap-2">
-                  {Array.from({ length: 3 }).map((_, index: number) => {
+                  {grant?.grantees?.map((profile: Profile, index: number) => {
+                    const pfp = createProfilePicture(
+                      profile?.metadata?.picture
+                    );
                     return (
                       <div
                         key={index}
-                        className="relative w-10 h-10 rounded-sm border border-black cursor-pointer"
-                      ></div>
+                        className="relative w-10 h-10 rounded-full border border-black cursor-pointer flex cursor-pointer active:scale-95"
+                        onClick={() =>
+                          router.push(
+                            `/grantee/${
+                              profile?.handle?.suggestedFormatted?.localName?.split(
+                                "@"
+                              )?.[1]
+                            }`
+                          )
+                        }
+                      >
+                        {pfp && (
+                          <div className="relative w-full h-full rounded-full flex items-center justify-center">
+                            <Image
+                              src={pfp}
+                              draggable={false}
+                              objectFit="cover"
+                              layout="fill"
+                              className="rounded-full"
+                            />
+                          </div>
+                        )}
+                      </div>
                     );
                   })}
                 </div>
@@ -212,6 +234,10 @@ const Grant: FunctionComponent<GrantProps> = ({
               {grant?.levelInfo?.map((level: LevelInfo, index: number) => {
                 return (
                   <CollectItem
+                    handleChangeCurrency={handleChangeCurrency}
+                    handleChangeImage={handleChangeImage}
+                    handleChangeItem={handleChangeItem}
+                    index={indexes}
                     key={index}
                     dispatch={dispatch}
                     levelInfo={level}
