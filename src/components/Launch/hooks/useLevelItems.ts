@@ -10,8 +10,6 @@ import {
 } from "../types/launch.types";
 import pickRandomItem from "../../../../lib/graph/helpers/pickRandomItem";
 import { ACCEPTED_TOKENS_MUMBAI } from "../../../../lib/constants";
-import { getOracleData } from "../../../../graphql/subgraph/queries/getOracleData";
-import { setOracleData } from "../../../../redux/reducers/oracleDataSlice";
 import { Dispatch } from "redux";
 import fetchIpfsJson from "../../../../lib/graph/helpers/fetchIPFSJson";
 
@@ -61,31 +59,38 @@ const useLevelItems = (
         [PrintType.Hoodie]: [],
       };
 
-      const promises = await Promise.all(
-        data?.collectionCreateds?.forEach(
-          async (item: PrintItem) => {
-            const fulfillerBase = Number(item?.fulfillerBase || 0) / 10 ** 18;
-            const fulfillerPercent =
-              Number(item?.fulfillerPercent || 0) / 10000;
+      await Promise.all(
+        data?.collectionCreateds?.map(async (item: PrintItem) => {
+          const fulfillerBase = Number(item?.fulfillerBase || 0) / 10 ** 18;
+          const fulfillerPercent = Number(item?.fulfillerPercent || 0) / 10000;
 
-            const designerPercent = Number(item?.designerPercent || 0) / 10000;
+          const designerPercent = Number(item?.designerPercent || 0) / 10000;
 
-            if (!item?.collectionMetadata) {
-              item = {
-                ...item,
-                collectionMetadata: await fetchIpfsJson(item?.uri),
-              };
-            }
-
-            categorizedCollections[item.printType].push({
+          if (!item?.collectionMetadata) {
+            item = {
               ...item,
-              designerPercent,
-              fulfillerBase,
-              fulfillerPercent,
-            } as PrintItem);
+              collectionMetadata: await fetchIpfsJson(item?.uri),
+            };
           }
-        )
+
+          categorizedCollections[item?.printType].push({
+            ...item,
+            designerPercent,
+            fulfillerBase,
+            fulfillerPercent,
+            collectionMetadata: {
+              ...item?.collectionMetadata,
+              sizes: (
+                item?.collectionMetadata?.sizes as unknown as string
+              )?.split(","),
+              colors: (
+                item?.collectionMetadata?.colors as unknown as string
+              )?.split(","),
+            },
+          } as PrintItem);
+        })
       );
+
       dispatch(setAvailableCollections(categorizedCollections));
     } catch (err: any) {
       console.error(err.message);
@@ -168,16 +173,6 @@ const useLevelItems = (
     dispatch(setLevelArray(levelArray));
   };
 
-  const handleOracles = async (): Promise<void> => {
-    try {
-      const { data } = await getOracleData();
-
-      dispatch(setOracleData(data?.currencyAddeds));
-    } catch (err: any) {
-      console.error(err.message);
-    }
-  };
-
   const handleChangeCurrency = (
     levelIndex: number,
     itemIndex: number,
@@ -230,9 +225,8 @@ const useLevelItems = (
   }, [allCollections]);
 
   useEffect(() => {
-    if (!allCollections) {
+    if (allCollections && Object.keys(allCollections)?.length < 1) {
       getAllAvailableCollections();
-      handleOracles();
     }
   }, []);
 

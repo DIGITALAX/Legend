@@ -38,6 +38,23 @@ export type GrantProps = {
   index: number;
   setMirrorChoiceOpen: (e: SetStateAction<boolean[]>) => void;
   mirrorChoiceOpen: boolean[];
+  indexes: {
+    levelIndex: number;
+    imageIndex: number;
+    rate: number;
+    price: number[];
+    priceIndex: number;
+    currency: string;
+    itemIndex: number;
+  };
+  handleChangeCurrency: (
+    levelIndex: number,
+    itemIndex: number,
+    priceIndex: number,
+    checkoutCurrency: string
+  ) => void;
+  handleChangeImage: (levelIndex: number, imageIndex: number) => void;
+  handleChangeItem: (levelIndex: number, newItemIndex: number) => void;
 };
 
 export type CollectItemProps = {
@@ -89,7 +106,7 @@ export interface Grant {
     tech: string;
     title: string;
   };
-  granteeAddresses: string[];
+  grantees: (Profile)[];
   splits: string[];
   uri: string;
   profileId: string;

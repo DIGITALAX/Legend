@@ -21,6 +21,9 @@ const Header: FunctionComponent = (): JSX.Element => {
   const profile = useSelector(
     (state: RootState) => state.app.lensProfileReducer.profile
   );
+  const oracleData = useSelector(
+    (state: RootState) => state.app.oracleDataReducer?.data
+  );
   const cartAnim = useSelector(
     (state: RootState) => state.app.cartAnimReducer.value
   );
@@ -28,7 +31,7 @@ const Header: FunctionComponent = (): JSX.Element => {
     (state: RootState) => state.app.cartItemsReducer.items
   );
   const { signInLoading, handleLensSignIn, checkoutOpen, setCheckoutOpen } =
-    useSignIn(dispatch, profile);
+    useSignIn(dispatch, profile, oracleData);
 
   return (
     <div className="relative bg-black h-12 p-2 justify-center items-center flex flex-row w-full h-fit">

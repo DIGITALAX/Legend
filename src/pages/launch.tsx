@@ -65,7 +65,7 @@ export default function Launch() {
     handleChangeItem,
     allCollectionsLoading,
   } = useLevelItems(dispatch, allCollections, oracleData, levelItems);
-  const { handleLensSignIn, signInLoading } = useSignIn(dispatch, profile);
+  const { handleLensSignIn, signInLoading } = useSignIn(dispatch, profile, oracleData);
   return (
     <div className="relative w-full h-full flex items-center justify-center p-5 overflow-y-hidden">
       <div

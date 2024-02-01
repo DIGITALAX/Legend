@@ -9,6 +9,7 @@ import fetchIpfsJson from "../../../../lib/graph/helpers/fetchIPFSJson";
 import getPublication from "../../../../graphql/lens/queries/publication";
 import toHexWithLeadingZero from "../../../../lib/lens/helpers/toHexWithLeadingZero";
 import { Profile } from "../../../../graphql/generated";
+import getDefaultProfile from "../../../../graphql/lens/queries/defaultProfile";
 
 const useGrants = (
   dispatch: Dispatch,
@@ -35,6 +36,7 @@ const useGrants = (
             levelInfo: { collectionIds: string[]; amounts: string[] }[];
             profileId: string;
             pubId: string;
+            granteeAddresses: string[];
           }) => {
             if (!item?.grantMetadata) {
               const data = await fetchIpfsJson(item?.uri);
@@ -43,6 +45,19 @@ const useGrants = (
                 grantMetadata: data,
               };
             }
+
+            let granteePromises = await Promise.all(
+              item?.granteeAddresses?.map(async (address) => {
+                const grantee = await getDefaultProfile(
+                  {
+                    for: address,
+                  },
+                  lensConnected?.id
+                );
+
+                return grantee?.data?.defaultProfile;
+              })
+            );
 
             const { data } = await getPublication(
               {
@@ -63,6 +78,30 @@ const useGrants = (
                     if (!returnData) {
                       const data = await getOneCollection(coll);
                       returnData = data?.data?.collectionCreateds?.[0];
+
+                      if (!returnData?.collectionMetadata) {
+                        returnData = {
+                          ...returnData,
+                          collectionMetadata: await fetchIpfsJson(
+                            returnData?.uri!
+                          ),
+                        } as PrintItem;
+                      }
+
+                      returnData = {
+                        ...returnData,
+                        collectionMetadata: {
+                          ...returnData?.collectionMetadata,
+                          sizes: (
+                            returnData?.collectionMetadata
+                              ?.sizes as unknown as string
+                          )?.split(","),
+                          colors: (
+                            returnData?.collectionMetadata
+                              ?.colors as unknown as string
+                          )?.split(","),
+                        },
+                      };
                     }
 
                     return returnData;
@@ -80,6 +119,7 @@ const useGrants = (
             return {
               ...item,
               levelInfo,
+              grantees: granteePromises?.filter(Boolean),
               publication: data?.publication,
             };
           }

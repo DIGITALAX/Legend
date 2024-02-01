@@ -89,11 +89,18 @@ export interface PrintItem {
   fulfillerBase: number;
 }
 
+
+
 export enum PrintType {
   Sticker = "0",
   Poster = "1",
   Shirt = "2",
   Hoodie = "3",
+  Sleeve = "4",
+  Crop = "5",
+  NFTOnly = "6",
+  Custom = "7",
+  Other = "8",
 }
 
 export interface LevelInfo {
