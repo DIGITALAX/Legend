@@ -1,4 +1,3 @@
-import { omit } from "lodash";
 import LensHubProxy from "./../../../abi/LensHubProxy.json";
 import { Action, Dispatch } from "redux";
 import { polygonMumbai } from "viem/chains";
@@ -11,7 +10,6 @@ import { setErrorModal } from "../../../redux/reducers/errorModalSlice";
 import validateMetadata from "../../../graphql/lens/queries/metadata";
 import cleanCollect from "./cleanCollect";
 import postOnChain from "../../../graphql/lens/mutations/onchainPost";
-import broadcast from "../../../graphql/lens/queries/broadcast";
 
 const lensPost = async (
   contentURI: string,

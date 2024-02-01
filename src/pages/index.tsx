@@ -9,8 +9,12 @@ import useInteractions from "@/components/Grants/hooks/useInteractions";
 import { useAccount } from "wagmi";
 import { polygonMumbai } from "viem/chains";
 import { createPublicClient, http } from "viem";
+import useLevelItems from "@/components/Launch/hooks/useLevelItems";
+import Bar from "@/components/Common/modules/Bar";
+import useCheckout from "@/components/Checkout/hooks/useCheckout";
+import { LitNodeClient } from "@lit-protocol/lit-node-client";
 
-export default function Home() {
+export default function Home({ client }: { client: LitNodeClient }) {
   const dispatch = useDispatch();
   const router = useRouter();
   const { address } = useAccount();
@@ -23,18 +27,27 @@ export default function Home() {
   const collectionsCache = useSelector(
     (state: RootState) => state.app.collectionsCacheReducer.value
   );
+  const oracleData = useSelector(
+    (state: RootState) => state.app.oracleDataReducer.data
+  );
+  const cartItems = useSelector(
+    (state: RootState) => state.app.cartItemsReducer?.items
+  );
   const lensConnected = useSelector(
     (state: RootState) => state.app.lensProfileReducer?.profile
   );
   const allGrants = useSelector(
     (state: RootState) => state.app.allGrantsReducer.levels
   );
+  const { handleCheckout } = useCheckout(cartItems, client, address);
   const { handleFetchMoreGrants, allGrantsLoading, grantInfo } = useGrants(
     dispatch,
     allGrants,
     collectionsCache,
     lensConnected
   );
+  const { handleChangeCurrency, handleChangeImage, handleChangeItem, indexes } =
+    useLevelItems(dispatch, oracleData);
 
   const {
     mirror,
@@ -45,9 +58,7 @@ export default function Home() {
     setMirrorChoiceOpen,
     profileHovers,
     setProfileHovers,
-    followProfile,
-    unfollowProfile,
-    mainInteractionsLoading,
+    simpleCollect,
   } = useInteractions(
     lensConnected,
     dispatch,
@@ -59,56 +70,56 @@ export default function Home() {
   console.log({ allGrants });
 
   return (
-    <div
-      className="relative w-full h-full flex flex-col items-center justify-start p-2 overflow-auto flex-grow"
-      id="milestone"
-    >
+    <div className="relative w-full h-full flex flex-col items-center justify-start p-2 overflow-auto flex-grow">
       <div className="relative w-full h-fit overflow-y-scroll flex items-start justify-center">
-        {allGrantsLoading ? (
-          <div className="w-full h-full items-start justify-center gap-8 flex flex-col">
-            {Array.from({ length: 10 }).map((_, index) => {
-              return (
-                <div
-                  key={index}
-                  className="relative h-fit w-[30rem] border border-black flex flex-col items-center justify-center"
-                >
-                  <div
-                    className="relative w-full h-fit flex flex-col"
-                    id="grant"
-                  ></div>
-                </div>
-              );
-            })}
+        <InfiniteScroll
+          dataLength={allGrants?.length}
+          loader={<></>}
+          hasMore={grantInfo?.hasMore}
+          next={handleFetchMoreGrants}
+          className={`w-full h-full items-start justify-center flex`}
+        >
+          <div className="relative w-full h-fit flex flex-col items-center justify-start gap-8">
+            {allGrantsLoading
+              ? Array.from({ length: 10 })?.map((_, index: number) => {
+                  return (
+                    <div
+                      className="relative h-[20rem] w-[40rem] border border-black flex flex-col items-center justify-start bg-black animate-pulse"
+                      key={index}
+                    >
+                      <Bar title={"Loading..."} />
+                      <div
+                        className="relative w-full h-full flex flex-col gap-8"
+                        id="grant"
+                      ></div>
+                    </div>
+                  );
+                })
+              : allGrants?.map((grant: GrantType, index: number) => {
+                  return (
+                    <Grant
+                      key={index}
+                      grant={grant}
+                      index={index}
+                      cartItems={cartItems}
+                      interactionsLoading={interactionsLoading?.[index]}
+                      mirror={mirror}
+                      like={like}
+                      handleCheckout={handleCheckout}
+                      bookmark={bookmark}
+                      setMirrorChoiceOpen={setMirrorChoiceOpen}
+                      mirrorChoiceOpen={mirrorChoiceOpen}
+                      dispatch={dispatch}
+                      router={router}
+                      handleChangeCurrency={handleChangeCurrency}
+                      handleChangeImage={handleChangeImage}
+                      handleChangeItem={handleChangeItem}
+                      indexes={indexes?.[index]}
+                    />
+                  );
+                })}
           </div>
-        ) : (
-          <InfiniteScroll
-            dataLength={allGrants?.length}
-            loader={<></>}
-            hasMore={grantInfo?.hasMore}
-            next={handleFetchMoreGrants}
-            className={`w-full h-full items-start justify-center gap-8 flex flex-col`}
-          >
-            {allGrants?.map((grant: GrantType, index: number) => {
-              return (
-                <Grant
-                  key={index}
-                  grant={grant}
-                  index={index}
-                  interactionsLoading={interactionsLoading}
-                  mirror={mirror}
-                  like={like}
-                  bookmark={bookmark}
-                  setMirrorChoiceOpen={setMirrorChoiceOpen}
-                  mirrorChoiceOpen={mirrorChoiceOpen}
-                  dispatch={dispatch}
-                  router={router}
-                  followProfile={followProfile}
-                  unfollowProfile={unfollowProfile}
-                />
-              );
-            })}
-          </InfiniteScroll>
-        )}
+        </InfiniteScroll>
       </div>
     </div>
   );

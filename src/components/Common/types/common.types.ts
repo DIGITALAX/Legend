@@ -6,9 +6,9 @@ export type PurchaseTokensProps = {
   currency: string;
   handleChangeCurrency: (
     levelIndex: number,
-    itemIndex: number,
     priceIndex: number,
-    checkoutCurrency: string
+    checkoutCurrency: string,
+    checkoutPrice: number
   ) => void;
   itemIndex: number;
   levelIndex: number;

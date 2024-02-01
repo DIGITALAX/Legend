@@ -119,7 +119,7 @@ const useGrants = (
             return {
               ...item,
               levelInfo,
-              grantees: granteePromises?.filter(Boolean),
+              grantees: granteePromises?.filter((item) => item !== undefined),
               publication: data?.publication,
             };
           }

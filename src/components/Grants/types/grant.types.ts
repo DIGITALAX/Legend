@@ -12,29 +12,20 @@ export type GrantProps = {
     hasReacted: boolean,
     main?: boolean | undefined
   ) => Promise<void>;
+  handleCheckout: (item: CartItem) => Promise<void>;
   mirror: (id: string) => Promise<void>;
   bookmark: (id: string) => Promise<void>;
   dispatch: Dispatch<AnyAction>;
   router: NextRouter;
-  followProfile: (
-    id: string,
-    index: number,
-    innerIndex: number,
-    main?: boolean | undefined
-  ) => Promise<void>;
-  unfollowProfile: (
-    id: string,
-    index: number,
-    innerIndex: number,
-    main?: boolean | undefined
-  ) => Promise<void>;
   interactionsLoading: {
     mirror: boolean;
     bookmark: boolean;
     like: boolean;
     unfollow: boolean[];
     follow: boolean[];
-  }[];
+    simpleCollect: boolean;
+  };
+  cartItems: CartItem[];
   index: number;
   setMirrorChoiceOpen: (e: SetStateAction<boolean[]>) => void;
   mirrorChoiceOpen: boolean[];
@@ -49,9 +40,9 @@ export type GrantProps = {
   };
   handleChangeCurrency: (
     levelIndex: number,
-    itemIndex: number,
     priceIndex: number,
-    checkoutCurrency: string
+    checkoutCurrency: string,
+    checkoutPrice: number
   ) => void;
   handleChangeImage: (levelIndex: number, imageIndex: number) => void;
   handleChangeItem: (levelIndex: number, newItemIndex: number) => void;
@@ -71,27 +62,6 @@ export type CollectItemProps = {
   items: PrintItem[];
 };
 
-export type MirrorBoxProps = {
-  showMoreMirrors: () => Promise<void>;
-  showMoreQuotes: () => Promise<void>;
-  mirrors: Profile[] | undefined;
-  quotes: Profile[] | undefined;
-  grantQuote: string;
-  setGrantQuote: (e: string) => void;
-};
-
-export type CommentBoxProps = {
-  showMoreComments: () => Promise<void>;
-  comments: Profile[] | undefined;
-  grantComment: string;
-  setGrantComment: (e: string) => void;
-};
-
-export type LikeBoxProps = {
-  showMoreLikes: () => Promise<void>;
-  likes: Profile[] | undefined;
-};
-
 export interface Grant {
   grantId: string;
   creator: string;
@@ -106,7 +76,7 @@ export interface Grant {
     tech: string;
     title: string;
   };
-  grantees: (Profile)[];
+  grantees: Profile[];
   splits: string[];
   uri: string;
   profileId: string;
@@ -126,3 +96,23 @@ export interface Grant {
   blockNumber: string;
   publication?: Post;
 }
+
+export type InteractionsProps = {
+  like: (id: string, hasReacted: boolean) => Promise<void>;
+  mirror: (id: string) => Promise<void>;
+  post: Post;
+  interactionsLoading: {
+    mirror: boolean;
+    bookmark: boolean;
+    like: boolean;
+    unfollow: boolean[];
+    follow: boolean[];
+    simpleCollect: boolean;
+  };
+  dispatch: Dispatch<AnyAction>;
+  bookmark: (id: string) => Promise<void>;
+  mirrorChoiceOpen: boolean;
+  setMirrorChoiceOpen: (e: SetStateAction<boolean[]>) => void;
+  router: NextRouter;
+  index: number;
+};

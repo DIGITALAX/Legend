@@ -1,10 +1,8 @@
 import {
-  Comment,
   Post,
   Profile,
   PublicationOperations,
   PublicationStats,
-  SimpleCollectOpenActionSettings,
 } from "../../../../graphql/generated";
 import { Dispatch } from "redux";
 import { useEffect, useState } from "react";
@@ -15,10 +13,8 @@ import lensBookmark from "../../../../lib/lens/helpers/lensBookmark";
 import lensMirror from "../../../../lib/lens/helpers/lensMirror";
 import lensLike from "../../../../lib/lens/helpers/lensLike";
 import errorChoice from "../../../../lib/lens/helpers/errorChoice";
-import lensFollow from "../../../../lib/lens/helpers/lensFollow";
-import refetchProfile from "../../../../lib/lens/helpers/refetchProfile";
-import lensUnfollow from "../../../../lib/lens/helpers/lensUnfollow";
 import { setAllGrants } from "../../../../redux/reducers/allGrantsSlice";
+import lensCollect from "../../../../lib/lens/helpers/lensCollect";
 
 const useInteractions = (
   lensConnected: Profile | undefined,
@@ -28,19 +24,25 @@ const useInteractions = (
   feed?: Grant[]
 ) => {
   const [mirrorChoiceOpen, setMirrorChoiceOpen] = useState<boolean[]>([]);
-  const [mainInteractionsLoading, setMainInteractionsLoading] = useState<{
-    mirror: boolean;
-    bookmark: boolean;
-    like: boolean;
-    unfollow: boolean[];
-    follow: boolean[];
-  }>({
-    follow: [],
-    unfollow: [],
-    mirror: false,
-    bookmark: false,
-    like: false,
-  });
+  const [mainInteractionsLoading, setMainInteractionsLoading] = useState<
+    {
+      mirror: boolean;
+      bookmark: boolean;
+      like: boolean;
+      unfollow: boolean[];
+      follow: boolean[];
+      simpleCollect: boolean;
+    }[]
+  >([
+    {
+      follow: [],
+      unfollow: [],
+      mirror: false,
+      bookmark: false,
+      like: false,
+      simpleCollect: false,
+    },
+  ]);
   const [profileHovers, setProfileHovers] = useState<boolean[]>([]);
   const [interactionsLoading, setInteractionsLoading] = useState<
     {
@@ -49,16 +51,37 @@ const useInteractions = (
       like: boolean;
       unfollow: boolean[];
       follow: boolean[];
+      simpleCollect: boolean;
     }[]
   >([]);
 
-  const bookmark = async (id: string) => {
+  const bookmark = async (id: string, main?: boolean) => {
     if (!lensConnected?.id) return;
 
-    const index = feed?.findIndex((pub) => pub?.publication?.id === id);
+    let index = 0;
 
-    if (index == -1) {
-      return;
+    if (!main) {
+      index = feed?.findIndex((pub) => pub?.publication?.id === id) as number;
+
+      if (index == -1) {
+        return;
+      }
+    }
+
+    if (main) {
+      setMainInteractionsLoading((prev) => ({
+        ...prev,
+        bookmark: true,
+      }));
+    } else {
+      setInteractionsLoading((prev) => {
+        const old = [...prev];
+        old[index] = {
+          ...old[index],
+          bookmark: true,
+        };
+        return old;
+      });
     }
 
     try {
@@ -68,7 +91,8 @@ const useInteractions = (
         {
           hasBookmarked: true,
         },
-        "bookmarks"
+        "bookmarks",
+        true
       );
     } catch (err: any) {
       errorChoice(
@@ -79,10 +103,27 @@ const useInteractions = (
             {
               hasBookmarked: true,
             },
-            "bookmarks"
+            "bookmarks",
+            true
           ),
         dispatch
       );
+    }
+
+    if (main) {
+      setMainInteractionsLoading((prev) => ({
+        ...prev,
+        bookmark: false,
+      }));
+    } else {
+      setInteractionsLoading((prev) => {
+        const old = [...prev];
+        old[index] = {
+          ...old[index],
+          bookmark: false,
+        };
+        return old;
+      });
     }
   };
 
@@ -92,18 +133,28 @@ const useInteractions = (
     let index = 0;
 
     if (!main) {
-      index = feed?.findIndex((pub) => pub?.publication?.id === id)!;
+      index = feed?.findIndex((pub) => pub?.publication?.id === id) as number;
 
       if (index == -1) {
         return;
       }
     }
 
-    setInteractionsLoading((prev) => {
-      const updatedArray = [...prev];
-      updatedArray[index!] = { ...updatedArray[index!], mirror: true };
-      return updatedArray;
-    });
+    if (main) {
+      setMainInteractionsLoading((prev) => ({
+        ...prev,
+        mirror: true,
+      }));
+    } else {
+      setInteractionsLoading((prev) => {
+        const old = [...prev];
+        old[index] = {
+          ...old[index],
+          mirror: true,
+        };
+        return old;
+      });
+    }
 
     try {
       const clientWallet = createWalletClient({
@@ -122,7 +173,8 @@ const useInteractions = (
         {
           hasMirrored: true,
         },
-        "mirrors"
+        "mirrors",
+        true
       );
     } catch (err: any) {
       errorChoice(
@@ -133,17 +185,28 @@ const useInteractions = (
             {
               hasMirrored: true,
             },
-            "mirrors"
+            "mirrors",
+            true
           ),
         dispatch
       );
     }
 
-    setInteractionsLoading((prev) => {
-      const updatedArray = [...prev];
-      updatedArray[index!] = { ...updatedArray[index!], mirror: false };
-      return updatedArray;
-    });
+    if (main) {
+      setMainInteractionsLoading((prev) => ({
+        ...prev,
+        mirror: false,
+      }));
+    } else {
+      setInteractionsLoading((prev) => {
+        const old = [...prev];
+        old[index] = {
+          ...old[index],
+          mirror: false,
+        };
+        return old;
+      });
+    }
   };
 
   const like = async (id: string, hasReacted: boolean, main?: boolean) => {
@@ -152,18 +215,28 @@ const useInteractions = (
     let index = 0;
 
     if (!main) {
-      index = feed?.findIndex((pub) => pub?.publication?.id === id)!;
+      index = feed?.findIndex((pub) => pub?.publication?.id === id) as number;
 
       if (index == -1) {
         return;
       }
     }
 
-    setInteractionsLoading((prev) => {
-      const updatedArray = [...prev];
-      updatedArray[index!] = { ...updatedArray[index!], like: true };
-      return updatedArray;
-    });
+    if (main) {
+      setMainInteractionsLoading((prev) => ({
+        ...prev,
+        like: true,
+      }));
+    } else {
+      setInteractionsLoading((prev) => {
+        const old = [...prev];
+        old[index] = {
+          ...old[index],
+          like: true,
+        };
+        return old;
+      });
+    }
 
     try {
       await lensLike(id, dispatch, hasReacted!);
@@ -172,7 +245,8 @@ const useInteractions = (
         {
           hasReacted: hasReacted ? false : true,
         },
-        "reactions"
+        "reactions",
+        hasReacted ? false : true
       );
     } catch (err: any) {
       errorChoice(
@@ -183,43 +257,56 @@ const useInteractions = (
             {
               hasReacted: hasReacted ? false : true,
             },
-            "reactions"
+            "reactions",
+            hasReacted ? false : true
           ),
         dispatch
       );
     }
 
-    setInteractionsLoading((prev) => {
-      const updatedArray = [...prev];
-      updatedArray[index!] = { ...updatedArray[index!], like: false };
-      return updatedArray;
-    });
+    if (main) {
+      setMainInteractionsLoading((prev) => ({
+        ...prev,
+        like: false,
+      }));
+    } else {
+      setInteractionsLoading((prev) => {
+        const old = [...prev];
+        old[index] = {
+          ...old[index],
+          like: false,
+        };
+        return old;
+      });
+    }
   };
 
-  const followProfile = async (
-    id: string,
-    index: number,
-    innerIndex: number,
-    main?: boolean
-  ) => {
+  const simpleCollect = async (id: string, type: string, main?: boolean) => {
     if (!lensConnected?.id) return;
 
-    if (index == -1) {
-      return;
+    let index = 0;
+
+    if (!main) {
+      index = feed?.findIndex((pub) => pub?.publication?.id === id) as number;
+
+      if (index == -1) {
+        return;
+      }
     }
 
     if (main) {
-      setMainInteractionsLoading((prev) => {
-        const old = { ...prev };
-        old.follow[innerIndex] = true;
-        return old;
-      });
+      setMainInteractionsLoading((prev) => ({
+        ...prev,
+        simpleCollect: true,
+      }));
     } else {
       setInteractionsLoading((prev) => {
-        const updatedArray = [...prev];
-        updatedArray[index!] = { ...updatedArray[index!] };
-        updatedArray[index!].follow[innerIndex] = true;
-        return updatedArray;
+        const old = [...prev];
+        old[index] = {
+          ...old[index],
+          simpleCollect: true,
+        };
+        return old;
       });
     }
 
@@ -229,96 +316,54 @@ const useInteractions = (
         transport: custom((window as any).ethereum),
       });
 
-      await lensFollow(
+      await lensCollect(
         id,
+        type,
         dispatch,
-        undefined,
         address as `0x${string}`,
         clientWallet,
         publicClient
       );
-      await refetchProfile(dispatch, lensConnected?.id, lensConnected?.id);
+
+      updateInteractions(
+        index,
+        {
+          hasActed: {
+            __typename: "OptimisticStatusResult",
+            isFinalisedOnchain: true,
+            value: true,
+          },
+        },
+        "countOpenActions",
+        true
+      );
     } catch (err: any) {
-      errorChoice(err, () => {}, dispatch);
+      console.error(err.message);
     }
 
     if (main) {
-      setMainInteractionsLoading((prev) => {
-        const old = { ...prev };
-        old.follow[innerIndex] = false;
-        return old;
-      });
+      setMainInteractionsLoading((prev) => ({
+        ...prev,
+        simpleCollect: false,
+      }));
     } else {
       setInteractionsLoading((prev) => {
-        const updatedArray = [...prev];
-        updatedArray[index!] = { ...updatedArray[index!] };
-        updatedArray[index!].unfollow[innerIndex] = false;
-        return updatedArray;
+        const old = [...prev];
+        old[index] = {
+          ...old[index],
+          simpleCollect: false,
+        };
+        return old;
       });
     }
   };
 
-  const unfollowProfile = async (
-    id: string,
+  const updateInteractions = (
     index: number,
-    innerIndex: number,
-    main?: boolean
+    value: Object,
+    type: string,
+    increase: boolean
   ) => {
-    if (!lensConnected?.id) return;
-
-    if (index == -1) {
-      return;
-    }
-
-    if (main) {
-      setMainInteractionsLoading((prev) => {
-        const old = { ...prev };
-        old.unfollow[innerIndex] = true;
-        return old;
-      });
-    } else {
-      setInteractionsLoading((prev) => {
-        const updatedArray = [...prev];
-        updatedArray[index!] = { ...updatedArray[index!] };
-        updatedArray[index!].unfollow[innerIndex] = true;
-        return updatedArray;
-      });
-    }
-
-    try {
-      const clientWallet = createWalletClient({
-        chain: polygon,
-        transport: custom((window as any).ethereum),
-      });
-
-      await lensUnfollow(
-        id,
-        dispatch,
-        address as `0x${string}`,
-        clientWallet,
-        publicClient
-      );
-      await refetchProfile(dispatch, lensConnected?.id, lensConnected?.id);
-    } catch (err: any) {
-      errorChoice(err, () => {}, dispatch);
-    }
-    if (main) {
-      setMainInteractionsLoading((prev) => {
-        const old = { ...prev };
-        old.unfollow[innerIndex] = false;
-        return old;
-      });
-    } else {
-      setInteractionsLoading((prev) => {
-        const updatedArray = [...prev];
-        updatedArray[index!] = { ...updatedArray[index!] };
-        updatedArray[index!].unfollow[innerIndex] = false;
-        return updatedArray;
-      });
-    }
-  };
-
-  const updateInteractions = (index: number, value: Object, type: string) => {
     if (!feed) return;
     const newItems = [...feed];
 
@@ -336,7 +381,7 @@ const useInteractions = (
             [type]:
               newItems[index]?.publication?.stats?.[
                 type as keyof PublicationStats
-              ] + 1,
+              ] + (increase ? 1 : -1),
           } as PublicationStats,
         },
       };
@@ -354,6 +399,7 @@ const useInteractions = (
           like: false,
           follow: [],
           unfollow: [],
+          simpleCollect: false,
         }))
       );
       setMirrorChoiceOpen(Array.from({ length: feed?.length }, () => false));
@@ -370,8 +416,7 @@ const useInteractions = (
     setMirrorChoiceOpen,
     profileHovers,
     setProfileHovers,
-    followProfile,
-    unfollowProfile,
+    simpleCollect,
     mainInteractionsLoading,
   };
 };

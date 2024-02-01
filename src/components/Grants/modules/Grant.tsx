@@ -3,18 +3,18 @@ import Image from "next/legacy/image";
 import { INFURA_GATEWAY } from "../../../../lib/constants";
 import Bar from "@/components/Common/modules/Bar";
 import { GrantProps } from "../types/grant.types";
-import { AiOutlineLoading } from "react-icons/ai";
 import { LevelInfo } from "@/components/Launch/types/launch.types";
 import CollectItem from "@/components/Common/modules/CollectItem";
 import { ImageMetadataV3, Profile } from "../../../../graphql/generated";
-import numeral from "numeral";
 import createProfilePicture from "../../../../lib/lens/helpers/createProfilePicture";
+import Interactions from "./Interactions";
 
 const Grant: FunctionComponent<GrantProps> = ({
   grant,
   mirror,
   like,
   bookmark,
+  handleCheckout,
   router,
   interactionsLoading,
   dispatch,
@@ -25,151 +25,68 @@ const Grant: FunctionComponent<GrantProps> = ({
   handleChangeItem,
   indexes,
   index,
+  cartItems,
 }) => {
   return (
-    <div className="relative h-fit w-[30rem] border border-black flex flex-col items-center justify-center bg-black">
+    <div className="relative h-fit w-[40rem] border border-black flex flex-col items-center justify-center bg-black">
       <Bar title={(grant?.publication?.metadata as ImageMetadataV3)?.title!} />
-      <div className="relative w-full h-fit flex flex-col gap-8" id="grant">
-        <div className="p-5 relative w-full h-fit flex items-center justify-center flex-row gap-5">
-          <div className="relative w-full h-fit flex break-words font-vcr text-black p-2 justify-start items-center rounded-sm border border-black bg-offWhite p-2 flex-col gap-4">
-            <div className="relative w-full h-40 flex items-center justify-start gap-6">
-              <div className="relative w-full overflow-y-scroll h-full ustify-start items-center">
-                {(grant?.publication?.metadata as ImageMetadataV3)?.content}
-              </div>
-              <div className="relative w-24 h-fit border border-black rounded-md flex flex-col gap-2 p-2 items-center justify-center">
-                {[
-                  {
-                    image: "QmRQVbnK1VajkBzjz9w2zFSSbC9fAdKRo7m53VuvhyvHa4",
-                    title: "Like",
-                    function: () =>
-                      like(
-                        grant?.publication?.id,
-                        grant?.publication?.operations?.hasReacted!,
-                        false
-                      ),
-                    loader: interactionsLoading?.[index]?.like,
-                    amount: grant?.publication?.stats?.reactions || 0,
-                  },
-                  {
-                    image: "QmVFm5onDqzKCV6v9XbGTQirXsWFmRgihsYcXVBbLMxneL",
-                    title: "Bookmark",
-                    function: () => bookmark(grant?.publication?.id),
-                    loader: interactionsLoading?.[index]?.bookmark,
-                    amount: grant?.publication?.stats?.bookmarks || 0,
-                  },
-                  {
-                    image: "QmRsAM1oJfiv1Py92uoYk7VMdrnPfWDsgH3Y2tPWVDqxHw",
-                    title: "Mirror",
-                    function: () =>
-                      setMirrorChoiceOpen((prev) => {
-                        const old = [...prev];
-                        !old[index];
-                        return old;
-                      }),
-                    loader: false,
-                    amount:
-                      (grant?.publication?.stats?.mirrors || 0) +
-                      (grant?.publication?.stats?.quotes || 0),
-                  },
-                  {
-                    image: "QmRQVbnK1VajkBzjz9w2zFSSbC9fAdKRo7m53VuvhyvHa4",
-                    title: "Contributors",
-                    function: () =>
-                      router.push(`/grant/${grant?.publication?.id}`),
-                    loader: false,
-                    amount: grant?.publication?.stats?.countOpenActions || 0,
-                  },
-                  {
-                    image: "QmRQVbnK1VajkBzjz9w2zFSSbC9fAdKRo7m53VuvhyvHa4",
-                    title: "Comments",
-                    function: () =>
-                      router.push(`/grant/${grant?.publication?.id}`),
-                    loader: false,
-                    amount: grant?.publication?.stats?.comments || 0,
-                  },
-                ].map(
-                  (
-                    item: {
-                      image: string;
-                      title: string;
-                      function: () => void;
-                      loader: boolean;
-                      amount: number;
-                    },
-                    indexTwo: number
-                  ) => {
-                    return (
-                      <div
-                        key={indexTwo}
-                        className="relative w-fit h-fit flex flex-row items-center justify-center gap-3 font-vcr text-black text-center"
-                        onClick={() => !item?.loader && item?.function()}
-                      >
-                        {item?.loader ? (
-                          <div className="relative w-fit h-fit animate-spin flex items-center justify-center">
-                            <AiOutlineLoading size={15} color="white" />
-                          </div>
-                        ) : (
-                          <div className="relative w-4 h-3 flex items-center justify-center cursor-pointer active:scale-95">
-                            <Image
-                              layout="fill"
-                              src={`${INFURA_GATEWAY}/ipfs/${item?.image}`}
-                              draggable={false}
-                            />
-                          </div>
-                        )}
-                        <div className="relative w-fit h-fit items-center justify-center flex cursor-pointer">
-                          {numeral(item.amount).format("0a")}
-                        </div>
-                      </div>
-                    );
-                  }
-                )}
-              </div>
+      <div className="relative w-full h-full flex flex-col gap-8" id="grant">
+        <div className="relative w-full h-fit flex break-words font-vcr text-black p-2 justify-start items-center rounded-sm border border-black bg-offWhite p-2 flex-col gap-4">
+          <div className="relative w-full h-40 flex items-center justify-start gap-6">
+            <div className="relative w-full overflow-y-scroll h-full ustify-start items-center">
+              {(grant?.publication?.metadata as ImageMetadataV3)?.content}
             </div>
-            <div className="relative w-full h-fit flex justify-start items-start flex-col ml-0 gap-2">
-              <div className="relative text-black font-gam text-4xl justify-start items-start flex">
-                Grant Team
-              </div>
-              <div className="relative w-full items-center justify-between flex flex-row gap-2">
-                <div className="relative mr-0 w-fit h-fit items-center justify-end flex flex-row gap-2">
-                  {grant?.grantees?.map((profile: Profile, index: number) => {
-                    const pfp = createProfilePicture(
-                      profile?.metadata?.picture
-                    );
-                    return (
-                      <div
-                        key={index}
-                        className="relative w-10 h-10 rounded-full border border-black cursor-pointer flex cursor-pointer active:scale-95"
-                        onClick={() =>
-                          router.push(
-                            `/grantee/${
-                              profile?.handle?.suggestedFormatted?.localName?.split(
-                                "@"
-                              )?.[1]
-                            }`
-                          )
-                        }
-                      >
-                        {pfp && (
-                          <div className="relative w-full h-full rounded-full flex items-center justify-center">
-                            <Image
-                              src={pfp}
-                              draggable={false}
-                              objectFit="cover"
-                              layout="fill"
-                              className="rounded-full"
-                            />
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
+            <Interactions
+              like={like}
+              router={router}
+              index={index}
+              interactionsLoading={interactionsLoading}
+              post={grant?.publication!}
+              bookmark={bookmark}
+              mirror={mirror}
+              dispatch={dispatch}
+              mirrorChoiceOpen={mirrorChoiceOpen?.[index]}
+              setMirrorChoiceOpen={setMirrorChoiceOpen}
+            />
           </div>
-          <div className="relative w-fit h-full items-end justify-center flex">
-            <div className="relative w-8 rounded-lg h-60 flex items-end justify-center border-2 border-black bg-zana"></div>
+          <div className="relative w-full h-fit flex justify-start items-start flex-col ml-0 gap-2">
+            <div className="relative text-black font-gam text-4xl justify-start items-start flex">
+              Grant Team
+            </div>
+            <div className="relative w-full items-center justify-between flex flex-row gap-2">
+              <div className="relative mr-0 w-fit h-fit items-center justify-end flex flex-row gap-2">
+                {grant?.grantees?.map((profile: Profile, index: number) => {
+                  const pfp = createProfilePicture(profile?.metadata?.picture);
+                  return (
+                    <div
+                      key={index}
+                      className="relative w-10 h-10 rounded-full border border-black cursor-pointer flex cursor-pointer active:scale-95"
+                      onClick={() =>
+                        router.push(
+                          `/grantee/${
+                            profile?.handle?.suggestedFormatted?.localName?.split(
+                              "@"
+                            )?.[1]
+                          }`
+                        )
+                      }
+                    >
+                      {pfp && (
+                        <div className="relative w-full h-full rounded-full flex items-center justify-center">
+                          <Image
+                            src={pfp}
+                            draggable={false}
+                            objectFit="cover"
+                            layout="fill"
+                            className="rounded-full"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
         <div
@@ -244,6 +161,9 @@ const Grant: FunctionComponent<GrantProps> = ({
                     id={grant?.publication?.id}
                     router={router}
                     cart
+                    simpleCollectLoading={interactionsLoading?.simpleCollect}
+                    cartItems={cartItems}
+                    handleCheckout={handleCheckout}
                   />
                 );
               })}

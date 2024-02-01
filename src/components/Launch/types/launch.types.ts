@@ -43,9 +43,9 @@ export type PreviewProps = {
   }[];
   handleChangeCurrency: (
     levelIndex: number,
-    itemIndex: number,
     priceIndex: number,
-    checkoutCurrency: string
+    checkoutCurrency: string,
+    checkoutPrice: number
   ) => void;
   handleChangeImage: (levelIndex: number, imageIndex: number) => void;
   handleChangeItem: (levelIndex: number, newItemIndex: number) => void;
@@ -88,8 +88,6 @@ export interface PrintItem {
   designerPercent: number;
   fulfillerBase: number;
 }
-
-
 
 export enum PrintType {
   Sticker = "0",
@@ -154,9 +152,9 @@ export type LaunchSwitchProps = {
   }[];
   handleChangeCurrency: (
     levelIndex: number,
-    itemIndex: number,
     priceIndex: number,
-    checkoutCurrency: string
+    checkoutCurrency: string,
+    checkoutPrice: number
   ) => void;
   handleChangeImage: (levelIndex: number, imageIndex: number) => void;
   handleChangeItem: (levelIndex: number, newItemIndex: number) => void;
@@ -198,9 +196,9 @@ export type CollectionShuffleProps = {
   }[];
   handleChangeCurrency: (
     levelIndex: number,
-    itemIndex: number,
     priceIndex: number,
-    checkoutCurrency: string
+    checkoutCurrency: string,
+    checkoutPrice: number
   ) => void;
   handleChangeImage: (levelIndex: number, imageIndex: number) => void;
   handleChangeItem: (levelIndex: number, newItemIndex: number) => void;
@@ -220,9 +218,9 @@ export type CollectItemProps = {
   };
   handleChangeCurrency: (
     levelIndex: number,
-    itemIndex: number,
     priceIndex: number,
-    checkoutCurrency: string
+    checkoutCurrency: string,
+    checkoutPrice: number
   ) => void;
   handleChangeImage: (levelIndex: number, imageIndex: number) => void;
   handleChangeItem: (levelIndex: number, newItemIndex: number) => void;
@@ -231,6 +229,8 @@ export type CollectItemProps = {
   router?: NextRouter;
   dispatch?: Dispatch<AnyAction>;
   id?: string;
+  handleCheckout: (item: CartItem) => Promise<void>;
+  simpleCollectLoading: boolean;
 };
 
 export interface OracleData {
@@ -256,8 +256,8 @@ export type LevelOneProps = {
   };
   handleChangeCurrency: (
     levelIndex: number,
-    itemIndex: number,
     priceIndex: number,
-    checkoutCurrency: string
+    checkoutCurrency: string,
+    checkoutPrice: number
   ) => void;
 };

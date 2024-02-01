@@ -1,7 +1,7 @@
 import { PrintType } from "@/components/Launch/types/launch.types";
 import { ethers } from "ethers";
 
-export const INFURA_GATEWAY: string = "https://chromadin.infura-ipfs.io";
+export const INFURA_GATEWAY: string = "https://thedial.infura-ipfs.io";
 export const IPFS_REGEX: RegExp = /\b(Qm[1-9A-Za-z]{44}|ba[A-Za-z2-7]{57})\b/;
 export const BASE_URL: string = "https://api-v2-mumbai-live.lens.dev/";
 
