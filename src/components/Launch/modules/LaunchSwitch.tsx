@@ -38,10 +38,9 @@ const LaunchSwitch: FunctionComponent<LaunchSwitchProps> = ({
   connected,
   signInLoading,
   levelArray,
-  indexes,
-  handleChangeCurrency,
-  handleChangeImage,
-  handleChangeItem,
+  details,
+  setDetails,
+  oracleData,
 }) => {
   switch (grantStage) {
     case 0:
@@ -148,10 +147,9 @@ const LaunchSwitch: FunctionComponent<LaunchSwitchProps> = ({
           handleShuffleCollectionLevels={handleShuffleCollectionLevels}
           levelArray={levelArray}
           allCollectionsLoading={allCollectionsLoading}
-          indexes={indexes}
-          handleChangeCurrency={handleChangeCurrency}
-          handleChangeImage={handleChangeImage}
-          handleChangeItem={handleChangeItem}
+          details={details}
+          oracleData={oracleData}
+          setDetails={setDetails}
         />
       );
     case 4:
@@ -159,10 +157,9 @@ const LaunchSwitch: FunctionComponent<LaunchSwitchProps> = ({
         <Preview
           postInformation={postInformation}
           levelArray={levelArray}
-          indexes={indexes}
-          handleChangeCurrency={handleChangeCurrency}
-          handleChangeImage={handleChangeImage}
-          handleChangeItem={handleChangeItem}
+          oracleData={oracleData}
+          setDetails={setDetails}
+          details={details}
         />
       );
 

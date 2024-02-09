@@ -3,6 +3,7 @@ import { ChangeEvent, SetStateAction } from "react";
 import { AnyAction, Dispatch } from "redux";
 import { Profile } from "../../../../graphql/generated";
 import { CartItem } from "@/components/Checkout/types/checkout.types";
+import { Grant } from "@/components/Grants/types/grant.types";
 
 export type MilestoneProps = {
   index: number;
@@ -32,23 +33,9 @@ export type RegisterAndPostProps = {
 export type PreviewProps = {
   postInformation: PostInformation;
   levelArray: LevelInfo[];
-  indexes: {
-    levelIndex: number;
-    imageIndex: number;
-    rate: number;
-    price: number[];
-    priceIndex: number;
-    currency: string;
-    itemIndex: number;
-  }[];
-  handleChangeCurrency: (
-    levelIndex: number,
-    priceIndex: number,
-    checkoutCurrency: string,
-    checkoutPrice: number
-  ) => void;
-  handleChangeImage: (levelIndex: number, imageIndex: number) => void;
-  handleChangeItem: (levelIndex: number, newItemIndex: number) => void;
+  oracleData: OracleData[];
+  details: Details[][];
+  setDetails: (e: SetStateAction<Details[][]>) => void;
 };
 
 export type DeployProps = {
@@ -84,6 +71,7 @@ export interface PrintItem {
   prices: string[];
   printType: PrintType;
   fulfiller: string;
+  owner: string;
   fulfillerPercent: number;
   designerPercent: number;
   fulfillerBase: number;
@@ -141,23 +129,9 @@ export type LaunchSwitchProps = {
   handleLensSignIn: () => Promise<void>;
   connected: boolean | undefined;
   signInLoading: boolean;
-  indexes: {
-    levelIndex: number;
-    imageIndex: number;
-    rate: number;
-    price: number[];
-    priceIndex: number;
-    currency: string;
-    itemIndex: number;
-  }[];
-  handleChangeCurrency: (
-    levelIndex: number,
-    priceIndex: number,
-    checkoutCurrency: string,
-    checkoutPrice: number
-  ) => void;
-  handleChangeImage: (levelIndex: number, imageIndex: number) => void;
-  handleChangeItem: (levelIndex: number, newItemIndex: number) => void;
+  details: Details[][];
+  setDetails: (e: SetStateAction<Details[][]>) => void;
+  oracleData: OracleData[];
 };
 
 export interface PostInformation {
@@ -185,53 +159,32 @@ export type CollectionShuffleProps = {
   handleShuffleCollectionLevels: () => void;
   levelArray: LevelInfo[];
   allCollectionsLoading: boolean;
-  indexes: {
-    levelIndex: number;
-    imageIndex: number;
-    rate: number;
-    price: number[];
-    priceIndex: number;
-    currency: string;
-    itemIndex: number;
-  }[];
-  handleChangeCurrency: (
-    levelIndex: number,
-    priceIndex: number,
-    checkoutCurrency: string,
-    checkoutPrice: number
-  ) => void;
-  handleChangeImage: (levelIndex: number, imageIndex: number) => void;
-  handleChangeItem: (levelIndex: number, newItemIndex: number) => void;
+  details: Details[][];
+  setDetails: (e: SetStateAction<Details[][]>) => void;
+  oracleData: OracleData[];
 };
 
 export type CollectItemProps = {
   levelsLoading?: boolean;
   levelInfo: LevelInfo;
-  index: {
-    levelIndex: number;
-    imageIndex: number;
-    rate: number;
-    currency: string;
-    price: number[];
-    priceIndex: number;
-    itemIndex: number;
-  };
-  handleChangeCurrency: (
-    levelIndex: number,
-    priceIndex: number,
-    checkoutCurrency: string,
-    checkoutPrice: number
-  ) => void;
-  handleChangeImage: (levelIndex: number, imageIndex: number) => void;
-  handleChangeItem: (levelIndex: number, newItemIndex: number) => void;
+  oracleData: OracleData[];
+  setDetails: (e: SetStateAction<Details[][]>) => void;
+  details: Details;
   cart?: boolean;
   cartItems?: CartItem[];
   router?: NextRouter;
   dispatch?: Dispatch<AnyAction>;
-  id?: string;
-  handleCheckout: (item: CartItem) => Promise<void>;
-  simpleCollectLoading: boolean;
+  grant?: Grant;
+  handleCheckout?: (item: CartItem) => Promise<void>;
+  simpleCollectLoading?: boolean;
 };
+
+export interface Details {
+  currency: string;
+  imageIndex: number;
+  sizeIndex: number;
+  colorIndex: number;
+}
 
 export interface OracleData {
   currency: string;
@@ -245,19 +198,9 @@ export type SuccessProps = {
 };
 
 export type LevelOneProps = {
-  index: {
-    levelIndex: number;
-    imageIndex: number;
-    rate: number;
-    currency: string;
-    price: number[];
-    priceIndex: number;
-    itemIndex: number;
-  };
-  handleChangeCurrency: (
-    levelIndex: number,
-    priceIndex: number,
-    checkoutCurrency: string,
-    checkoutPrice: number
-  ) => void;
+  details: Details;
+  setDetails: (e: SetStateAction<Details[][]>) => void;
+  mainIndex: number;
+  oracleData: OracleData[];
+  price: string;
 };

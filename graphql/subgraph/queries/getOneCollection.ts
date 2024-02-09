@@ -7,6 +7,7 @@ query($collectionId: String!) {
     fulfiller
     unlimited
     printType
+    owner
     prices
     profileId
     pubId

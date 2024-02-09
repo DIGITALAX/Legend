@@ -7,10 +7,9 @@ import LevelOne from "./LevelOne";
 const CollectionShuffle: FunctionComponent<CollectionShuffleProps> = ({
   levelArray,
   handleShuffleCollectionLevels,
-  indexes,
-  handleChangeCurrency,
-  handleChangeImage,
-  handleChangeItem,
+  details,
+  setDetails,
+  oracleData,
 }): JSX.Element => {
   return (
     <div className="relative w-3/5 h-fit flex flex-col items-center justify-center gap-6">
@@ -39,18 +38,20 @@ const CollectionShuffle: FunctionComponent<CollectionShuffleProps> = ({
       >
         <div className="relative w-fit h-full flex flex-row gap-3">
           <LevelOne
-            index={indexes[0]}
-            handleChangeCurrency={handleChangeCurrency}
+            details={details?.[0]?.[0]}
+            setDetails={setDetails}
+            mainIndex={0}
+            oracleData={oracleData}
+            price={"1"}
           />
           {levelArray?.map((levelInfo: LevelInfo, index: number) => {
             return (
               <CollectItem
                 key={index}
                 levelInfo={levelInfo}
-                index={indexes[index+1]}
-                handleChangeCurrency={handleChangeCurrency}
-                handleChangeImage={handleChangeImage}
-                handleChangeItem={handleChangeItem}
+                details={details?.[0]?.[index + 1]}
+                oracleData={oracleData}
+                setDetails={setDetails}
               />
             );
           })}

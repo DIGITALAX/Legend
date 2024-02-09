@@ -5,6 +5,7 @@ import { CartItem, Fulfillment } from "../types/checkout.types";
 import { COLLECT_LEVEL_ABI } from "../../../../lib/constants";
 import * as LitJsSDK from "@lit-protocol/lit-node-client";
 import { AccessControlConditions } from "@lit-protocol/types";
+import { PrintItem } from "@/components/Launch/types/launch.types";
 
 const useCheckout = (
   cartItems: CartItem[],
@@ -16,6 +17,9 @@ const useCheckout = (
   );
   const [chosenCurrency, setChosenCurrency] = useState<string>();
   const [fulfillmentLoading, setFulfillmentLoading] = useState<boolean>(false);
+  const [chosenCartItem, setChosenCartItem] = useState<CartItem>(
+    cartItems?.[0]
+  );
   const [fulfillment, setFulfillment] = useState<Fulfillment>({
     number: "",
     street: "",
@@ -25,7 +29,6 @@ const useCheckout = (
     name: "",
   });
   const [encryptedFulfillment, setEncryptedFulfillment] = useState<string>("");
-  const [itemCheckedOut, setItemCheckedOut] = useState<boolean[]>([]);
 
   const handleEncryptFulfillment = async () => {
     setFulfillmentLoading(true);
@@ -38,7 +41,7 @@ const useCheckout = (
         nonce: nonce!,
       });
 
-      const accessControlConditions = [
+      let accessControlConditions: any[] = [
         {
           contractAddress: "",
           standardContractType: "",
@@ -47,24 +50,28 @@ const useCheckout = (
           parameters: [":userAddress"],
           returnValueTest: {
             comparator: "=",
-            value: address,
-          },
-        },
-        {
-          operator: "or",
-        },
-        {
-          contractAddress: CREATOR ADDRESSES HERE FOR EVERY ITEM + FULFILLER ADDRESS HERE FOR EACH ITEM!!,
-          standardContractType: "ERC721",
-          chain: 137,
-          method: "balanceOf",
-          parameters: [":userAddress"],
-          returnValueTest: {
-            comparator: ">",
-            value: "0",
+            value: address?.toLowerCase(),
           },
         },
       ];
+
+      chosenCartItem?.chosenLevel.collectionIds?.map((item: PrintItem) => {
+        accessControlConditions.push({
+          operator: "or",
+        });
+        accessControlConditions.push({
+          contractAddress: "",
+          standardContractType: "",
+          chain: "polygon",
+          method: "",
+          parameters: [":userAddress"],
+          returnValueTest: {
+            comparator: "=",
+            value: item.owner.toLowerCase(),
+          },
+        });
+      });
+
       const { ciphertext, dataToEncryptHash } = await LitJsSDK.encryptString(
         {
           accessControlConditions:
@@ -94,7 +101,7 @@ const useCheckout = (
 
   const handleCheckout = async (item: CartItem) => {
     const index = cartItems.findIndex(
-      (pub) => pub.collectionId === item.collectionId
+      (pub) => pub.grant.publication?.id == item.grant.publication?.id
     );
     if (index === -1) {
       return;
@@ -108,7 +115,7 @@ const useCheckout = (
     try {
       const encodedData = ethers.utils.defaultAbiCoder.encode(
         COLLECT_LEVEL_ABI as any,
-        [chosenCurrency, item.level, encryptedFulfillment]
+        [chosenCurrency, item.chosenLevel.level, encryptedFulfillment]
       );
 
       await actOnGrant({
@@ -118,12 +125,7 @@ const useCheckout = (
             data: encodedData,
           },
         },
-        for: item.collectionId, // collection or pub id??
-      });
-      setItemCheckedOut((prev) => {
-        const updatedArray = [...prev];
-        updatedArray[index] = true;
-        return updatedArray;
+        for: item.grant.publication?.id,
       });
     } catch (err: any) {
       console.error(err.message);
@@ -140,14 +142,12 @@ const useCheckout = (
       setGrantCheckoutLoading(
         Array.from({ length: cartItems.length }, () => false)
       );
-      setItemCheckedOut(Array.from({ length: cartItems.length }, () => false));
     }
   }, [cartItems]);
 
   return {
     handleCheckout,
     grantCheckoutLoading,
-    itemCheckedOut,
     fulfillment,
     setFulfillment,
     handleEncryptFulfillment,
@@ -155,6 +155,8 @@ const useCheckout = (
     fulfillmentLoading,
     chosenCurrency,
     setChosenCurrency,
+    setChosenCartItem,
+    chosenCartItem,
   };
 };
 

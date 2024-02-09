@@ -59,12 +59,10 @@ export default function Launch() {
   } = useLaunch(publicClient, address, profile, levelArray, dispatch);
   const {
     handleShuffleCollectionLevels,
-    indexes,
-    handleChangeCurrency,
-    handleChangeImage,
-    handleChangeItem,
+    details,
+    setDetails,
     allCollectionsLoading,
-  } = useLevelItems(dispatch, oracleData, allCollections);
+  } = useLevelItems(dispatch, allCollections);
   const { handleLensSignIn, signInLoading } = useSignIn(
     dispatch,
     profile,
@@ -100,10 +98,9 @@ export default function Launch() {
           openConnectModal={openConnectModal}
           handleLensSignIn={handleLensSignIn}
           connected={connected}
-          indexes={indexes}
-          handleChangeCurrency={handleChangeCurrency}
-          handleChangeImage={handleChangeImage}
-          handleChangeItem={handleChangeItem}
+          details={details}
+          oracleData={oracleData}
+          setDetails={setDetails}
         />
       </div>
       <Deploy

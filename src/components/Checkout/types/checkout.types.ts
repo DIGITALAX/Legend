@@ -1,7 +1,9 @@
+import { Grant } from "@/components/Grants/types/grant.types";
+import { LevelInfo, PrintItem } from "@/components/Launch/types/launch.types";
+
 export type CartItemsProps = {
   cartItems: CartItem[];
   grantCheckoutLoading: boolean[];
-  itemCheckedOut: boolean[];
   handleCheckout: (item: CartItem) => Promise<void>;
   encryptedFulfillment: string | undefined;
 };
@@ -15,13 +17,11 @@ export type FulfillmentProps = {
 };
 
 export interface CartItem {
-  size: string;
-  color: string;
+  sizes: string[];
+  colors: string[];
   amount: number;
-  collectionId: string;
-  level: number;
-  totalPrice: number;
-  fulfiller: string;
+  grant: Grant;
+  chosenLevel: LevelInfo;
 }
 
 export interface Fulfillment {

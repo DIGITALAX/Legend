@@ -16,12 +16,13 @@ export default function Checkout() {
   const {
     handleCheckout,
     grantCheckoutLoading,
-    itemCheckedOut,
     fulfillment,
     setFulfillment,
     handleEncryptFulfillment,
     encryptedFulfillment,
     fulfillmentLoading,
+    setChosenCartItem,
+    chosenCartItem
   } = useCheckout(cartItems, litNodeClient, address);
   return (
     <div className="relative w-full h-full flex p-5 items-start justify-center">
@@ -36,7 +37,6 @@ export default function Checkout() {
         <CartItems
           cartItems={cartItems}
           grantCheckoutLoading={grantCheckoutLoading}
-          itemCheckedOut={itemCheckedOut}
           handleCheckout={handleCheckout}
           encryptedFulfillment={encryptedFulfillment}
         />
