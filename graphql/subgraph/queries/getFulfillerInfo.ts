@@ -8,6 +8,7 @@ const COLLECTIONS = `
       unlimited
       printType
       prices
+      owner
       collectionId
       designerSplit
       fulfillerBase

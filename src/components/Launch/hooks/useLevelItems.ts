@@ -3,19 +3,18 @@ import { setLevelArray } from "../../../../redux/reducers/levelArraySlice";
 import { getAllCollections } from "../../../../graphql/subgraph/queries/getAllCollections";
 import { setAvailableCollections } from "../../../../redux/reducers/availableCollectionsSlice";
 import {
+  Details,
   LevelInfo,
   OracleData,
   PrintItem,
   PrintType,
 } from "../types/launch.types";
 import pickRandomItem from "../../../../lib/graph/helpers/pickRandomItem";
-import { ACCEPTED_TOKENS_MUMBAI } from "../../../../lib/constants";
 import { Dispatch } from "redux";
 import fetchIpfsJson from "../../../../lib/graph/helpers/fetchIPFSJson";
 
 const useLevelItems = (
   dispatch: Dispatch,
-  oracleData: OracleData[],
   allCollections?:
     | {
         [key: string]: PrintItem[];
@@ -24,27 +23,7 @@ const useLevelItems = (
 ) => {
   const [allCollectionsLoading, setAllCollectionsLoading] =
     useState<boolean>(false);
-  const [indexes, setIndexes] = useState<
-    {
-      levelIndex: number;
-      imageIndex: number;
-      rate: number;
-      currency: string;
-      price: number[];
-      priceIndex: number;
-      itemIndex: number;
-    }[]
-  >(
-    Array.from({ length: 7 }, (_, index) => ({
-      levelIndex: index,
-      imageIndex: 0,
-      rate: 0,
-      currency: "USDT",
-      priceIndex: 0,
-      price: Array.from({ length: 3 }, () => 0),
-      itemIndex: 0,
-    }))
-  );
+  const [details, setDetails] = useState<Details[][]>([]);
 
   const getAllAvailableCollections = async () => {
     setAllCollectionsLoading(true);
@@ -146,73 +125,16 @@ const useLevelItems = (
       levelArray?.push(levelObj);
     }
 
-    const rate = oracleData?.find(
-      (oracle) =>
-        oracle.currency ===
-        ACCEPTED_TOKENS_MUMBAI.find((item) => item[1] === "USDT")?.[2]
-    )?.rate;
-
-    setIndexes(
-      Array.from({ length: 7 }, (_, index: number) => ({
-        levelIndex: index,
-        imageIndex: 0,
-        rate: Number(rate),
+    setDetails([
+      Array.from({ length: 7 }, () => ({
         currency: "USDT",
-        priceIndex: 0,
-        price:
-          index === 0
-            ? [10 ** 18]
-            : levelArray[index - 1]?.collectionIds?.map((item) =>
-                Number(item?.prices[0])
-              ),
-        itemIndex: 0,
-      }))
-    );
+        sizeIndex: 0,
+        colorIndex: 0,
+        imageIndex: 0,
+      })),
+    ]);
 
     dispatch(setLevelArray(levelArray));
-  };
-
-  const handleChangeCurrency = (
-    levelIndex: number,
-    priceIndex: number,
-    checkoutCurrency: string,
-    checkoutPrice: number
-  ): void => {
-    const items = [...indexes];
-    items[levelIndex].currency = checkoutCurrency;
-    items[levelIndex].priceIndex = priceIndex;
-    if (levelIndex != 0) {
-      items[levelIndex].price[priceIndex] = checkoutPrice;
-    }
-
-    items[levelIndex].rate = Number(
-      oracleData?.find(
-        (oracle) =>
-          oracle.currency ===
-          ACCEPTED_TOKENS_MUMBAI.find(
-            (item) => item[1] === checkoutCurrency
-          )?.[2]
-      )?.rate
-    );
-    setIndexes(items);
-  };
-
-  const handleChangeImage = (levelIndex: number, imageIndex: number): void => {
-    const items = [...indexes];
-    items[levelIndex].imageIndex = imageIndex;
-    setIndexes(items);
-  };
-
-  const handleChangeItem = (levelIndex: number, newItemIndex: number): void => {
-    const items = [...indexes];
-    items[levelIndex].itemIndex = newItemIndex;
-    handleChangeCurrency(
-      levelIndex,
-      0,
-      items[levelIndex].currency,
-      items[levelIndex].price?.[0]
-    );
-    setIndexes(items);
   };
 
   useEffect(() => {
@@ -230,10 +152,8 @@ const useLevelItems = (
   return {
     allCollectionsLoading,
     handleShuffleCollectionLevels,
-    indexes,
-    handleChangeCurrency,
-    handleChangeImage,
-    handleChangeItem,
+    details,
+    setDetails,
   };
 };
 

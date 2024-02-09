@@ -5,7 +5,6 @@ import Bar from "@/components/Common/modules/Bar";
 const CartItems: FunctionComponent<CartItemsProps> = ({
   cartItems,
   grantCheckoutLoading,
-  itemCheckedOut,
   handleCheckout,
   encryptedFulfillment,
 }): JSX.Element => {

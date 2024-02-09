@@ -7,11 +7,10 @@ import {
 import { PurchaseTokensProps } from "../types/common.types";
 
 const PurchaseTokens: FunctionComponent<PurchaseTokensProps> = ({
-  currency,
-  handleChangeCurrency,
-  itemIndex,
+  details,
+  setDetails,
+  mainIndex,
   levelIndex,
-  priceIndex
 }): JSX.Element => {
   return (
     <div className="relative w-3/4 justify-center items-center flex flex-row gap-1">
@@ -19,11 +18,18 @@ const PurchaseTokens: FunctionComponent<PurchaseTokensProps> = ({
         return (
           <div
             className={`relative w-fit h-fit rounded-full flex items-center cursor-pointer active:scale-95 ${
-              currency === item[1] ? "opacity-50" : "opacity-100"
+              details?.currency === item[2] ? "opacity-50" : "opacity-100"
             }`}
             key={indexTwo}
             onClick={() =>
-              handleChangeCurrency(levelIndex, itemIndex, priceIndex, item[1])
+              setDetails((prev) => {
+                const arr = [...prev];
+                arr[mainIndex][levelIndex] = {
+                  ...arr[mainIndex][levelIndex],
+                  currency: item[2],
+                };
+                return arr;
+              })
             }
           >
             <Image

@@ -1,14 +1,20 @@
 import Bar from "@/components/Common/modules/Bar";
 import Image from "next/legacy/image";
 import { FunctionComponent } from "react";
-import { INFURA_GATEWAY } from "../../../../lib/constants";
+import {
+  ACCEPTED_TOKENS_MUMBAI,
+  INFURA_GATEWAY,
+} from "../../../../lib/constants";
 import PurchaseTokens from "@/components/Common/modules/PurchaseTokens";
 import { LevelOneProps } from "../types/launch.types";
 import Splits from "./Splits";
 
 const LevelOne: FunctionComponent<LevelOneProps> = ({
-  handleChangeCurrency,
-  index,
+  details,
+  setDetails,
+  mainIndex,
+  oracleData,
+  price,
 }): JSX.Element => {
   return (
     <div className="relative w-72 h-full flex flex-col">
@@ -27,16 +33,30 @@ const LevelOne: FunctionComponent<LevelOneProps> = ({
         </div>
         <Splits designer={0} fulfiller={0} onlyGrantee grantee={100} />
         <PurchaseTokens
-          handleChangeCurrency={handleChangeCurrency}
-          currency={index.currency}
-          itemIndex={0}
+          mainIndex={mainIndex}
           levelIndex={0}
-          priceIndex={0}
+          details={details}
+          setDetails={setDetails}
         />
         <div className="relative flex justify-center items-center font-dog text-black text-xxs">
-          {`${Number(
-            (index.price[index.priceIndex] / index.rate)?.toFixed(3)
-          )} ${index.currency}`}
+          {`${(
+            (Number(price) *
+              Number(
+                oracleData?.find(
+                  (or) =>
+                    or?.currency?.toLowerCase() ==
+                    details.currency?.toLowerCase()
+                )?.wei
+              )) /
+            Number(
+              oracleData?.find(
+                (or) =>
+                  or?.currency?.toLowerCase() == details.currency?.toLowerCase()
+              )?.rate
+            )
+          ).toFixed(3)} ${
+            ACCEPTED_TOKENS_MUMBAI?.find((ac) => ac[2] == details.currency)?.[1]
+          }`}
         </div>
       </div>
     </div>

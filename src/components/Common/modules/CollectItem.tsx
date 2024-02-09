@@ -8,7 +8,6 @@ import PurchaseTokens from "@/components/Common/modules/PurchaseTokens";
 import Splits from "../../Launch/modules/Splits";
 import { setCartAnim } from "../../../../redux/reducers/cartAnimSlice";
 import { setCartItems } from "../../../../redux/reducers/cartItemsSlice";
-import { CartItem } from "@/components/Checkout/types/checkout.types";
 
 const CollectItem: FunctionComponent<CollectItemProps> = ({
   index,
@@ -21,7 +20,7 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
   handleCheckout,
   dispatch,
   cartItems,
-  id,
+  grant,
   router,
   simpleCollectLoading,
 }): JSX.Element => {
@@ -262,35 +261,30 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
             className={`w-40 h-8 cursor-pointer rounded-sm cursor-pointer active:scale-95 border border-black flex items-center justify-center text-center font-gam text-xl ${
               !cartItems?.some(
                 (item) =>
-                  item.collectionId === id &&
-                  index.levelIndex === index?.levelIndex
+                item.chosenLevel.level === levelInfo.level &&
+                id == item.grant.publication?.id
               )
                 ? "bg-lima"
                 : "bg-viol"
             }`}
             onClick={() => {
-              const newItem = {
-                ...levelInfo,
-                id: id,
-                amount:
-                  levelInfo?.collectionIds?.[index?.itemIndex]?.prices?.[
-                    index?.priceIndex
-                  ],
-                level: index,
-                fulfiller:
-                  levelInfo?.collectionIds?.[index?.itemIndex].fulfiller,
-              };
-
+            
               if (index?.levelIndex == 0) {
-                handleCheckout!(newItem as CartItem);
+                handleCheckout!({
+                  grant: ,
+                  sizes: ,
+                  colors: ,
+                  chosenLevel: ,
+                  amount: 1
+                });
                 return;
               }
 
               if (
                 cartItems?.some(
                   (item) =>
-                    item.collectionId === id &&
-                    levelInfo?.level === index?.levelIndex
+                  item.chosenLevel.level === levelInfo.level &&
+                  id == item.grant.publication?.id
                 )
               ) {
                 router!.push("/checkout");
@@ -318,7 +312,8 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                 <AiOutlineLoading color={"black"} size={15} />
               ) : cartItems?.some(
                   (item) =>
-                    item.collectionId === id && item.level === index?.levelIndex
+                    item.chosenLevel.level === levelInfo.level &&
+                    id == item.grant.publication?.id
                 ) ? (
                 "Go to Cart"
               ) : (

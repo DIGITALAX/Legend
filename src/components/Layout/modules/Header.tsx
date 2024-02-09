@@ -169,11 +169,11 @@ const Header: FunctionComponent = (): JSX.Element => {
                       <div
                         className="relative font-dog items-center justify-center w-fit h-fit text-center cursor-pointer active:scale-95 text-white text-xs"
                         onClick={() => {
-                          const newItems = cartItems.map((value) => {
-                            return value.collectionId !== item.collectionId;
+                          const newItems = cartItems.filter((value) => {
+                            return value.grant.grantId !== item.grant.grantId;
                           });
 
-                          dispatch(setCartItems(newItems));
+                          dispatch(setCartItems(cartItems));
                         }}
                       >
                         x

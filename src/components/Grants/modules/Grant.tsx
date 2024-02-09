@@ -158,7 +158,7 @@ const Grant: FunctionComponent<GrantProps> = ({
                     key={index}
                     dispatch={dispatch}
                     levelInfo={level}
-                    id={grant?.publication?.id}
+                    grant={grant}
                     router={router}
                     cart
                     simpleCollectLoading={interactionsLoading?.simpleCollect}
