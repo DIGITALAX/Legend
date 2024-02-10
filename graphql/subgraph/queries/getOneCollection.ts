@@ -11,6 +11,7 @@ query($collectionId: String!) {
     prices
     profileId
     pubId
+    acceptedTokens
     collectionId
     collectionMetadata {
       sizes

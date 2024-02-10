@@ -1,12 +1,15 @@
 import { FunctionComponent } from "react";
 import { SplitsProps } from "../types/launch.types";
+import getSplits from "../../../../lib/lens/helpers/getSplits";
 
 const Splits: FunctionComponent<SplitsProps> = ({
-  designer,
-  fulfiller,
-  grantee,
   onlyGrantee,
+  price,
+  fBase,
+  fPercent,
+  dPercent
 }): JSX.Element => {
+  const { grantee, designer, fulfiller } = getSplits(price, fPercent, fBase, dPercent);
   return (
     <div className="relative w-fit h-fit flex flex-row items-start justify-center text-left break-words gap-3 text-black text-xxs font-vcr">
       {(onlyGrantee

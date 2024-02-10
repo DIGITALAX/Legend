@@ -1,18 +1,27 @@
 import { AnyAction, Dispatch } from "redux";
 import { Post, Profile } from "../../../../graphql/generated";
 import { NextRouter } from "next/router";
-import { LevelInfo, PrintItem } from "@/components/Launch/types/launch.types";
+import {
+  Details,
+  LevelInfo,
+  OracleData,
+  PrintItem,
+} from "@/components/Launch/types/launch.types";
 import { CartItem } from "@/components/Checkout/types/checkout.types";
 import { SetStateAction } from "react";
 
 export type GrantProps = {
   grant: Grant;
+  oracleData: OracleData[]
   like: (
     id: string,
     hasReacted: boolean,
     main?: boolean | undefined
   ) => Promise<void>;
+  setDetails: (e: SetStateAction<Details[][]>) => void;
+  details: Details[];
   handleCheckout: (item: CartItem) => Promise<void>;
+  simpleCollectLoading: boolean;
   mirror: (id: string) => Promise<void>;
   bookmark: (id: string) => Promise<void>;
   dispatch: Dispatch<AnyAction>;
@@ -26,26 +35,9 @@ export type GrantProps = {
     simpleCollect: boolean;
   };
   cartItems: CartItem[];
-  index: number;
+  mainIndex: number;
   setMirrorChoiceOpen: (e: SetStateAction<boolean[]>) => void;
   mirrorChoiceOpen: boolean[];
-  indexes: {
-    levelIndex: number;
-    imageIndex: number;
-    rate: number;
-    price: number[];
-    priceIndex: number;
-    currency: string;
-    itemIndex: number;
-  };
-  handleChangeCurrency: (
-    levelIndex: number,
-    priceIndex: number,
-    checkoutCurrency: string,
-    checkoutPrice: number
-  ) => void;
-  handleChangeImage: (levelIndex: number, imageIndex: number) => void;
-  handleChangeItem: (levelIndex: number, newItemIndex: number) => void;
 };
 
 export type CollectItemProps = {

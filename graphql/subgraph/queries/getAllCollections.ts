@@ -18,6 +18,7 @@ const COLLECTIONS = `
       }
       amount
       uri
+      acceptedTokens
       designerPercent
       fulfillerBase
       fulfillerPercent

@@ -69,6 +69,7 @@ export interface PrintItem {
   uri: string;
   profile: Profile;
   prices: string[];
+  acceptedTokens: string[]
   printType: PrintType;
   fulfiller: string;
   owner: string;
@@ -96,10 +97,11 @@ export interface LevelInfo {
 }
 
 export type SplitsProps = {
-  designer: number;
-  fulfiller: number;
-  grantee: number;
   onlyGrantee?: boolean;
+  price: number;
+  fPercent: number;
+  fBase: number;
+  dPercent: number;
 };
 
 export type LaunchSwitchProps = {
@@ -167,6 +169,7 @@ export type CollectionShuffleProps = {
 export type CollectItemProps = {
   levelsLoading?: boolean;
   levelInfo: LevelInfo;
+  mainIndex: number;
   oracleData: OracleData[];
   setDetails: (e: SetStateAction<Details[][]>) => void;
   details: Details;
@@ -175,15 +178,14 @@ export type CollectItemProps = {
   router?: NextRouter;
   dispatch?: Dispatch<AnyAction>;
   grant?: Grant;
-  handleCheckout?: (item: CartItem) => Promise<void>;
-  simpleCollectLoading?: boolean;
 };
 
 export interface Details {
   currency: string;
-  imageIndex: number;
-  sizeIndex: number;
-  colorIndex: number;
+  imageIndex: number[];
+  sizeIndex: number[];
+  colorIndex: number[];
+  collectionIndex: number;
 }
 
 export interface OracleData {
@@ -202,5 +204,4 @@ export type LevelOneProps = {
   setDetails: (e: SetStateAction<Details[][]>) => void;
   mainIndex: number;
   oracleData: OracleData[];
-  price: string;
 };

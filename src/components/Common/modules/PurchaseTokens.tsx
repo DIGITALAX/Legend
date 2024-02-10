@@ -11,10 +11,13 @@ const PurchaseTokens: FunctionComponent<PurchaseTokensProps> = ({
   setDetails,
   mainIndex,
   levelIndex,
+  tokens,
 }): JSX.Element => {
   return (
     <div className="relative w-3/4 justify-center items-center flex flex-row gap-1">
-      {ACCEPTED_TOKENS_MUMBAI?.map((item: string[], indexTwo: number) => {
+      {ACCEPTED_TOKENS_MUMBAI?.filter((token) =>
+        tokens?.includes(token[2])
+      )?.map((item: string[], indexTwo: number) => {
         return (
           <div
             className={`relative w-fit h-fit rounded-full flex items-center cursor-pointer active:scale-95 ${
