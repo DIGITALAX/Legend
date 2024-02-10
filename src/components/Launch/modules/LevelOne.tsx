@@ -14,7 +14,6 @@ const LevelOne: FunctionComponent<LevelOneProps> = ({
   setDetails,
   mainIndex,
   oracleData,
-  price,
 }): JSX.Element => {
   return (
     <div className="relative w-72 h-full flex flex-col">
@@ -31,7 +30,13 @@ const LevelOne: FunctionComponent<LevelOneProps> = ({
         <div className="relative flex items-center text-center justify-center w-fit text-sm font-net break-words">
           {`Quick Collect (No Prints)`}
         </div>
-        <Splits designer={0} fulfiller={0} onlyGrantee grantee={100} />
+        <Splits
+          dPercent={0}
+          fPercent={0}
+          onlyGrantee
+          price={10 ** 18}
+          fBase={0}
+        />
         <PurchaseTokens
           mainIndex={mainIndex}
           levelIndex={0}
@@ -39,8 +44,8 @@ const LevelOne: FunctionComponent<LevelOneProps> = ({
           setDetails={setDetails}
         />
         <div className="relative flex justify-center items-center font-dog text-black text-xxs">
-          {`${(
-            (Number(price) *
+          {`${
+            (Number("1000000000000000000") *
               Number(
                 oracleData?.find(
                   (or) =>
@@ -54,7 +59,7 @@ const LevelOne: FunctionComponent<LevelOneProps> = ({
                   or?.currency?.toLowerCase() == details.currency?.toLowerCase()
               )?.rate
             )
-          ).toFixed(3)} ${
+          } ${
             ACCEPTED_TOKENS_MUMBAI?.find((ac) => ac[2] == details.currency)?.[1]
           }`}
         </div>

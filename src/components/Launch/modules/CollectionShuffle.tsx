@@ -42,16 +42,16 @@ const CollectionShuffle: FunctionComponent<CollectionShuffleProps> = ({
             setDetails={setDetails}
             mainIndex={0}
             oracleData={oracleData}
-            price={"1"}
           />
           {levelArray?.map((levelInfo: LevelInfo, index: number) => {
             return (
               <CollectItem
                 key={index}
                 levelInfo={levelInfo}
-                details={details?.[0]?.[index + 1]}
+                details={details?.[0]?.[levelInfo.level]}
                 oracleData={oracleData}
                 setDetails={setDetails}
+                mainIndex={0}
               />
             );
           })}

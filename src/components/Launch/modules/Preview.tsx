@@ -12,10 +12,9 @@ import LevelOne from "./LevelOne";
 const Preview: FunctionComponent<PreviewProps> = ({
   postInformation,
   levelArray,
-  indexes,
-  handleChangeCurrency,
-  handleChangeImage,
-  handleChangeItem,
+  details,
+  setDetails,
+  oracleData,
 }): JSX.Element => {
   return (
     <div
@@ -28,7 +27,7 @@ const Preview: FunctionComponent<PreviewProps> = ({
           <div className="relative bg-offWhite w-full h-fit flex flex-col items-center justify-start p-3 gap-6 border border-black rounded-b-sm min-w-fit">
             <div className="relative w-full h-fit flex items-center justify-center text-center">
               <div className="bg-offWhite text-center flex items-center justify-center font-dog text-black text-sm">
-                {postInformation?.title} title
+                {postInformation?.title}
               </div>
             </div>
             <div className="relative flex flex-row items-center justify-center gap-5 w-full h-48">
@@ -235,18 +234,20 @@ const Preview: FunctionComponent<PreviewProps> = ({
         >
           <div className="relative w-fit h-fit flex flex-row gap-3">
             <LevelOne
-              index={indexes[0]}
-              handleChangeCurrency={handleChangeCurrency}
+              details={details?.[0]?.[0]}
+              setDetails={setDetails}
+              mainIndex={0}
+              oracleData={oracleData}
             />
             {levelArray?.map((levelInfo: LevelInfo, index: number) => {
               return (
                 <CollectItem
                   key={index}
                   levelInfo={levelInfo}
-                  index={indexes[index + 1]}
-                  handleChangeCurrency={handleChangeCurrency}
-                  handleChangeImage={handleChangeImage}
-                  handleChangeItem={handleChangeItem}
+                  details={details?.[0]?.[levelInfo.level]}
+                  oracleData={oracleData}
+                  setDetails={setDetails}
+                  mainIndex={0}
                 />
               );
             })}

@@ -12,6 +12,7 @@ import {
 import pickRandomItem from "../../../../lib/graph/helpers/pickRandomItem";
 import { Dispatch } from "redux";
 import fetchIpfsJson from "../../../../lib/graph/helpers/fetchIPFSJson";
+import { ACCEPTED_TOKENS_MUMBAI } from "../../../../lib/constants";
 
 const useLevelItems = (
   dispatch: Dispatch,
@@ -126,11 +127,21 @@ const useLevelItems = (
     }
 
     setDetails([
-      Array.from({ length: 7 }, () => ({
-        currency: "USDT",
-        sizeIndex: 0,
-        colorIndex: 0,
-        imageIndex: 0,
+      Array.from({ length: 7 }, (_, index: number) => ({
+        currency: ACCEPTED_TOKENS_MUMBAI[2][2],
+        sizeIndex: Array.from(
+          { length: levelArray[index]?.collectionIds?.length },
+          () => 0
+        ),
+        colorIndex: Array.from(
+          { length: levelArray[index]?.collectionIds?.length },
+          () => 0
+        ),
+        imageIndex: Array.from(
+          { length: levelArray[index]?.collectionIds?.length },
+          () => 0
+        ),
+        collectionIndex: 0,
       })),
     ]);
 

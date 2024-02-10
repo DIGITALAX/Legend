@@ -20,12 +20,12 @@ const Grant: FunctionComponent<GrantProps> = ({
   dispatch,
   setMirrorChoiceOpen,
   mirrorChoiceOpen,
-  handleChangeCurrency,
-  handleChangeImage,
-  handleChangeItem,
-  indexes,
-  index,
+  mainIndex,
   cartItems,
+  setDetails,
+  details,
+  simpleCollectLoading,
+  oracleData
 }) => {
   return (
     <div className="relative h-fit w-[40rem] border border-black flex flex-col items-center justify-center bg-black">
@@ -39,13 +39,13 @@ const Grant: FunctionComponent<GrantProps> = ({
             <Interactions
               like={like}
               router={router}
-              index={index}
+              index={mainIndex}
               interactionsLoading={interactionsLoading}
               post={grant?.publication!}
               bookmark={bookmark}
               mirror={mirror}
               dispatch={dispatch}
-              mirrorChoiceOpen={mirrorChoiceOpen?.[index]}
+              mirrorChoiceOpen={mirrorChoiceOpen?.[mainIndex]}
               setMirrorChoiceOpen={setMirrorChoiceOpen}
             />
           </div>
@@ -148,25 +148,28 @@ const Grant: FunctionComponent<GrantProps> = ({
             id="milestone"
           >
             <div className="relative w-fit h-fit flex flex-row gap-4 pb-2 items-start justify-start">
-              {grant?.levelInfo?.map((level: LevelInfo, index: number) => {
-                return (
-                  <CollectItem
-                    handleChangeCurrency={handleChangeCurrency}
-                    handleChangeImage={handleChangeImage}
-                    handleChangeItem={handleChangeItem}
-                    index={indexes}
-                    key={index}
-                    dispatch={dispatch}
-                    levelInfo={level}
-                    grant={grant}
-                    router={router}
-                    cart
-                    simpleCollectLoading={interactionsLoading?.simpleCollect}
-                    cartItems={cartItems}
-                    handleCheckout={handleCheckout}
-                  />
-                );
-              })}
+           
+              {grant?.levelInfo
+                .slice(0)
+                ?.map((level: LevelInfo, index: number) => {
+                  return (
+                    <CollectItem
+                      key={index}
+                      dispatch={dispatch}
+                      levelInfo={level}
+                      handleCheckout={handleCheckout}
+                      simpleCollectLoading={simpleCollectLoading}
+                      grant={grant}
+                      router={router}
+                      cart
+                      mainIndex={level.level}
+                      setDetails={setDetails}
+                      details={details?.[level.level]}
+                      oracleData={oracleData}
+                      cartItems={cartItems}
+                    />
+                  );
+                })}
             </div>
           </div>
         </div>

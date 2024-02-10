@@ -6,13 +6,18 @@ import { COLLECT_LEVEL_ABI } from "../../../../lib/constants";
 import * as LitJsSDK from "@lit-protocol/lit-node-client";
 import { AccessControlConditions } from "@lit-protocol/types";
 import { PrintItem } from "@/components/Launch/types/launch.types";
+import { Grant } from "@/components/Grants/types/grant.types";
 
 const useCheckout = (
   cartItems: CartItem[],
   litNodeClient: LitJsSDK.LitNodeClient,
-  address: `0x${string}` | undefined
+  address: `0x${string}` | undefined,
+  allGrants: Grant[]
 ) => {
   const [grantCheckoutLoading, setGrantCheckoutLoading] = useState<boolean[]>(
+    []
+  );
+  const [simpleCheckoutLoading, setSimpleCheckoutLoading] = useState<boolean[]>(
     []
   );
   const [chosenCurrency, setChosenCurrency] = useState<string>();
@@ -100,17 +105,37 @@ const useCheckout = (
   };
 
   const handleCheckout = async (item: CartItem) => {
-    const index = cartItems.findIndex(
-      (pub) => pub.grant.publication?.id == item.grant.publication?.id
-    );
-    if (index === -1) {
+    if (
+      (!encryptedFulfillment || encryptedFulfillment == "") &&
+      item.chosenLevel.level !== 1
+    ) {
       return;
     }
-    setGrantCheckoutLoading((prev) => {
-      const updatedArray = [...prev];
-      updatedArray[index] = true;
-      return updatedArray;
-    });
+    if (item.chosenLevel.level == 1) {
+      const index = allGrants.findIndex(
+        (pub) => pub.publication?.id == item.grant.publication?.id
+      );
+
+      setSimpleCheckoutLoading((prev) => {
+        const arr = [...prev];
+        arr[index] = true;
+
+        return arr;
+      });
+    } else {
+      const index = cartItems.findIndex(
+        (pub) => pub.grant.publication?.id == item.grant.publication?.id
+      );
+      if (index === -1) {
+        return;
+      }
+
+      setGrantCheckoutLoading((prev) => {
+        const updatedArray = [...prev];
+        updatedArray[index] = true;
+        return updatedArray;
+      });
+    }
 
     try {
       const encodedData = ethers.utils.defaultAbiCoder.encode(
@@ -130,11 +155,32 @@ const useCheckout = (
     } catch (err: any) {
       console.error(err.message);
     }
-    setGrantCheckoutLoading((prev) => {
-      const updatedArray = [...prev];
-      updatedArray[index] = false;
-      return updatedArray;
-    });
+
+    if (item.chosenLevel.level == 1) {
+      const index = allGrants.findIndex(
+        (pub) => pub.publication?.id == item.grant.publication?.id
+      );
+
+      setSimpleCheckoutLoading((prev) => {
+        const arr = [...prev];
+        arr[index] = false;
+
+        return arr;
+      });
+    } else {
+      const index = cartItems.findIndex(
+        (pub) => pub.grant.publication?.id == item.grant.publication?.id
+      );
+      if (index === -1) {
+        return;
+      }
+
+      setGrantCheckoutLoading((prev) => {
+        const updatedArray = [...prev];
+        updatedArray[index] = false;
+        return updatedArray;
+      });
+    }
   };
 
   useEffect(() => {
@@ -157,6 +203,7 @@ const useCheckout = (
     setChosenCurrency,
     setChosenCartItem,
     chosenCartItem,
+    simpleCheckoutLoading,
   };
 };
 

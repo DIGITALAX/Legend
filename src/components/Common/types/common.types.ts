@@ -8,6 +8,7 @@ export type BarProps = {
 export type PurchaseTokensProps = {
   details: Details;
   setDetails: (e: SetStateAction<Details[][]>) => void;
-  mainIndex: number
-  levelIndex: number
+  mainIndex: number;
+  levelIndex: number;
+  tokens: string[];
 };
