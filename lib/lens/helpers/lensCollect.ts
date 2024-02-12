@@ -1,7 +1,10 @@
 import { FetchResult } from "@apollo/client";
 import { AnyAction, Dispatch } from "redux";
 import { PublicClient, WalletClient } from "viem";
-import { BroadcastOnchainMutation } from "../../../graphql/generated";
+import {
+  ActOnOpenActionInput,
+  BroadcastOnchainMutation,
+} from "../../../graphql/generated";
 import actOn, {
   legacyCollectPost,
 } from "../../../graphql/lens/mutations/actOn";
@@ -11,7 +14,7 @@ import { omit } from "lodash";
 import handleIndexCheck from "../../graph/helpers/handleIndexCheck";
 import { setIndexer } from "../../../redux/reducers/indexerSlice";
 import { LENS_HUB_PROXY } from "../../constants";
-import { polygon } from "viem/chains";
+import { polygon, polygonMumbai } from "viem/chains";
 
 const lensCollect = async (
   id: string,
@@ -19,7 +22,8 @@ const lensCollect = async (
   dispatch: Dispatch<AnyAction>,
   address: `0x${string}`,
   clientWallet: WalletClient,
-  publicClient: PublicClient
+  publicClient: PublicClient,
+  act?: ActOnOpenActionInput
 ): Promise<void> => {
   let broadcastResult: FetchResult<BroadcastOnchainMutation>,
     functionName: string,
@@ -29,11 +33,11 @@ const lensCollect = async (
     type === "SimpleCollectOpenActionSettings" ||
     type === "MultirecipientFeeCollectOpenActionSettings" ||
     type === "SimpleCollectOpenActionModule" ||
-    type === "MultirecipientFeeCollectOpenActionModule"
+    type === "MultirecipientFeeCollectOpenActionModule" || act
   ) {
     const { data } = await actOn({
       for: id,
-      actOn: {
+      actOn: act || {
         simpleCollectOpenAction:
           type === "SimpleCollectOpenActionSettings" ||
           type === "SimpleCollectOpenActionModule"
@@ -119,7 +123,7 @@ const lensCollect = async (
       address: LENS_HUB_PROXY,
       abi: LensHubProxy,
       functionName,
-      chain: polygon,
+      chain: polygonMumbai,
       args,
       account: address,
     });

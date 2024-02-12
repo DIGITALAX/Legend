@@ -11,7 +11,7 @@ import { polygonMumbai } from "viem/chains";
 import { PublicClient, createWalletClient, custom } from "viem";
 import { Profile } from "../../../../graphql/generated";
 import { Dispatch } from "redux";
-import lensPost from "../../../../lib/graph/helpers/lensPost";
+import lensPost from "../../../../lib/lens/helpers/lensPost";
 
 const useLaunch = (
   publicClient: PublicClient,

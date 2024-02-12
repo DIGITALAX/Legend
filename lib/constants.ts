@@ -6,7 +6,7 @@ export const IPFS_REGEX: RegExp = /\b(Qm[1-9A-Za-z]{44}|ba[A-Za-z2-7]{57})\b/;
 export const BASE_URL: string = "https://api-v2-mumbai-live.lens.dev/";
 
 export const LENS_HUB_PROXY: `0x${string}` =
-  "0x4fbffF20302F3326B20052ab9C217C44F6480900";
+  "0xC1E77eE73403B8a7478884915aA599932A677870";
 export const LEGEND_MILESTONE_ESCROW_CONTRACT: `0x${string}` =
   "0xf340B1610FeE6c0e6b19299403CAb40b6BDE65b2";
 export const LEGEND_OPEN_ACTION_CONTRACT: `0x${string}` =
@@ -184,42 +184,6 @@ export const LEVEL_INFO_ABI: ethers.utils.ParamType[] = [
       } as ethers.utils.ParamType,
     ],
   } as ethers.utils.ParamType,
-];
-
-export const COLLECT_LEVEL_ABI: [
-  {
-    type: string;
-    components: {
-      name: string;
-      type: string;
-      baseType: string;
-      indexed: boolean;
-    }[];
-  }
-] = [
-  {
-    type: "tuple[]",
-    components: [
-      {
-        name: "currency",
-        type: "address",
-        baseType: "address",
-        indexed: false,
-      },
-      {
-        name: "level",
-        type: "uint256",
-        baseType: "uint256",
-        indexed: false,
-      },
-      {
-        name: "encryptedFulfillment",
-        type: "string",
-        baseType: "string",
-        indexed: false,
-      },
-    ],
-  },
 ];
 
 export const ACCEPTED_TOKENS: string[][] = [
