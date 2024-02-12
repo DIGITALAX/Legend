@@ -8,6 +8,7 @@ import CollectItem from "@/components/Common/modules/CollectItem";
 import { ImageMetadataV3, Profile } from "../../../../graphql/generated";
 import createProfilePicture from "../../../../lib/lens/helpers/createProfilePicture";
 import Interactions from "./Interactions";
+import LevelOne from "@/components/Launch/modules/LevelOne";
 
 const Grant: FunctionComponent<GrantProps> = ({
   grant,
@@ -25,10 +26,12 @@ const Grant: FunctionComponent<GrantProps> = ({
   setDetails,
   details,
   simpleCollectLoading,
-  oracleData
+  oracleData,
+  approvePurchase,
+  spendApproved
 }) => {
   return (
-    <div className="relative h-fit w-[40rem] border border-black flex flex-col items-center justify-center bg-black">
+    <div className="relative h-fit w-full sm:w-3/4 xl:w-1/2 border border-black flex flex-col items-center justify-center bg-black">
       <Bar title={(grant?.publication?.metadata as ImageMetadataV3)?.title!} />
       <div className="relative w-full h-full flex flex-col gap-8" id="grant">
         <div className="relative w-full h-fit flex break-words font-vcr text-black p-2 justify-start items-center rounded-sm border border-black bg-offWhite p-2 flex-col gap-4">
@@ -148,28 +151,35 @@ const Grant: FunctionComponent<GrantProps> = ({
             id="milestone"
           >
             <div className="relative w-fit h-fit flex flex-row gap-4 pb-2 items-start justify-start">
-           
-              {grant?.levelInfo
-                .slice(0)
-                ?.map((level: LevelInfo, index: number) => {
-                  return (
-                    <CollectItem
-                      key={index}
-                      dispatch={dispatch}
-                      levelInfo={level}
-                      handleCheckout={handleCheckout}
-                      simpleCollectLoading={simpleCollectLoading}
-                      grant={grant}
-                      router={router}
-                      cart
-                      mainIndex={level.level}
-                      setDetails={setDetails}
-                      details={details?.[level.level]}
-                      oracleData={oracleData}
-                      cartItems={cartItems}
-                    />
-                  );
-                })}
+              <LevelOne
+                details={details?.[0]}
+                setDetails={setDetails}
+                mainIndex={mainIndex}
+                oracleData={oracleData}
+                cart
+                grant={grant}
+                handleCheckout={handleCheckout}
+                simpleCheckoutLoading={simpleCollectLoading}
+                spendApproved={spendApproved}
+                approvePurchase={approvePurchase}
+              />
+              {grant?.levelInfo?.map((level: LevelInfo, index: number) => {
+                return (
+                  <CollectItem
+                    key={index}
+                    dispatch={dispatch}
+                    levelInfo={level}
+                    grant={grant}
+                    router={router}
+                    cart
+                    mainIndex={mainIndex}
+                    setDetails={setDetails}
+                    details={details?.[level.level]}
+                    oracleData={oracleData}
+                    cartItems={cartItems}
+                  />
+                );
+              })}
             </div>
           </div>
         </div>

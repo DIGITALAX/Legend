@@ -20,7 +20,7 @@ export type GrantProps = {
   ) => Promise<void>;
   setDetails: (e: SetStateAction<Details[][]>) => void;
   details: Details[];
-  handleCheckout: (item: CartItem) => Promise<void>;
+  handleCheckout: (item: CartItem, curreny: string) => Promise<void>;
   simpleCollectLoading: boolean;
   mirror: (id: string) => Promise<void>;
   bookmark: (id: string) => Promise<void>;
@@ -38,6 +38,8 @@ export type GrantProps = {
   mainIndex: number;
   setMirrorChoiceOpen: (e: SetStateAction<boolean[]>) => void;
   mirrorChoiceOpen: boolean[];
+  approvePurchase: (item: CartItem, curreny: string) => Promise<void>;
+  spendApproved: boolean
 };
 
 export type CollectItemProps = {

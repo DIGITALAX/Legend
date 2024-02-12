@@ -1,27 +1,37 @@
 import { useEffect, useState } from "react";
-import actOnGrant from "../../../../graphql/lens/mutations/actOn";
 import { ethers } from "ethers";
 import { CartItem, Fulfillment } from "../types/checkout.types";
-import { COLLECT_LEVEL_ABI } from "../../../../lib/constants";
 import * as LitJsSDK from "@lit-protocol/lit-node-client";
 import { AccessControlConditions } from "@lit-protocol/types";
-import { PrintItem } from "@/components/Launch/types/launch.types";
+import { OracleData, PrintItem } from "@/components/Launch/types/launch.types";
 import { Grant } from "@/components/Grants/types/grant.types";
+import { Dispatch } from "redux";
+import lensCollect from "../../../../lib/lens/helpers/lensCollect";
+import { PublicClient, createWalletClient, custom } from "viem";
+import { polygonMumbai } from "viem/chains";
+import {
+  ACCEPTED_TOKENS_MUMBAI,
+  LEGEND_OPEN_ACTION_CONTRACT,
+} from "../../../../lib/constants";
+import { Profile } from "../../../../graphql/generated";
 
 const useCheckout = (
   cartItems: CartItem[],
   litNodeClient: LitJsSDK.LitNodeClient,
   address: `0x${string}` | undefined,
-  allGrants: Grant[]
+  allGrants: Grant[],
+  dispatch: Dispatch,
+  publicClient: PublicClient,
+  lensConnected: Profile | undefined,
+  oracleData: OracleData[]
 ) => {
   const [grantCheckoutLoading, setGrantCheckoutLoading] = useState<boolean[]>(
     []
   );
+  const [spendApproved, setSpendApproved] = useState<boolean[]>([]);
   const [simpleCheckoutLoading, setSimpleCheckoutLoading] = useState<boolean[]>(
     []
   );
-  const [chosenCurrency, setChosenCurrency] = useState<string>();
-  const [fulfillmentLoading, setFulfillmentLoading] = useState<boolean>(false);
   const [chosenCartItem, setChosenCartItem] = useState<CartItem>(
     cartItems?.[0]
   );
@@ -33,10 +43,176 @@ const useCheckout = (
     zip: "",
     name: "",
   });
-  const [encryptedFulfillment, setEncryptedFulfillment] = useState<string>("");
 
-  const handleEncryptFulfillment = async () => {
-    setFulfillmentLoading(true);
+  const approvePurchase = async (item: CartItem, currency: string) => {
+    if (!address || !lensConnected?.id) return;
+    let index = -1;
+    try {
+      if (item.chosenLevel.level == 1) {
+        index = allGrants.findIndex(
+          (pub) => pub.publication?.id == item?.grant?.publication?.id
+        );
+
+        if (index === -1) {
+          return;
+        }
+
+        setSimpleCheckoutLoading((prev) => {
+          const arr = [...prev];
+          arr[index] = true;
+
+          return arr;
+        });
+      } else {
+        index = cartItems.findIndex(
+          (pub) => pub.grant.publication?.id == item?.grant?.publication?.id
+        );
+        if (index === -1) {
+          return;
+        }
+
+        setGrantCheckoutLoading((prev) => {
+          const updatedArray = [...prev];
+          updatedArray[index] = true;
+          return updatedArray;
+        });
+      }
+
+      const clientWallet = createWalletClient({
+        chain: polygonMumbai,
+        transport: custom((window as any).ethereum),
+      });
+
+      const { request } = await publicClient.simulateContract({
+        address: currency as `0x${string}`,
+        abi: [
+          currency === "0x6968105460f67c3bf751be7c15f92f5286fd0ce5"
+            ? {
+                inputs: [
+                  {
+                    internalType: "address",
+                    name: "spender",
+                    type: "address",
+                  },
+                  {
+                    internalType: "uint256",
+                    name: "tokens",
+                    type: "uint256",
+                  },
+                ],
+                name: "approve",
+                outputs: [
+                  { internalType: "bool", name: "success", type: "bool" },
+                ],
+                stateMutability: "nonpayable",
+                type: "function",
+              }
+            : currency === "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270"
+            ? {
+                constant: false,
+                inputs: [
+                  { name: "guy", type: "address" },
+                  { name: "wad", type: "uint256" },
+                ],
+                name: "approve",
+                outputs: [{ name: "", type: "bool" }],
+                payable: false,
+                stateMutability: "nonpayable",
+                type: "function",
+              }
+            : {
+                inputs: [
+                  {
+                    internalType: "address",
+                    name: "spender",
+                    type: "address",
+                  },
+                  {
+                    internalType: "uint256",
+                    name: "amount",
+                    type: "uint256",
+                  },
+                ],
+                name: "approve",
+                outputs: [
+                  {
+                    internalType: "bool",
+                    name: "",
+                    type: "bool",
+                  },
+                ],
+                stateMutability: "nonpayable",
+                type: "function",
+              },
+        ],
+        functionName: "approve",
+        chain: polygonMumbai,
+        args: [
+          LEGEND_OPEN_ACTION_CONTRACT,
+          (((item.chosenLevel.level == 1
+            ? 1
+            : Number(
+                item.chosenLevel.collectionIds?.map(
+                  (coll, index) => coll.prices[item.sizes[index]]
+                )
+              )) /
+            Number(
+              oracleData?.find(
+                (oracle) =>
+                  oracle.currency ===
+                  ACCEPTED_TOKENS_MUMBAI.find(
+                    (item) => item[2] === currency
+                  )?.[2]
+              )?.rate
+            )) *
+            10 ** 18) as any,
+        ],
+        account: address,
+      });
+
+      const res = await clientWallet.writeContract(request);
+      await publicClient.waitForTransactionReceipt({ hash: res });
+      setSpendApproved((prev) => {
+        const arr = [...prev];
+        arr[index] = true;
+        return arr;
+      });
+    } catch (err: any) {
+      console.error(err.message);
+    }
+
+    if (item.chosenLevel.level == 1) {
+      const index = allGrants.findIndex(
+        (pub) => pub.publication?.id == item?.grant?.publication?.id
+      );
+
+      if (index === -1) {
+        return;
+      }
+
+      setSimpleCheckoutLoading((prev) => {
+        const arr = [...prev];
+        arr[index] = false;
+
+        return arr;
+      });
+    } else {
+      const index = cartItems.findIndex(
+        (pub) => pub.grant.publication?.id == item?.grant?.publication?.id
+      );
+      if (index === -1) {
+        return;
+      }
+
+      setGrantCheckoutLoading((prev) => {
+        const updatedArray = [...prev];
+        updatedArray[index] = false;
+        return updatedArray;
+      });
+    }
+  };
+
+  const encryptFulfillment = async (colors: string[], sizes: string[]) => {
     try {
       await litNodeClient.connect();
       let nonce = litNodeClient.getLatestBlockhash();
@@ -83,7 +259,11 @@ const useCheckout = (
             accessControlConditions as AccessControlConditions,
           authSig,
           chain: "polygon",
-          dataToEncrypt: JSON.stringify(fulfillment),
+          dataToEncrypt: JSON.stringify({
+            fulfillment,
+            colors,
+            sizes,
+          }),
         },
         litNodeClient! as any
       );
@@ -97,24 +277,29 @@ const useCheckout = (
         }),
       });
       let responseJSON = await response.json();
-      setEncryptedFulfillment("ipfs://" + responseJSON?.cid);
+      return "ipfs://" + responseJSON?.cid;
     } catch (err: any) {
       console.error(err.message);
     }
-    setFulfillmentLoading(false);
   };
 
-  const handleCheckout = async (item: CartItem) => {
+  const handleCheckout = async (item: CartItem, currency: string) => {
+    if (!address || !lensConnected?.id) return;
+
     if (
-      (!encryptedFulfillment || encryptedFulfillment == "") &&
+      Object.entries(fulfillment).find((item) => item[0] == "") &&
       item.chosenLevel.level !== 1
     ) {
       return;
     }
     if (item.chosenLevel.level == 1) {
       const index = allGrants.findIndex(
-        (pub) => pub.publication?.id == item.grant.publication?.id
+        (pub) => pub.publication?.id == item?.grant?.publication?.id
       );
+
+      if (index === -1) {
+        return;
+      }
 
       setSimpleCheckoutLoading((prev) => {
         const arr = [...prev];
@@ -124,7 +309,7 @@ const useCheckout = (
       });
     } else {
       const index = cartItems.findIndex(
-        (pub) => pub.grant.publication?.id == item.grant.publication?.id
+        (pub) => pub.grant.publication?.id == item?.grant?.publication?.id
       );
       if (index === -1) {
         return;
@@ -139,26 +324,54 @@ const useCheckout = (
 
     try {
       const encodedData = ethers.utils.defaultAbiCoder.encode(
-        COLLECT_LEVEL_ABI as any,
-        [chosenCurrency, item.chosenLevel.level, encryptedFulfillment]
+        ["uint256[]", "string", "address", "uint8"],
+        [
+          item.chosenLevel.level == 1 ? [] : item.sizes,
+          item.chosenLevel.level == 1
+            ? ""
+            : await encryptFulfillment(
+                item.chosenLevel.collectionIds.map(
+                  (coll, index) =>
+                    coll.collectionMetadata.colors[item.colors[index]]
+                ),
+                item.chosenLevel.collectionIds.map(
+                  (coll, index) =>
+                    coll.collectionMetadata.sizes[item.sizes[index]]
+                )
+              ),
+          currency,
+          item.chosenLevel.level,
+        ]
       );
 
-      await actOnGrant({
-        actOn: {
+      const clientWallet = createWalletClient({
+        chain: polygonMumbai,
+        transport: custom((window as any).ethereum),
+      });
+
+      await lensCollect(
+        item.grant.publication?.id,
+        "",
+        dispatch,
+        address as `0x${string}`,
+        clientWallet,
+        publicClient,
+        {
           unknownOpenAction: {
-            address: address,
+            address: LEGEND_OPEN_ACTION_CONTRACT,
             data: encodedData,
           },
-        },
-        for: item.grant.publication?.id,
-      });
+        }
+      );
+
+      // dispatch(setGrantCollected(item.grant));
     } catch (err: any) {
       console.error(err.message);
     }
 
     if (item.chosenLevel.level == 1) {
       const index = allGrants.findIndex(
-        (pub) => pub.publication?.id == item.grant.publication?.id
+        (pub) => pub.publication?.id == item?.grant?.publication?.id
       );
 
       setSimpleCheckoutLoading((prev) => {
@@ -169,17 +382,78 @@ const useCheckout = (
       });
     } else {
       const index = cartItems.findIndex(
-        (pub) => pub.grant.publication?.id == item.grant.publication?.id
+        (pub) => pub.grant.publication?.id == item?.grant?.publication?.id
       );
-      if (index === -1) {
-        return;
-      }
 
       setGrantCheckoutLoading((prev) => {
         const updatedArray = [...prev];
         updatedArray[index] = false;
         return updatedArray;
       });
+    }
+  };
+
+  const checkSpendApproved = async () => {
+    try {
+      const data = await publicClient.readContract({
+        address: ACCEPTED_TOKENS_MUMBAI[2][2] as `0x${string}`,
+        abi: [
+          {
+            inputs: [
+              {
+                internalType: "address",
+                name: "owner",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "spender",
+                type: "address",
+              },
+            ],
+            name: "allowance",
+            outputs: [
+              {
+                internalType: "uint256",
+                name: "",
+                type: "uint256",
+              },
+            ],
+            stateMutability: "view",
+            type: "function",
+          },
+        ],
+        functionName: "allowance",
+        args: [address as `0x${string}`, LEGEND_OPEN_ACTION_CONTRACT],
+        account: address,
+      });
+
+      if (address) {
+        let spends: boolean[] = [];
+        allGrants.map(() => {
+          if (
+            Number((data as any)?.toString()) /
+              Number(
+                oracleData?.find(
+                  (oracle) => oracle.currency === ACCEPTED_TOKENS_MUMBAI[2][2]
+                )?.wei
+              ) >=
+            Number(10 ** 18) /
+              Number(
+                oracleData?.find(
+                  (oracle) => oracle.currency === ACCEPTED_TOKENS_MUMBAI[2][2]
+                )?.rate
+              )
+          ) {
+            spends.push(true);
+          } else {
+            spends.push(false);
+          }
+        });
+        setSpendApproved(spends);
+      }
+    } catch (err: any) {
+      console.error(err.message);
     }
   };
 
@@ -191,19 +465,22 @@ const useCheckout = (
     }
   }, [cartItems]);
 
+  useEffect(() => {
+    if (allGrants.length > 0) {
+      checkSpendApproved();
+    }
+  }, [allGrants.length]);
+
   return {
     handleCheckout,
     grantCheckoutLoading,
     fulfillment,
     setFulfillment,
-    handleEncryptFulfillment,
-    encryptedFulfillment,
-    fulfillmentLoading,
-    chosenCurrency,
-    setChosenCurrency,
     setChosenCartItem,
     chosenCartItem,
     simpleCheckoutLoading,
+    spendApproved,
+    approvePurchase,
   };
 };
 

@@ -24,12 +24,7 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
   router,
   oracleData,
   mainIndex,
-  handleCheckout,
-  simpleCheckoutLoading,
 }): JSX.Element => {
-  console.log(levelInfo?.collectionIds?.[
-    details?.collectionIndex
-  ]?.collectionMetadata?.images);
   return (
     <div className="relative w-72 h-full flex flex-col items-center justify-start">
       <Bar title={`Collect Lvl.${levelInfo.level}`} />
@@ -50,12 +45,12 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                     setDetails((prev) => {
                       const arr = [...prev];
                       arr[mainIndex][levelInfo.level] = {
-                        ...arr[mainIndex]?.[levelInfo.level],
+                        ...arr[mainIndex][levelInfo.level],
                         collectionIndex:
-                          arr[mainIndex]?.[levelInfo?.level]?.collectionIndex -
+                          arr[mainIndex][levelInfo?.level]?.collectionIndex -
                             1 >=
                           0
-                            ? arr[mainIndex]?.[levelInfo?.level]
+                            ? arr[mainIndex][levelInfo?.level]
                                 ?.collectionIndex - 1
                             : levelInfo.collectionIds.length,
                       };
@@ -72,12 +67,12 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                     setDetails((prev) => {
                       const arr = [...prev];
                       arr[mainIndex][levelInfo.level] = {
-                        ...arr[mainIndex]?.[levelInfo.level],
+                        ...arr[mainIndex][levelInfo.level],
                         collectionIndex:
-                          arr[mainIndex]?.[levelInfo?.level]?.collectionIndex +
+                          arr[mainIndex][levelInfo?.level]?.collectionIndex +
                             1 <
                           levelInfo.collectionIds.length
-                            ? arr[mainIndex]?.[levelInfo?.level]
+                            ? arr[mainIndex][levelInfo?.level]
                                 ?.collectionIndex + 1
                             : 0,
                       };
@@ -121,7 +116,7 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                         setDetails((prev) => {
                           const arr = [...prev];
                           const images = [
-                            ...arr[mainIndex]?.[levelInfo.level]?.imageIndex,
+                            ...arr[mainIndex][levelInfo.level]?.imageIndex,
                           ];
 
                           images[details?.collectionIndex] =
@@ -132,7 +127,7 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                                 ]?.collectionMetadata?.images?.length;
 
                           arr[mainIndex][levelInfo.level] = {
-                            ...arr[mainIndex]?.[levelInfo.level],
+                            ...arr[mainIndex][levelInfo.level],
                             imageIndex: images,
                           };
 
@@ -155,7 +150,7 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                         setDetails((prev) => {
                           const arr = [...prev];
                           const images = [
-                            ...arr[mainIndex]?.[levelInfo.level]?.imageIndex,
+                            ...arr[mainIndex][levelInfo.level]?.imageIndex,
                           ];
 
                           images[details?.collectionIndex] =
@@ -166,7 +161,7 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                               : 0;
 
                           arr[mainIndex][levelInfo.level] = {
-                            ...arr[mainIndex]?.[levelInfo.level],
+                            ...arr[mainIndex][levelInfo.level],
                             imageIndex: images,
                           };
 
@@ -209,18 +204,12 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                         ?.printType !== PrintType.Hoodie
                         ? "w-fit h-fit rounded-sm"
                         : "w-6 h-6 rounded-full border-black"
-                    } p-1 flex items-center justify-center text-white text-center text-super bg-mar border-black uppercase  ${
-                      levelInfo?.collectionIds?.[details?.collectionIndex]
-                        ?.printType !== PrintType.Shirt &&
-                      levelInfo?.collectionIds?.[details?.collectionIndex]
-                        ?.printType !== PrintType.Hoodie &&
-                      `cursor-pointer ${
-                        details?.sizeIndex?.[details?.collectionIndex] ===
-                        indexThree
-                          ? "border-2"
-                          : "border"
-                      }`
-                    }
+                    } p-1 flex items-center justify-center text-white text-center text-super bg-mar border-black uppercase  ${`cursor-pointer ${
+                      details?.sizeIndex?.[details?.collectionIndex] ===
+                      indexThree
+                        ? "border-2"
+                        : "border"
+                    }`}
                   }`}
                     onClick={() =>
                       setDetails((prev) => {
@@ -262,7 +251,7 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                       <div
                         key={indexThree}
                         className={`relative w-5 h-5 rounded-full border cursor-pointer border-black active:scale-95 ${
-                          details?.colorIndex[details.collectionIndex] ===
+                          details?.colorIndex?.[details.collectionIndex] ===
                           indexThree
                             ? "border-2"
                             : "border"
@@ -273,10 +262,10 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                             let obj = {
                               ...arr[mainIndex][levelInfo.level],
                             };
-    
+
                             const colors = [...obj.colorIndex];
                             colors[details?.collectionIndex] = indexThree;
-    
+
                             obj.colorIndex = colors;
                             arr[mainIndex][levelInfo.level] = obj;
                             return arr;
@@ -353,7 +342,7 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
               !cartItems?.some(
                 (item) =>
                   item.chosenLevel.level === levelInfo.level &&
-                  grant?.publication?.id == item.grant.publication?.id
+                  grant?.publication?.id == item?.grant?.publication?.id
               )
                 ? "bg-lima"
                 : "bg-viol"
@@ -363,7 +352,7 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                 cartItems?.some(
                   (item) =>
                     item.chosenLevel.level === levelInfo.level &&
-                    grant?.publication?.id == item.grant.publication?.id
+                    grant?.publication?.id == item?.grant?.publication?.id
                 )
               ) {
                 router!.push("/checkout");
@@ -396,7 +385,7 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
               {cartItems?.some(
                 (item) =>
                   item.chosenLevel.level === levelInfo.level &&
-                  grant?.publication?.id == item.grant.publication?.id
+                  grant?.publication?.id == item?.grant?.publication?.id
               )
                 ? "Go to Cart"
                 : "Choose Level"}

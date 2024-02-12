@@ -39,11 +39,20 @@ export default function Home({ client }: { client: LitNodeClient }) {
   const allGrants = useSelector(
     (state: RootState) => state.app.allGrantsReducer.levels
   );
-  const { handleCheckout, simpleCheckoutLoading } = useCheckout(
+  const {
+    handleCheckout,
+    simpleCheckoutLoading,
+    approvePurchase,
+    spendApproved,
+  } = useCheckout(
     cartItems,
     client,
     address,
-    allGrants
+    allGrants,
+    dispatch,
+    publicClient,
+    lensConnected,
+    oracleData
   );
   const { handleFetchMoreGrants, allGrantsLoading, grantInfo } = useGrants(
     dispatch,
@@ -51,7 +60,12 @@ export default function Home({ client }: { client: LitNodeClient }) {
     collectionsCache,
     lensConnected
   );
-  const { setDetails, details } = useLevelItems(dispatch);
+  const { setDetails, details } = useLevelItems(
+    dispatch,
+    undefined,
+    allGrants,
+    router
+  );
 
   const {
     mirror,
@@ -70,8 +84,6 @@ export default function Home({ client }: { client: LitNodeClient }) {
     publicClient,
     allGrants
   );
-
-  console.log({ allGrants });
 
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-start p-2 overflow-auto flex-grow">
@@ -105,6 +117,8 @@ export default function Home({ client }: { client: LitNodeClient }) {
                       key={index}
                       oracleData={oracleData}
                       grant={grant}
+                      spendApproved={spendApproved?.[index]}
+                      approvePurchase={approvePurchase}
                       simpleCollectLoading={simpleCheckoutLoading?.[index]}
                       mainIndex={index}
                       cartItems={cartItems}

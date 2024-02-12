@@ -5,7 +5,6 @@ import { setAvailableCollections } from "../../../../redux/reducers/availableCol
 import {
   Details,
   LevelInfo,
-  OracleData,
   PrintItem,
   PrintType,
 } from "../types/launch.types";
@@ -13,6 +12,8 @@ import pickRandomItem from "../../../../lib/graph/helpers/pickRandomItem";
 import { Dispatch } from "redux";
 import fetchIpfsJson from "../../../../lib/graph/helpers/fetchIPFSJson";
 import { ACCEPTED_TOKENS_MUMBAI } from "../../../../lib/constants";
+import { Grant } from "@/components/Grants/types/grant.types";
+import { NextRouter } from "next/router";
 
 const useLevelItems = (
   dispatch: Dispatch,
@@ -20,7 +21,9 @@ const useLevelItems = (
     | {
         [key: string]: PrintItem[];
       }
-    | undefined
+    | undefined,
+  allGrants?: Grant[],
+  router?: NextRouter
 ) => {
   const [allCollectionsLoading, setAllCollectionsLoading] =
     useState<boolean>(false);
@@ -159,6 +162,40 @@ const useLevelItems = (
       getAllAvailableCollections();
     }
   }, []);
+
+  useEffect(() => {
+    if (router?.asPath == "/" && allGrants && allGrants?.length > 0) {
+      setDetails(
+        Array.from({ length: allGrants.length }, (_, index: number) =>
+          Array.from({ length: 7 }, (_, indexTwo: number) => ({
+            currency: ACCEPTED_TOKENS_MUMBAI[2][2],
+            sizeIndex: Array.from(
+              {
+                length:
+                  allGrants[index].levelInfo[indexTwo]?.collectionIds?.length,
+              },
+              () => 0
+            ),
+            colorIndex: Array.from(
+              {
+                length:
+                  allGrants[index].levelInfo[indexTwo]?.collectionIds?.length,
+              },
+              () => 0
+            ),
+            imageIndex: Array.from(
+              {
+                length:
+                  allGrants[index].levelInfo[indexTwo]?.collectionIds?.length,
+              },
+              () => 0
+            ),
+            collectionIndex: 0,
+          }))
+        )
+      );
+    }
+  }, [allGrants?.length, router]);
 
   return {
     allCollectionsLoading,

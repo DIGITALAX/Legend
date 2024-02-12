@@ -69,7 +69,7 @@ export interface PrintItem {
   uri: string;
   profile: Profile;
   prices: string[];
-  acceptedTokens: string[]
+  acceptedTokens: string[];
   printType: PrintType;
   fulfiller: string;
   owner: string;
@@ -204,4 +204,10 @@ export type LevelOneProps = {
   setDetails: (e: SetStateAction<Details[][]>) => void;
   mainIndex: number;
   oracleData: OracleData[];
+  handleCheckout?: (item: CartItem, currency: string) => Promise<void>;
+  simpleCheckoutLoading?: boolean;
+  cart?: boolean;
+  grant?: Grant;
+  spendApproved?: boolean
+  approvePurchase?: (item: CartItem, currency: string) => Promise<void>;
 };

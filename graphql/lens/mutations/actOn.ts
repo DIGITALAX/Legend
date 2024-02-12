@@ -20,6 +20,7 @@ export const actOn = async (
   });
 };
 
+
 export const legacyCollectPost = async (
   request: LegacyCollectRequest
 ): Promise<FetchResult<CreateLegacyCollectTypedDataMutation>> => {

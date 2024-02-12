@@ -8,12 +8,19 @@ import {
 import PurchaseTokens from "@/components/Common/modules/PurchaseTokens";
 import { LevelOneProps } from "../types/launch.types";
 import Splits from "./Splits";
+import { AiOutlineLoading } from "react-icons/ai";
 
 const LevelOne: FunctionComponent<LevelOneProps> = ({
   details,
   setDetails,
   mainIndex,
   oracleData,
+  simpleCheckoutLoading,
+  handleCheckout,
+  cart,
+  grant,
+  spendApproved,
+  approvePurchase,
 }): JSX.Element => {
   return (
     <div className="relative w-72 h-full flex flex-col">
@@ -42,27 +49,79 @@ const LevelOne: FunctionComponent<LevelOneProps> = ({
           levelIndex={0}
           details={details}
           setDetails={setDetails}
+          tokens={ACCEPTED_TOKENS_MUMBAI?.map((item) => item[2])}
         />
         <div className="relative flex justify-center items-center font-dog text-black text-xxs">
-          {`${
-            (Number("1000000000000000000") *
-              Number(
-                oracleData?.find(
-                  (or) =>
-                    or?.currency?.toLowerCase() ==
-                    details.currency?.toLowerCase()
-                )?.wei
-              )) /
+          {`${(
+            Number("1000000000000000000") /
             Number(
               oracleData?.find(
                 (or) =>
-                  or?.currency?.toLowerCase() == details.currency?.toLowerCase()
+                  or?.currency?.toLowerCase() ==
+                  details?.currency?.toLowerCase()
               )?.rate
             )
-          } ${
-            ACCEPTED_TOKENS_MUMBAI?.find((ac) => ac[2] == details.currency)?.[1]
+          ).toFixed(4)} ${
+            ACCEPTED_TOKENS_MUMBAI?.find(
+              (ac) => ac[2] == details?.currency
+            )?.[1]
           }`}
         </div>
+        {cart && (
+          <div
+            className={`w-40 h-8 cursor-pointer rounded-sm cursor-pointer active:scale-95 border border-black flex items-center justify-center text-center font-gam text-xl ${
+              !grant?.publication?.operations?.hasActed?.value
+                ? "bg-lima"
+                : "bg-viol"
+            }`}
+            onClick={() =>
+              !simpleCheckoutLoading &&
+              (spendApproved
+                ? handleCheckout!(
+                    {
+                      grant: grant!,
+                      chosenLevel: {
+                        level: 1,
+                        collectionIds: [],
+                        amounts: [],
+                      },
+                      amount: 1,
+                      sizes: [0],
+                      colors: [0],
+                    },
+                    details?.currency
+                  )
+                : approvePurchase!(
+                    {
+                      grant: grant!,
+                      chosenLevel: {
+                        level: 1,
+                        collectionIds: [],
+                        amounts: [],
+                      },
+                      amount: 1,
+                      sizes: [0],
+                      colors: [0],
+                    },
+                    details?.currency
+                  ))
+            }
+          >
+            <div
+              className={`relative w-fit h-fit flex items-center justify-center ${
+                simpleCheckoutLoading && "animate-spin"
+              }`}
+            >
+              {simpleCheckoutLoading ? (
+                <AiOutlineLoading size={15} color="black" />
+              ) : !spendApproved ? (
+                "Approve Token"
+              ) : (
+                "Contribute"
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
