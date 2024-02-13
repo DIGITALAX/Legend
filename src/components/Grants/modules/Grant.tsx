@@ -2,6 +2,7 @@ import { FunctionComponent } from "react";
 import Image from "next/legacy/image";
 import Bar from "@/components/Common/modules/Bar";
 import { GrantProps, Milestone as MilestoneType } from "../types/grant.types";
+import moment from "moment";
 import { LevelInfo } from "@/components/Launch/types/launch.types";
 import CollectItem from "@/components/Common/modules/CollectItem";
 import { ImageMetadataV3, Profile } from "../../../../graphql/generated";
@@ -35,7 +36,13 @@ const Grant: FunctionComponent<GrantProps> = ({
 }) => {
   return (
     <div className="relative h-fit w-full sm:w-3/4 xl:w-1/2 border border-black flex flex-col items-center justify-center bg-black">
-      <Bar title={(grant?.publication?.metadata as ImageMetadataV3)?.title!} />
+      <Bar
+        title={
+          (grant?.publication?.metadata as ImageMetadataV3)?.title! +
+          " " +
+          `(${moment(grant?.publication?.createdAt).fromNow()})`
+        }
+      />
       <div className="relative w-full h-full flex flex-col gap-8 px-4 py-3 bg-grant bg-repeat bg-contain">
         <div className="relative rounded-sm w-full h-fit p-1 items-center justify-between flex bg-mar/75 border border-lima">
           <Interactions
@@ -51,6 +58,7 @@ const Grant: FunctionComponent<GrantProps> = ({
             setMirrorChoiceOpen={setMirrorChoiceOpen}
           />
         </div>
+        {<div className="relative w-full h-8 bg-lima/75 border border-lima flex rounded-lg"></div>}
         <div className="relative w-full h-60 flex flex-row gap-3 items-center justify-center text text-white">
           <div className="relative w-full h-full flex items-center justify-center w-full h-fit bg-offBlack rounded-sm border border-lima px-3 py-1.5">
             <div

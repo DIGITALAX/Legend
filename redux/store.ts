@@ -9,6 +9,7 @@ import granteeReducer from "./reducers/granteeSlice";
 import errorModalReducer from "./reducers/errorModalSlice";
 import imageExpandReducer from "./reducers/mediaExpandSlice";
 import availableCollectionsReducer from "./reducers/availableCollectionsSlice";
+import postReducer from "./reducers/postSlice";
 import levelArrayReducer from "./reducers/levelArraySlice";
 import allGrantsReducer from "./reducers/allGrantsSlice";
 import oracleDataReducer from "./reducers/oracleDataSlice";
@@ -30,6 +31,7 @@ const reducer = combineReducers({
   claimProfileReducer,
   indexerReducer,
   collectionsCacheReducer,
+  postReducer
 });
 
 export const store = configureStore({

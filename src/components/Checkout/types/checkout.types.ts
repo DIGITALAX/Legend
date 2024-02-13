@@ -5,14 +5,11 @@ export type CartItemsProps = {
   cartItems: CartItem[];
   grantCheckoutLoading: boolean[];
   handleCheckout: (item: CartItem, curreny: string) => Promise<void>;
-  encryptedFulfillment: string | undefined;
 };
 
 export type FulfillmentProps = {
   fulfillment: Fulfillment;
   setFulfillment: (e: Fulfillment) => void;
-  encryptedFulfillment: string | undefined;
-  handleEncryptFulfillment: () => Promise<void>;
   fulfillmentLoading: boolean;
 };
 

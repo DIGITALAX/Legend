@@ -143,7 +143,7 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                         />
                       </div>
                     </div>
-              
+
                     <div className="relative w-fit h-fit flex items-center justify-center p-1">
                       <div
                         className="relative w-2 h-2 flex items-center justify-center rotate-180 cursor-pointer active:scale-95"
@@ -196,7 +196,7 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
             <div className="relative flex justify-start items-center">
               Sizes
             </div>
-            <div className="relative flex flex-row gap-1 items-center justify-center">
+            <div className="relative flex flex-wrap gap-1 items-center justify-center">
               {levelInfo?.collectionIds?.[
                 details?.collectionIndex
               ]?.collectionMetadata?.sizes?.map(
@@ -209,8 +209,8 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                           ?.printType !== PrintType.Shirt &&
                         levelInfo?.collectionIds?.[details?.collectionIndex]
                           ?.printType !== PrintType.Hoodie
-                          ? "w-fit h-fit rounded-sm text-size py-1.5 px-1"
-                          : "w-7 h-7 rounded-full border-black text-super p-1"
+                          ? "w-fit h-fit rounded-sm text-size"
+                          : "w-7 h-7 rounded-full border-black text-super"
                       } flex items-center justify-center text-white text-center bg-mar/70 border-lima uppercase ${`cursor-pointer ${
                         details?.sizeIndex?.[details?.collectionIndex] ===
                         indexThree
@@ -234,7 +234,18 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                         })
                       }
                     >
-                      {value}
+                      <div
+                        className={`relative w-fit h-fit flex items-center justify-center ${
+                          levelInfo?.collectionIds?.[details?.collectionIndex]
+                            ?.printType !== PrintType.Shirt &&
+                          levelInfo?.collectionIds?.[details?.collectionIndex]
+                            ?.printType !== PrintType.Hoodie
+                            ? "py-2 px-1"
+                            : "p-px"
+                        }`}
+                      >
+                        {value}
+                      </div>
                     </div>
                   );
                 }
@@ -249,7 +260,7 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                 <div className="relative flex justify-start items-center">
                   Base Colors
                 </div>
-                <div className="relative flex flex-row gap-1 items-center justify-center">
+                <div className="relative flex flex-wrap gap-1 items-center justify-center">
                   {levelInfo?.collectionIds?.[
                     details?.collectionIndex
                   ]?.collectionMetadata?.colors?.map(
@@ -346,10 +357,7 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
               setDetails={setDetails}
               mainIndex={mainIndex}
               levelIndex={levelInfo.level}
-              tokens={
-                levelInfo?.collectionIds?.[details?.collectionIndex]
-                  ?.acceptedTokens
-              }
+              tokens={grant?.acceptedCurrencies!}
             />
           </div>
           {cart && (

@@ -3,17 +3,19 @@ import { ethers } from "ethers";
 import { CartItem, Fulfillment } from "../types/checkout.types";
 import * as LitJsSDK from "@lit-protocol/lit-node-client";
 import { AccessControlConditions } from "@lit-protocol/types";
-import { OracleData, PrintItem } from "@/components/Launch/types/launch.types";
+import {
+  Details,
+  OracleData,
+  PrintItem,
+} from "@/components/Launch/types/launch.types";
 import { Grant } from "@/components/Grants/types/grant.types";
 import { Dispatch } from "redux";
 import lensCollect from "../../../../lib/lens/helpers/lensCollect";
 import { PublicClient, createWalletClient, custom } from "viem";
 import { polygonMumbai } from "viem/chains";
-import {
-  ACCEPTED_TOKENS_MUMBAI,
-  LEGEND_OPEN_ACTION_CONTRACT,
-} from "../../../../lib/constants";
+import { LEGEND_OPEN_ACTION_CONTRACT } from "../../../../lib/constants";
 import { Profile } from "../../../../graphql/generated";
+import { NextRouter } from "next/router";
 
 const useCheckout = (
   cartItems: CartItem[],
@@ -23,7 +25,9 @@ const useCheckout = (
   dispatch: Dispatch,
   publicClient: PublicClient,
   lensConnected: Profile | undefined,
-  oracleData: OracleData[]
+  oracleData: OracleData[],
+  details: Details[][],
+  router: NextRouter
 ) => {
   const [grantCheckoutLoading, setGrantCheckoutLoading] = useState<boolean[]>(
     []
@@ -82,6 +86,28 @@ const useCheckout = (
         chain: polygonMumbai,
         transport: custom((window as any).ethereum),
       });
+
+      console.log(
+        BigInt(
+          Math.ceil(
+            ((item.chosenLevel.level == 1
+              ? 10 ** 18
+              : Number(
+                  item.chosenLevel.collectionIds?.map(
+                    (coll, index) => coll.prices[item.sizes[index]]
+                  )
+                )) /
+              Number(
+                oracleData?.find((oracle) => oracle.currency === currency)
+                  ?.rate
+              )) *
+              Number(
+                oracleData?.find((oracle) => oracle.currency === currency)
+                  ?.wei
+              )
+          )
+        )
+      );
 
       const { request } = await publicClient.simulateContract({
         address: currency as `0x${string}`,
@@ -149,23 +175,25 @@ const useCheckout = (
         chain: polygonMumbai,
         args: [
           LEGEND_OPEN_ACTION_CONTRACT,
-          (((item.chosenLevel.level == 1
-            ? 1
-            : Number(
-                item.chosenLevel.collectionIds?.map(
-                  (coll, index) => coll.prices[item.sizes[index]]
+          BigInt(
+            Math.ceil(
+              ((item.chosenLevel.level == 1
+                ? 10 ** 18
+                : Number(
+                    item.chosenLevel.collectionIds?.map(
+                      (coll, index) => coll.prices[item.sizes[index]]
+                    )
+                  )) /
+                Number(
+                  oracleData?.find((oracle) => oracle.currency === currency)
+                    ?.rate
+                )) *
+                Number(
+                  oracleData?.find((oracle) => oracle.currency === currency)
+                    ?.wei
                 )
-              )) /
-            Number(
-              oracleData?.find(
-                (oracle) =>
-                  oracle.currency ===
-                  ACCEPTED_TOKENS_MUMBAI.find(
-                    (item) => item[2] === currency
-                  )?.[2]
-              )?.rate
-            )) *
-            10 ** 18) as any,
+            )
+          ),
         ],
         account: address,
       });
@@ -174,6 +202,7 @@ const useCheckout = (
       await publicClient.waitForTransactionReceipt({ hash: res });
       setSpendApproved((prev) => {
         const arr = [...prev];
+
         arr[index] = true;
         return arr;
       });
@@ -395,61 +424,63 @@ const useCheckout = (
 
   const checkSpendApproved = async () => {
     try {
-      const data = await publicClient.readContract({
-        address: ACCEPTED_TOKENS_MUMBAI[2][2] as `0x${string}`,
-        abi: [
-          {
-            inputs: [
-              {
-                internalType: "address",
-                name: "owner",
-                type: "address",
-              },
-              {
-                internalType: "address",
-                name: "spender",
-                type: "address",
-              },
-            ],
-            name: "allowance",
-            outputs: [
-              {
-                internalType: "uint256",
-                name: "",
-                type: "uint256",
-              },
-            ],
-            stateMutability: "view",
-            type: "function",
-          },
-        ],
-        functionName: "allowance",
-        args: [address as `0x${string}`, LEGEND_OPEN_ACTION_CONTRACT],
-        account: address,
-      });
-
       if (address) {
         let spends: boolean[] = [];
-        allGrants.map(() => {
-          if (
-            Number((data as any)?.toString()) /
-              Number(
-                oracleData?.find(
-                  (oracle) => oracle.currency === ACCEPTED_TOKENS_MUMBAI[2][2]
-                )?.wei
-              ) >=
-            Number(10 ** 18) /
-              Number(
-                oracleData?.find(
-                  (oracle) => oracle.currency === ACCEPTED_TOKENS_MUMBAI[2][2]
-                )?.rate
-              )
-          ) {
-            spends.push(true);
-          } else {
-            spends.push(false);
-          }
-        });
+        await Promise.all(
+          allGrants.map(async (_, index) => {
+            const data = await publicClient.readContract({
+              address: details[index][0].currency as `0x${string}`,
+              abi: [
+                {
+                  inputs: [
+                    {
+                      internalType: "address",
+                      name: "owner",
+                      type: "address",
+                    },
+                    {
+                      internalType: "address",
+                      name: "spender",
+                      type: "address",
+                    },
+                  ],
+                  name: "allowance",
+                  outputs: [
+                    {
+                      internalType: "uint256",
+                      name: "",
+                      type: "uint256",
+                    },
+                  ],
+                  stateMutability: "view",
+                  type: "function",
+                },
+              ],
+              functionName: "allowance",
+              args: [address as `0x${string}`, LEGEND_OPEN_ACTION_CONTRACT],
+              account: address,
+            });
+
+            if (
+              Number((data as any)?.toString()) *
+                Number(
+                  oracleData?.find(
+                    (oracle) => oracle.currency === details[index][0].currency
+                  )?.wei
+                ) >=
+              Number(10 ** 18) /
+                Number(
+                  oracleData?.find(
+                    (oracle) => oracle.currency === details[index][0].currency
+                  )?.rate
+                )
+            ) {
+              spends.push(true);
+            } else {
+              spends.push(false);
+            }
+          })
+        );
         setSpendApproved(spends);
       }
     } catch (err: any) {
@@ -466,10 +497,15 @@ const useCheckout = (
   }, [cartItems]);
 
   useEffect(() => {
-    if (allGrants.length > 0) {
+    if (
+      allGrants.length > 0 &&
+      router.asPath.includes("/") &&
+      details.length > 0 &&
+      address
+    ) {
       checkSpendApproved();
     }
-  }, [allGrants.length]);
+  }, [allGrants.length, details, address]);
 
   return {
     handleCheckout,

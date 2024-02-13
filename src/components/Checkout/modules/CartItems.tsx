@@ -6,7 +6,6 @@ const CartItems: FunctionComponent<CartItemsProps> = ({
   cartItems,
   grantCheckoutLoading,
   handleCheckout,
-  encryptedFulfillment,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit flex flex-col items-center justify-start">

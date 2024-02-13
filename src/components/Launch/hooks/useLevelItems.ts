@@ -5,6 +5,7 @@ import { setAvailableCollections } from "../../../../redux/reducers/availableCol
 import {
   Details,
   LevelInfo,
+  PostInformation,
   PrintItem,
   PrintType,
 } from "../types/launch.types";
@@ -17,6 +18,7 @@ import { NextRouter } from "next/router";
 
 const useLevelItems = (
   dispatch: Dispatch,
+  postInformation?: PostInformation,
   allCollections?:
     | {
         [key: string]: PrintItem[];
@@ -34,6 +36,13 @@ const useLevelItems = (
     try {
       const { data } = await getAllCollections();
 
+      const filteredCollections = data?.collectionCreateds?.filter(
+        (item: { acceptedTokens: string[] }) =>
+          postInformation?.currencies.filter((curr) =>
+            item.acceptedTokens.includes(curr)
+          )
+      );
+
       const categorizedCollections: { [key: string]: PrintItem[] } = {
         [PrintType.Sticker]: [],
         [PrintType.Poster]: [],
@@ -42,7 +51,7 @@ const useLevelItems = (
       };
 
       await Promise.all(
-        data?.collectionCreateds?.map(async (item: PrintItem) => {
+        filteredCollections?.map(async (item: PrintItem) => {
           const fulfillerBase = Number(item?.fulfillerBase || 0) / 10 ** 18;
           const fulfillerPercent = Number(item?.fulfillerPercent || 0) / 10000;
 

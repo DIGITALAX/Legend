@@ -12,7 +12,7 @@ export default function Store() {
         searchFilters={searchFilters}
         setSearchFilters={setSearchFilters}
       />
-      <InfiniteScroll
+      {/* <InfiniteScroll
         dataLength={14}
         loader={<></>}
         hasMore={true}
@@ -22,7 +22,7 @@ export default function Store() {
         {storeItems?.map((item, index: number) => {
           return <Item key={index} grant={item} />;
         })}
-      </InfiniteScroll>
+      </InfiniteScroll> */}
     </div>
   );
 }
