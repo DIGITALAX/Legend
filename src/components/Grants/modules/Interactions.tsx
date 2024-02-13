@@ -15,49 +15,60 @@ const Interactions: FunctionComponent<InteractionsProps> = ({
   setMirrorChoiceOpen,
   router,
   index,
+  dispatch,
 }): JSX.Element => {
   return (
-    <div className="relative w-24 h-fit border border-black rounded-md flex flex-col gap-2 p-2 items-center justify-center">
+    <div className="relative w-full h-fit rounded-md flex flex-row gap-2 p-2 items-center justify-between font-vcr text-lima text-sm">
       {[
         {
-          image: "QmRQVbnK1VajkBzjz9w2zFSSbC9fAdKRo7m53VuvhyvHa4",
+          image: "Qmc476o4FyTJV4e93xNaj9DhWWqC9uQAgExWf4SytZTcV2",
           title: "Like",
           function: () => like(post?.id, post?.operations?.hasReacted!),
           loader: interactionsLoading?.like,
           amount: post?.stats?.reactions || 0,
+          width: "1.3rem",
+          height: "1.3rem",
         },
         {
-          image: "QmVFm5onDqzKCV6v9XbGTQirXsWFmRgihsYcXVBbLMxneL",
+          image: "QmUihJCeEsFyGSm9gHC5r8p5KnmYsiTJ86AssjUs3CuYm8",
           title: "Bookmark",
           function: () => bookmark(post?.id),
           loader: interactionsLoading?.bookmark,
           amount: post?.stats?.bookmarks || 0,
+          width: "1.3rem",
+          height: "1.3rem",
         },
         {
-          image: "QmRsAM1oJfiv1Py92uoYk7VMdrnPfWDsgH3Y2tPWVDqxHw",
+          image: "Qmc7zi79rtM6K1Q32GSX7dWTE3MehD2uVTcW7sxCTWHgM5",
           title: "Mirror",
           function: () =>
             setMirrorChoiceOpen((prev) => {
               const old = [...prev];
-              !old[index];
+              old[index] = !old[index];
               return old;
             }),
           loader: false,
           amount: (post?.stats?.mirrors || 0) + (post?.stats?.quotes || 0),
+          width: "1.3rem",
+          height: "1.3rem",
         },
         {
-          image: "QmRQVbnK1VajkBzjz9w2zFSSbC9fAdKRo7m53VuvhyvHa4",
-          title: "Contributors",
+          image: "Qmbua3Ajr1wYbNk4tmUmS2qpbQYcyr9JkzQrQjWz19TD7L",
+          title: "Contributor",
           function: () => router.push(`/grant/${post?.id}`),
           loader: false,
           amount: post?.stats?.countOpenActions || 0,
+          width: "1.3rem",
+          height: "1.3rem",
         },
         {
-          image: "QmRQVbnK1VajkBzjz9w2zFSSbC9fAdKRo7m53VuvhyvHa4",
-          title: "Comments",
+          image: "QmWbxnHzxzNGQswu9qLEaAyncptzuacYhUmbVi695Ftw1y",
+          title: "Comment",
           function: () => router.push(`/grant/${post?.id}`),
           loader: false,
           amount: post?.stats?.comments || 0,
+          width: "1.2rem",
+          height: "1rem",
         },
       ].map(
         (
@@ -67,21 +78,30 @@ const Interactions: FunctionComponent<InteractionsProps> = ({
             function: () => void;
             loader: boolean;
             amount: number;
+            width: string;
+            height: string;
           },
           indexTwo: number
         ) => {
           return (
             <div
               key={indexTwo}
-              className="relative w-fit h-fit flex flex-row items-center justify-center gap-3 font-vcr text-black text-center"
-              onClick={() => !item?.loader && item?.function()}
+              className="relative w-fit h-fit flex flex-row items-center justify-center gap-3 text-center"
+              title={item.title}
             >
               {item?.loader ? (
                 <div className="relative w-fit h-fit animate-spin flex items-center justify-center">
-                  <AiOutlineLoading size={15} color="white" />
+                  <AiOutlineLoading size={17} color="white" />
                 </div>
               ) : (
-                <div className="relative w-4 h-3 flex items-center justify-center cursor-pointer active:scale-95">
+                <div
+                  className={`relative flex items-center justify-center cursor-pointer active:scale-95`}
+                  onClick={() => !item?.loader && item?.function()}
+                  style={{
+                    width: item.width,
+                    height: item.height,
+                  }}
+                >
                   <Image
                     layout="fill"
                     src={`${INFURA_GATEWAY}/ipfs/${item?.image}`}
@@ -89,12 +109,63 @@ const Interactions: FunctionComponent<InteractionsProps> = ({
                   />
                 </div>
               )}
-              <div className="relative w-fit h-fit items-center justify-center flex cursor-pointer">
+              <div className="relative w-fit h-fit items-center justify-center flex">
                 {numeral(item.amount).format("0a")}
               </div>
             </div>
           );
         }
+      )}
+      {mirrorChoiceOpen && (
+        <div className="absolute left-1/2 -top-10 w-fit h-fit border border-lima rounded-sm bg-mar/90 flex flex-row gap-5 items-center justify-center py-2 px-1.5">
+          {[
+            {
+              image: "Qmc7zi79rtM6K1Q32GSX7dWTE3MehD2uVTcW7sxCTWHgM5",
+              title: "Mirror",
+              function: () => mirror(post?.id),
+              loader: interactionsLoading?.mirror,
+              width: "1.3rem",
+              height: "1.3rem",
+            },
+            {
+              image: "QmW7jxRRLLbBMyzMbaUqb8B4ViZPSQ6ygJ2HVYahuBQQQx",
+              title: "Quote",
+              function: () => dispatch(setQuote(post)),
+              loader: false,
+              width: "0.5rem",
+              height: "1.3rem",
+            },
+          ].map((item, indexTwo) => {
+            return (
+              <div
+                key={indexTwo}
+                className="relative w-fit h-fit flex flex-row items-center justify-center gap-3 text-center"
+                title={item.title}
+              >
+                {item?.loader ? (
+                  <div className="relative w-fit h-fit animate-spin flex items-center justify-center">
+                    <AiOutlineLoading size={15} color="white" />
+                  </div>
+                ) : (
+                  <div
+                    className={`relative flex items-center justify-center cursor-pointer active:scale-95`}
+                    onClick={() => !item?.loader && item?.function()}
+                    style={{
+                      width: item.width,
+                      height: item.height,
+                    }}
+                  >
+                    <Image
+                      layout="fill"
+                      src={`${INFURA_GATEWAY}/ipfs/${item?.image}`}
+                      draggable={false}
+                    />
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
       )}
     </div>
   );

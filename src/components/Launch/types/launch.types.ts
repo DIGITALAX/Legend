@@ -160,6 +160,7 @@ export interface Milestone {
 export type CollectionShuffleProps = {
   handleShuffleCollectionLevels: () => void;
   levelArray: LevelInfo[];
+  acceptedTokens: string[]
   allCollectionsLoading: boolean;
   details: Details[][];
   setDetails: (e: SetStateAction<Details[][]>) => void;
@@ -201,6 +202,7 @@ export type SuccessProps = {
 
 export type LevelOneProps = {
   details: Details;
+  acceptedTokens: string[]
   setDetails: (e: SetStateAction<Details[][]>) => void;
   mainIndex: number;
   oracleData: OracleData[];

@@ -12,7 +12,7 @@ import { SetStateAction } from "react";
 
 export type GrantProps = {
   grant: Grant;
-  oracleData: OracleData[]
+  oracleData: OracleData[];
   like: (
     id: string,
     hasReacted: boolean,
@@ -39,7 +39,9 @@ export type GrantProps = {
   setMirrorChoiceOpen: (e: SetStateAction<boolean[]>) => void;
   mirrorChoiceOpen: boolean[];
   approvePurchase: (item: CartItem, curreny: string) => Promise<void>;
-  spendApproved: boolean
+  spendApproved: boolean;
+  changeCurrency: string;
+  setChangeCurrency: (e: SetStateAction<string[]>) => void;
 };
 
 export type CollectItemProps = {
@@ -56,6 +58,30 @@ export type CollectItemProps = {
   items: PrintItem[];
 };
 
+export interface Milestone {
+  allClaimed: string;
+  status: string;
+  submitBy: string;
+  granteeClaimed: boolean[];
+  currencyGoal: {
+    currency: string;
+    amount: string;
+  }[];
+}
+
+export type MilestoneProps = {
+  milestone: Milestone;
+  index: number;
+  mainIndex: number;
+  acceptedTokens: string[];
+  metadata: {
+    description: string;
+    cover: string;
+  };
+  changeCurrency: string;
+  setChangeCurrency: (e: SetStateAction<string[]>) => void;
+};
+
 export interface Grant {
   grantId: string;
   creator: string;
@@ -65,7 +91,10 @@ export interface Grant {
     description: string;
     experience: string;
     strategy: string;
-    milestones: string;
+    milestones: {
+      description: string;
+      cover: string;
+    }[];
     team: string;
     tech: string;
     title: string;
@@ -74,16 +103,7 @@ export interface Grant {
   splits: string[];
   uri: string;
   profileId: string;
-  milestones: {
-    allClaimed: string;
-    status: string;
-    submitBy: string;
-    granteeClaimed: boolean[];
-    currencyGoal: {
-      currency: string;
-      amount: string;
-    }[];
-  };
+  milestones: Milestone[];
   levelInfo: LevelInfo[];
   acceptedCurrencies: string[];
   blockTimestamp: string;

@@ -14,13 +14,13 @@ const PurchaseTokens: FunctionComponent<PurchaseTokensProps> = ({
   tokens,
 }): JSX.Element => {
   return (
-    <div className="relative w-3/4 justify-center items-center flex flex-row gap-1">
+    <div className="relative w-3/4 justify-center items-center flex flex-row gap-1 h-fit">
       {ACCEPTED_TOKENS_MUMBAI?.filter((token) =>
         tokens?.includes(token[2])
       )?.map((item: string[], indexTwo: number) => {
         return (
           <div
-            className={`relative w-fit h-fit rounded-full flex items-center cursor-pointer active:scale-95 ${
+            className={`relative w-6 h-7 rounded-full flex items-center cursor-pointer active:scale-95 ${
               details?.currency === item[2] ? "opacity-50" : "opacity-100"
             }`}
             key={indexTwo}
@@ -39,8 +39,7 @@ const PurchaseTokens: FunctionComponent<PurchaseTokensProps> = ({
               src={`${INFURA_GATEWAY}/ipfs/${item[0]}`}
               className="flex"
               draggable={false}
-              width={30}
-              height={35}
+              layout="fill"
             />
           </div>
         );

@@ -9,7 +9,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        offBlack: "#1111313",
+        offBlack: "#111313",
         naran: "#FF9147",
         amar: "#FFD86D",
         azul: "#A9E7FF",
@@ -36,17 +36,22 @@ const config: Config = {
         net: "Network",
       },
       fontSize: {
+        size: "0.3rem",
         super: "0.4rem",
         xxs: "0.6rem",
       },
       height: {
-        110: "30rem",
+        110: "35rem",
       },
       screens: {
         tablet: "900px",
         galaxy: "300px",
         pre: "400px",
         otro: "1350px",
+      },
+      backgroundImage: {
+        grant:
+          "url('https://thedial.infura-ipfs.io/ipfs/QmbfG7S6A5AgCJroYU5NethPrtyVPuz3LwiGDfwGeyCsdp')",
       },
     },
   },

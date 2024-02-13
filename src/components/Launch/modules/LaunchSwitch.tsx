@@ -59,8 +59,8 @@ const LaunchSwitch: FunctionComponent<LaunchSwitchProps> = ({
             <Bar title="Accepted Currencies" />
             <div className="relative bg-offWhite w-full h-fit flex flex-col items-center justify-start p-3 gap-4 border border-black rounded-b-sm">
               <div className="relative text-center w-3/5 h-fit font-dog text-offBlack text-xxs break-words">
-                Choose which currencies you&apos;d like to accept for grant
-                contributions.
+                Choose which currencies you&apos;d like to accept for Level 1
+                Grant contributions.
               </div>
               <div className="relative w-3/4 justify-center items-center flex flex-row gap-5">
                 {ACCEPTED_TOKENS_MUMBAI?.map(
@@ -144,6 +144,7 @@ const LaunchSwitch: FunctionComponent<LaunchSwitchProps> = ({
     case 3:
       return (
         <CollectionShuffle
+          acceptedTokens={postInformation?.currencies}
           handleShuffleCollectionLevels={handleShuffleCollectionLevels}
           levelArray={levelArray}
           allCollectionsLoading={allCollectionsLoading}

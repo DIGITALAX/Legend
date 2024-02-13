@@ -1,14 +1,15 @@
 import { FunctionComponent } from "react";
 import Image from "next/legacy/image";
-import { INFURA_GATEWAY } from "../../../../lib/constants";
 import Bar from "@/components/Common/modules/Bar";
-import { GrantProps } from "../types/grant.types";
+import { GrantProps, Milestone as MilestoneType } from "../types/grant.types";
 import { LevelInfo } from "@/components/Launch/types/launch.types";
 import CollectItem from "@/components/Common/modules/CollectItem";
 import { ImageMetadataV3, Profile } from "../../../../graphql/generated";
 import createProfilePicture from "../../../../lib/lens/helpers/createProfilePicture";
 import Interactions from "./Interactions";
 import LevelOne from "@/components/Launch/modules/LevelOne";
+import descriptionRegex from "../../../../lib/graph/helpers/descriptionRegex";
+import Milestone from "./Milestone";
 
 const Grant: FunctionComponent<GrantProps> = ({
   grant,
@@ -28,42 +29,53 @@ const Grant: FunctionComponent<GrantProps> = ({
   simpleCollectLoading,
   oracleData,
   approvePurchase,
-  spendApproved
+  spendApproved,
+  changeCurrency,
+  setChangeCurrency,
 }) => {
   return (
     <div className="relative h-fit w-full sm:w-3/4 xl:w-1/2 border border-black flex flex-col items-center justify-center bg-black">
       <Bar title={(grant?.publication?.metadata as ImageMetadataV3)?.title!} />
-      <div className="relative w-full h-full flex flex-col gap-8" id="grant">
-        <div className="relative w-full h-fit flex break-words font-vcr text-black p-2 justify-start items-center rounded-sm border border-black bg-offWhite p-2 flex-col gap-4">
-          <div className="relative w-full h-40 flex items-center justify-start gap-6">
-            <div className="relative w-full overflow-y-scroll h-full ustify-start items-center">
-              {(grant?.publication?.metadata as ImageMetadataV3)?.content}
-            </div>
-            <Interactions
-              like={like}
-              router={router}
-              index={mainIndex}
-              interactionsLoading={interactionsLoading}
-              post={grant?.publication!}
-              bookmark={bookmark}
-              mirror={mirror}
-              dispatch={dispatch}
-              mirrorChoiceOpen={mirrorChoiceOpen?.[mainIndex]}
-              setMirrorChoiceOpen={setMirrorChoiceOpen}
-            />
+      <div className="relative w-full h-full flex flex-col gap-8 px-4 py-3 bg-grant bg-repeat bg-contain">
+        <div className="relative rounded-sm w-full h-fit p-1 items-center justify-between flex bg-mar/75 border border-lima">
+          <Interactions
+            like={like}
+            router={router}
+            index={mainIndex}
+            interactionsLoading={interactionsLoading}
+            post={grant?.publication!}
+            bookmark={bookmark}
+            mirror={mirror}
+            dispatch={dispatch}
+            mirrorChoiceOpen={mirrorChoiceOpen?.[mainIndex]}
+            setMirrorChoiceOpen={setMirrorChoiceOpen}
+          />
+        </div>
+        <div className="relative w-full h-60 flex flex-row gap-3 items-center justify-center text text-white">
+          <div className="relative w-full h-full flex items-center justify-center w-full h-fit bg-offBlack rounded-sm border border-lima px-3 py-1.5">
+            <div
+              className="relative w-full h-full flex items-start justify-start break-words text-xxs whitespace-preline overflow-y-scroll font-dog"
+              dangerouslySetInnerHTML={{
+                __html: descriptionRegex(
+                  (grant?.publication?.metadata as ImageMetadataV3)?.content,
+                  false
+                ),
+              }}
+            ></div>
           </div>
-          <div className="relative w-full h-fit flex justify-start items-start flex-col ml-0 gap-2">
-            <div className="relative text-black font-gam text-4xl justify-start items-start flex">
-              Grant Team
-            </div>
-            <div className="relative w-full items-center justify-between flex flex-row gap-2">
-              <div className="relative mr-0 w-fit h-fit items-center justify-end flex flex-row gap-2">
+          <div className="relative w-48 h-full flex items-start justify-center rounded-sm bg-offBlack border border-lima px-1.5">
+            <div className="relative w-full h-fit flex justify-start items-start flex-col ml-0 gap-2">
+              <div className="relative font-gam text-xl justify-start items-start flex">
+                Grant Team
+              </div>
+              <div className="relative mr-0 w-fit h-fit items-center justify-end flex flex-wrap gap-2">
                 {grant?.grantees?.map((profile: Profile, index: number) => {
                   const pfp = createProfilePicture(profile?.metadata?.picture);
                   return (
                     <div
                       key={index}
-                      className="relative w-10 h-10 rounded-full border border-black cursor-pointer flex cursor-pointer active:scale-95"
+                      className="relative w-8 h-8 rounded-full border border-lima bg-mar/70 cursor-pointer flex cursor-pointer active:scale-95"
+                      title={profile?.handle?.suggestedFormatted?.localName}
                       onClick={() =>
                         router.push(
                           `/grantee/${
@@ -92,62 +104,36 @@ const Grant: FunctionComponent<GrantProps> = ({
             </div>
           </div>
         </div>
-        <div
-          className="relative w-full h-80 overflow-y-scroll bg-offWhite border-y border-black flex flex-col gap-4 p-4"
-          id="milestone"
-        >
-          {Array.from({ length: 3 }).map((_, index: number) => {
-            return (
-              <div
-                key={index}
-                className="relative bg-cafe border border-marron rounded-sm flex flex-col justify-start items-start p-1.5 font-dog text-amar h-fit gap-4"
-              >
-                <div className="relative w-fit h-fit flex items-center justify-start text-sm">
-                  {`Milestone ${index + 1}`}
-                </div>
-                <div className="relative w-full h-72 flex items-center justify-between flex-row gap-2">
-                  <div className="relative h-full overflow-y-scroll w-full flex items-start justify-start p-1.5"></div>
-                  <div className="relative w-60 h-full border border-marron flex items-center justify-center rounded-sm bg-virg">
-                    <Image
-                      src={`${INFURA_GATEWAY}/ipfs/${
-                        grant?.publication?.metadata.marketplace?.image?.raw.uri?.split(
-                          "ipfs://"
-                        )?.[1]
-                      }`}
-                      layout="fill"
-                      className="rounded-sm w-full h-full"
-                      objectFit="cover"
-                      draggable={false}
-                    />
-                  </div>
-                </div>
-                <div className="relative flex flex-col items-start justify-start gap-8 border border-white rounded-sm w-full h-fit p-2">
-                  <div className="relative w-full h-fit flex items-center justify-between flex-row text-xxs text-white font-dog">
-                    <div className="relative w-fit h-fit flex flex-col gap-1 items-start justify-start">
-                      <div>Amount:</div>
-                      <div>$5000</div>
-                    </div>
-                    <div className="relative w-fit h-fit flex flex-col gap-1 items-start justify-start">
-                      <div>Submit By:</div>
-                      <div>{new Date().toDateString()}</div>
-                    </div>
-                  </div>
-                  <div className="relative w-full h-fit items-center justify-start text-white text-xxs font-dog flex flex-col gap-4">
-                    <div className="relative w-full h-6 rounded-lg border border-white bg-amar/60 text-black text-center flex items-center justify-center">
-                      Not Completed
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+        <div className="relative flex flex-col items-center justify-center w-full h-fit gap-2">
+          <div className="relative px-2 py-1 text-center flex items-center justify-center bg-mar/70 border border-lima font-gam uppercase rounded-sm text-4xl text-lima w-full h-fit">
+            Milestones
+          </div>
+          <div
+            className="relative w-full h-110 overflow-y-scroll bg-offBlack border border-lima rounded-sm flex flex-col gap-16 p-4"
+            id="milestone"
+          >
+            {grant.milestones.map((milestone: MilestoneType, index: number) => {
+              return (
+                <Milestone
+                  acceptedTokens={grant?.acceptedCurrencies}
+                  key={index}
+                  mainIndex={mainIndex}
+                  metadata={grant?.grantMetadata?.milestones?.[index]}
+                  milestone={milestone}
+                  index={index}
+                  changeCurrency={changeCurrency}
+                  setChangeCurrency={setChangeCurrency}
+                />
+              );
+            })}
+          </div>
         </div>
-        <div className="relative flex flex-col items-center justify-center w-full h-fit gap-2 p-5">
-          <div className="relative w-fit px-2 py-1 h-12 text-center flex items-center justify-center bg-lima border border-black font-gam uppercase text-6xl text-mar">
+        <div className="relative flex flex-col items-center justify-center w-full h-fit gap-2 pb-5">
+          <div className="relative px-2 py-1 text-center flex items-center justify-center bg-mar/70 border border-lima font-gam uppercase rounded-sm text-4xl text-lima w-full h-fit">
             collect grant
           </div>
           <div
-            className="relative w-full h-fit bg-offWhite p-2 rounded-sm border border-black overflow-x-scroll items-start justify-start flex flex-col"
+            className="relative w-full h-fit  p-2 rounded-sm overflow-x-scroll items-start justify-start flex flex-col"
             id="milestone"
           >
             <div className="relative w-fit h-fit flex flex-row gap-4 pb-2 items-start justify-start">
@@ -162,6 +148,7 @@ const Grant: FunctionComponent<GrantProps> = ({
                 simpleCheckoutLoading={simpleCollectLoading}
                 spendApproved={spendApproved}
                 approvePurchase={approvePurchase}
+                acceptedTokens={grant?.acceptedCurrencies}
               />
               {grant?.levelInfo?.map((level: LevelInfo, index: number) => {
                 return (

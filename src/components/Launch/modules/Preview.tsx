@@ -238,6 +238,7 @@ const Preview: FunctionComponent<PreviewProps> = ({
               setDetails={setDetails}
               mainIndex={0}
               oracleData={oracleData}
+              acceptedTokens={postInformation?.currencies}
             />
             {levelArray?.map((levelInfo: LevelInfo, index: number) => {
               return (
