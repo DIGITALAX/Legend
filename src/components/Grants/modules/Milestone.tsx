@@ -16,7 +16,6 @@ const Milestone: FunctionComponent<MilestoneProps> = ({
   setChangeCurrency,
   acceptedTokens,
 }) => {
-  console.log(milestone.submitBy);
   return (
     <div className="relative bg-offBlack border border-lima rounded-sm flex flex-col justify-start items-start px-2 py-1.5 font-dog h-fit gap-4">
       <div className="relative w-full h-28 flex items-center justify-center rounded-sm">
