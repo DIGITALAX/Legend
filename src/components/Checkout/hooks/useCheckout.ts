@@ -87,28 +87,6 @@ const useCheckout = (
         transport: custom((window as any).ethereum),
       });
 
-      console.log(
-        BigInt(
-          Math.ceil(
-            ((item.chosenLevel.level == 1
-              ? 10 ** 18
-              : Number(
-                  item.chosenLevel.collectionIds?.map(
-                    (coll, index) => coll.prices[item.sizes[index]]
-                  )
-                )) /
-              Number(
-                oracleData?.find((oracle) => oracle.currency === currency)
-                  ?.rate
-              )) *
-              Number(
-                oracleData?.find((oracle) => oracle.currency === currency)
-                  ?.wei
-              )
-          )
-        )
-      );
-
       const { request } = await publicClient.simulateContract({
         address: currency as `0x${string}`,
         abi: [

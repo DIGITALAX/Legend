@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getAllGrants } from "../../../../graphql/subgraph/queries/getAllGrants";
-import { PrintItem } from "@/components/Launch/types/launch.types";
+import { OracleData, PrintItem } from "@/components/Launch/types/launch.types";
 import { getOneCollection } from "../../../../graphql/subgraph/queries/getOneCollection";
 import { Dispatch } from "redux";
 import { setAllGrants } from "../../../../redux/reducers/allGrantsSlice";
@@ -10,15 +10,16 @@ import getPublication from "../../../../graphql/lens/queries/publication";
 import toHexWithLeadingZero from "../../../../lib/lens/helpers/toHexWithLeadingZero";
 import { Profile } from "../../../../graphql/generated";
 import getDefaultProfile from "../../../../graphql/lens/queries/defaultProfile";
-import { ACCEPTED_TOKENS } from "../../../../lib/constants";
 
 const useGrants = (
   dispatch: Dispatch,
   allGrants: Grant[],
   collectionsCache: PrintItem[],
-  lensConnected: Profile | undefined
+  lensConnected: Profile | undefined,
+  oracleData: OracleData[]
 ) => {
   const [allGrantsLoading, setAllGrantsLoading] = useState<boolean>(false);
+  const [showFundedHover, setShowFundedHover] = useState<boolean[]>([]);
   const [changeCurrency, setChangeCurrency] = useState<string[]>([]);
   const [grantInfo, setGrantInfo] = useState<{
     hasMore: boolean;
@@ -39,6 +40,16 @@ const useGrants = (
             profileId: string;
             pubId: string;
             granteeAddresses: string[];
+            fundedAmount: {
+              currency: string;
+              funded: string;
+            }[];
+            milestones: {
+              currencyGoal: {
+                currency: string;
+                amount: string;
+              }[];
+            }[];
           }) => {
             if (!item?.grantMetadata) {
               const data = await fetchIpfsJson(item?.uri);
@@ -47,6 +58,39 @@ const useGrants = (
                 grantMetadata: data,
               };
             }
+
+            let totalFundedUSD: number = 0;
+            if (item.fundedAmount?.length > 0) {
+              item?.fundedAmount?.map((item) => {
+                totalFundedUSD =
+                  totalFundedUSD +
+                  (Number(item.funded) *
+                    Number(
+                      oracleData.find((or) => or.currency == item.currency)
+                        ?.rate
+                    )) /
+                    Number(
+                      oracleData.find((or) => or.currency == item.currency)?.wei
+                    );
+              });
+            }
+
+            let totalGoalUSD: number = 0;
+
+            item.milestones.map((mil) => {
+              mil.currencyGoal.map((goal) => {
+                totalGoalUSD =
+                  totalGoalUSD +
+                  (Number(goal.amount) *
+                    Number(
+                      oracleData.find((or) => or.currency == goal.currency)?.wei
+                    )) /
+                    Number(
+                      oracleData.find((or) => or.currency == goal.currency)
+                        ?.rate
+                    );
+              });
+            });
 
             let granteePromises = await Promise.all(
               item?.granteeAddresses?.map(async (address) => {
@@ -121,6 +165,8 @@ const useGrants = (
             return {
               ...item,
               levelInfo,
+              totalFundedUSD,
+              totalGoalUSD,
               grantees: granteePromises?.filter((item) => item !== undefined),
               publication: data?.publication,
             };
@@ -146,6 +192,7 @@ const useGrants = (
           (_, index: number) => grants?.[index]?.acceptedCurrencies?.[0]
         )
       );
+      setShowFundedHover(Array.from({ length: grants.length }, () => false));
 
       dispatch(setAllGrants(grants));
     } catch (err: any) {
@@ -168,6 +215,16 @@ const useGrants = (
             profileId: string;
             pubId: string;
             granteeAddresses: string[];
+            fundedAmount: {
+              currency: string;
+              funded: string;
+            }[];
+            milestones: {
+              currencyGoal: {
+                currency: string;
+                amount: string;
+              }[];
+            }[];
           }) => {
             if (!item?.grantMetadata) {
               const data = await fetchIpfsJson(item?.uri);
@@ -209,6 +266,39 @@ const useGrants = (
               lensConnected?.id
             );
 
+            let totalFundedUSD: number = 0;
+            if (item.fundedAmount?.length > 0) {
+              item?.fundedAmount?.map((item) => {
+                totalFundedUSD =
+                  totalFundedUSD +
+                  (Number(item.funded) *
+                    Number(
+                      oracleData.find((or) => or.currency == item.currency)
+                        ?.rate
+                    )) /
+                    Number(
+                      oracleData.find((or) => or.currency == item.currency)?.wei
+                    );
+              });
+            }
+
+            let totalGoalUSD: number = 0;
+
+            item.milestones.map((mil) => {
+              mil.currencyGoal.map((goal) => {
+                totalGoalUSD =
+                  totalGoalUSD +
+                  (Number(goal.amount) *
+                    Number(
+                      oracleData.find((or) => or.currency == goal.currency)?.wei
+                    )) /
+                    Number(
+                      oracleData.find((or) => or.currency == goal.currency)
+                        ?.rate
+                    );
+              });
+            });
+
             const levelInfo = await Promise.all(
               item?.levelInfo?.map(async (level) => {
                 const collectionIds = await Promise.all(
@@ -262,6 +352,8 @@ const useGrants = (
               levelInfo,
               grantees: granteePromises?.filter((item) => item !== undefined),
               publication: data?.publication,
+              totalFundedUSD,
+              totalGoalUSD,
             };
           }
         )
@@ -286,6 +378,10 @@ const useGrants = (
           (_, index: number) => grants?.[index]?.acceptedCurrencies?.[0]
         ),
       ]);
+      setShowFundedHover([
+        ...showFundedHover,
+        ...Array.from({ length: grants.length }, () => false),
+      ]);
 
       dispatch(setAllGrants([...allGrants, ...grants]));
     } catch (err: any) {
@@ -294,10 +390,10 @@ const useGrants = (
   };
 
   useEffect(() => {
-    if (allGrants?.length < 1) {
+    if (allGrants?.length < 1 && oracleData?.length > 0) {
       handleFetchGrants();
     }
-  }, [allGrants?.length]);
+  }, [allGrants?.length, oracleData?.length]);
 
   return {
     handleFetchMoreGrants,
@@ -305,6 +401,8 @@ const useGrants = (
     grantInfo,
     changeCurrency,
     setChangeCurrency,
+    showFundedHover,
+    setShowFundedHover,
   };
 };
 

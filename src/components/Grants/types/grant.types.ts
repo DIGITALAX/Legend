@@ -42,6 +42,8 @@ export type GrantProps = {
   spendApproved: boolean;
   changeCurrency: string;
   setChangeCurrency: (e: SetStateAction<string[]>) => void;
+  showFundedHover: boolean;
+  setShowFundedHover: (e: SetStateAction<boolean[]>) => void;
 };
 
 export type CollectItemProps = {
@@ -99,6 +101,12 @@ export interface Grant {
     tech: string;
     title: string;
   };
+  fundedAmount: {
+    currency: string;
+    funded: string;
+  }[];
+  totalFundedUSD: number;
+  totalGoalUSD: number;
   grantees: Profile[];
   splits: string[];
   uri: string;

@@ -33,6 +33,8 @@ const Grant: FunctionComponent<GrantProps> = ({
   spendApproved,
   changeCurrency,
   setChangeCurrency,
+  showFundedHover,
+  setShowFundedHover,
 }) => {
   return (
     <div className="relative h-fit w-full sm:w-3/4 xl:w-1/2 border border-black flex flex-col items-center justify-center bg-black">
@@ -42,6 +44,8 @@ const Grant: FunctionComponent<GrantProps> = ({
           " " +
           `(${moment(grant?.publication?.createdAt).fromNow()})`
         }
+        router={router}
+        link={`/grant/${grant?.publication?.id}`}
       />
       <div className="relative w-full h-full flex flex-col gap-8 px-4 py-3 bg-grant bg-repeat bg-contain">
         <div className="relative rounded-sm w-full h-fit p-1 items-center justify-between flex bg-mar/75 border border-lima">
@@ -58,7 +62,40 @@ const Grant: FunctionComponent<GrantProps> = ({
             setMirrorChoiceOpen={setMirrorChoiceOpen}
           />
         </div>
-        {<div className="relative w-full h-8 bg-lima/75 border border-lima flex rounded-lg"></div>}
+        {grant?.totalFundedUSD > 0 && (
+          <div
+            className={`relative w-full h-8 bg-lima/75 border border-lima flex rounded-lg`}
+          >
+            <div
+              className="relative h-full cursor-pointer rounded-lg bg-mar/75 flex"
+              style={{
+                width: `${grant?.totalFundedUSD / grant?.totalGoalUSD}%`,
+              }}
+              onMouseOver={() =>
+                setShowFundedHover((prev) => {
+                  const arr = [...prev];
+                  arr[mainIndex] = true;
+                  return arr;
+                })
+              }
+              onMouseLeave={() =>
+                setShowFundedHover((prev) => {
+                  const arr = [...prev];
+                  arr[mainIndex] = false;
+                  return arr;
+                })
+              }
+            ></div>
+            {showFundedHover && (
+              <div className="absolute flex items-center justify-center -top-6 right-auto bg-mar/80 border text-super px-1 py-1.5 border-lima text-white font-dog rounded-md z-10">
+                {`${(grant?.totalFundedUSD / grant?.totalGoalUSD).toFixed(
+                  2
+                )}% Funded`}
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="relative w-full h-60 flex flex-row gap-3 items-center justify-center text text-white">
           <div className="relative w-full h-full flex items-center justify-center w-full h-fit bg-offBlack rounded-sm border border-lima px-3 py-1.5">
             <div

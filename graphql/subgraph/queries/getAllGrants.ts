@@ -17,6 +17,10 @@ const LEVELS = `
         tech
         title
       }
+      fundedAmount {
+        currency
+        funded
+      }
       granteeAddresses
       splits
       uri

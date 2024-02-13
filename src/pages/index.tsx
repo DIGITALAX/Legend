@@ -69,7 +69,15 @@ export default function Home({ client }: { client: LitNodeClient }) {
     grantInfo,
     changeCurrency,
     setChangeCurrency,
-  } = useGrants(dispatch, allGrants, collectionsCache, lensConnected);
+    showFundedHover,
+    setShowFundedHover,
+  } = useGrants(
+    dispatch,
+    allGrants,
+    collectionsCache,
+    lensConnected,
+    oracleData
+  );
   const {
     mirror,
     like,
@@ -114,6 +122,8 @@ export default function Home({ client }: { client: LitNodeClient }) {
               : allGrants?.map((grant: GrantType, index: number) => {
                   return (
                     <Grant
+                      setShowFundedHover={setShowFundedHover}
+                      showFundedHover={showFundedHover?.[index]}
                       key={index}
                       oracleData={oracleData}
                       grant={grant}
