@@ -54,12 +54,13 @@ export default function Home({ client }: { client: LitNodeClient }) {
     lensConnected,
     oracleData
   );
-  const { handleFetchMoreGrants, allGrantsLoading, grantInfo } = useGrants(
-    dispatch,
-    allGrants,
-    collectionsCache,
-    lensConnected
-  );
+  const {
+    handleFetchMoreGrants,
+    allGrantsLoading,
+    grantInfo,
+    changeCurrency,
+    setChangeCurrency,
+  } = useGrants(dispatch, allGrants, collectionsCache, lensConnected);
   const { setDetails, details } = useLevelItems(
     dispatch,
     undefined,
@@ -104,10 +105,7 @@ export default function Home({ client }: { client: LitNodeClient }) {
                       key={index}
                     >
                       <Bar title={"Loading..."} />
-                      <div
-                        className="relative w-full h-full flex flex-col gap-8"
-                        id="grant"
-                      ></div>
+                      <div className="relative w-full h-full flex flex-col bg-grant bg-repeat bg-contain"></div>
                     </div>
                   );
                 })
@@ -133,6 +131,8 @@ export default function Home({ client }: { client: LitNodeClient }) {
                       router={router}
                       details={details?.[index]}
                       setDetails={setDetails}
+                      changeCurrency={changeCurrency?.[index]}
+                      setChangeCurrency={setChangeCurrency}
                     />
                   );
                 })}

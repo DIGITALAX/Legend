@@ -10,6 +10,7 @@ import { INFURA_GATEWAY } from "../../../../lib/constants";
 import { useRouter } from "next/router";
 import { setCartItems } from "../../../../redux/reducers/cartItemsSlice";
 import { ImageSet, NftImage } from "../../../../graphql/generated";
+import { ImCross } from "react-icons/im";
 
 const Header: FunctionComponent = (): JSX.Element => {
   const router = useRouter();
@@ -94,6 +95,13 @@ const Header: FunctionComponent = (): JSX.Element => {
             draggable={false}
             className="flex items-center justify-center"
           />
+          {cartItems.length > 0 && (
+            <div className="-bottom-2 -right-2 absolute flex items-center justify-center w-fit h-fit bg-white border-black border text-black font-dog rounded-full">
+              <div className="relative w-3 h-3 p-1 top-px text-super flex items-center justify-center">
+                {cartItems.length}
+              </div>
+            </div>
+          )}
         </div>
         {connected && profile && (
           <div className="relative flex justify-center items-center w-6 h-6 rounded-full border border-white">
@@ -144,44 +152,81 @@ const Header: FunctionComponent = (): JSX.Element => {
       </div>
       {checkoutOpen && (
         <div
-          className="absolute z-20 w-60 right-3 top-12 h-72 rounded-sm bg-black/80 overflow-y-scroll flex flex-col p-3"
+          className="absolute z-20 w-60 right-3 top-12 h-72 rounded-md bg-black/80 overflow-y-scroll flex flex-col py-3 px-7"
           id="milestone"
         >
           {cartItems?.length > 0 ? (
-            <div className="relative flex flex-col gap-4 items-center justify-start w-full h-fit px-4 pt-2">
+            <div className="relative flex flex-col gap-4 items-center justify-start w-full h-fit pt-2">
               {cartItems?.map((item, index: number) => {
                 return (
                   <div
                     key={index}
                     className="relative flex flex-col gap-2 w-full h-fit items-center justify-start"
                   >
-                    <div className="relative w-full h-40 flex items-center justify-center rounded-sm ">
+                    <div className="relative text-sm font-vcr text-white text-center items-center justify-center w-fit h-fit flex break-words">
+                      {item?.grant?.grantMetadata?.title?.length > 8
+                        ? item?.grant?.grantMetadata?.title?.slice(
+                            0,
+                            6
+                          ) + "..."
+                        : item?.grant?.grantMetadata?.title + " " + "( Lvl. " + item.chosenLevel.level + ")"}
+                    </div>
+                    <div className="relative w-full h-56 flex items-center justify-center rounded-sm border border-mar">
                       <Image
                         draggable={false}
                         layout="fill"
-                        src={`${INFURA_GATEWAY}/ipfs/`}
+                        src={`${INFURA_GATEWAY}/ipfs/${
+                          item.chosenLevel.collectionIds?.[0]?.collectionMetadata?.images?.[0]?.split(
+                            "ipfs://"
+                          )?.[1]
+                        }`}
                         className="rounded-sm"
                         objectFit="cover"
                       />
-                    </div>
-                    <div className="relative text-sm font-vcr text-white text-center items-center justify-center w-fit h-fit flex break-words"></div>
-                    <div className="relative flex flex-row items-center justify-between gap-2 w-fit h-fit">
                       <div
-                        className="relative font-dog items-center justify-center w-fit h-fit text-center cursor-pointer active:scale-95 text-white text-xs"
+                        className="absolute flex -top-1 -right-1 items-center justify-center w-fit h-fit cursor-pointer active:scale-95 border border-white bg-black rounded-full p-1 hover:opacity-70"
                         onClick={() => {
-                          const newItems = cartItems.filter((value) => {
-                            return value.grant.grantId !== item.grant.grantId;
-                          });
+                          const newItems = cartItems
+                            .filter((value) => {
+                              if (
+                                value.grant.grantId == item.grant.grantId &&
+                                value.chosenLevel.level ==
+                                  item.chosenLevel.level
+                              ) {
+                                return undefined;
+                              } else {
+                                return value;
+                              }
+                            })
+                            .filter(Boolean);
 
-                          dispatch(setCartItems(cartItems));
+                          dispatch(setCartItems(newItems));
                         }}
                       >
-                        x
-                      </div>
-                      <div className="relative w-fit h-fit items-center justify-center font-vcr text-lg text-white break-words text-center">
-                        ${item.amount}
+                        <ImCross color="white" size={7} />
                       </div>
                     </div>
+                    <div className="relative flex flex-row items-center justify-between gap-2 w-fit h-fit">
+                      <div className="relative w-fit h-fit flex items-center justify-center flex-row">
+                        <div className="relative w-fit h-fit flex"></div>
+                        <div></div>
+                      </div>
+                      <div className="relative font-dog items-center justify-center w-fit h-fit text-center cursor-pointer active:scale-95 text-white text-xxs">
+                        {item.amount} x
+                      </div>
+                      <div className="relative w-fit h-fit items-center justify-center font-dog text-xxs text-white break-words text-center">
+                        $
+                        {item.chosenLevel.collectionIds?.reduce(
+                          (acc, val, index) =>
+                            acc +
+                            Number(val.prices?.[item?.sizes?.[index] || 0]) / 10 ** 18,
+                          0
+                        )}
+                      </div>
+                    </div>
+                    {index !== cartItems.length - 1 && (
+                      <div className="relative w-full bg-mar/70 h-px flex items-center justify-center"></div>
+                    )}
                   </div>
                 );
               })}
@@ -191,20 +236,22 @@ const Header: FunctionComponent = (): JSX.Element => {
               No Items <br /> In Cart Yet.
             </div>
           )}
-          <div
-            className={`relative w-full h-10 rounded-md bg-emeral border border-black flex items-center justify-center font-dog text-white text-xs break-words text-center ${
-              cartItems?.length > 0
-                ? "cursor-pointer active:scale-95"
-                : "opacity-70"
-            }`}
-            onClick={() => {
-              if (cartItems?.length > 0) {
-                setCheckoutOpen(false);
-                router.push("/checkout");
-              }
-            }}
-          >
-            checkout
+          <div className="relative w-full h-fit flex items-center justify-center pt-8">
+            <div
+              className={`relative w-full h-10 rounded-md bg-lima border border-mar flex items-center justify-center font-gam text-mar text-2xl break-words text-center ${
+                cartItems?.length > 0
+                  ? "cursor-pointer active:scale-95"
+                  : "opacity-70"
+              }`}
+              onClick={() => {
+                if (cartItems?.length > 0) {
+                  setCheckoutOpen(false);
+                  router.push("/checkout");
+                }
+              }}
+            >
+              checkout
+            </div>
           </div>
         </div>
       )}
