@@ -7,8 +7,6 @@ import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
 const Fulfillment: FunctionComponent<FulfillmentProps> = ({
   fulfillment,
   setFulfillment,
-  handleEncryptFulfillment,
-  encryptedFulfillment,
   fulfillmentLoading,
 }): JSX.Element => {
   return (
@@ -30,7 +28,7 @@ const Fulfillment: FunctionComponent<FulfillmentProps> = ({
                   name: e.target.value,
                 })
               }
-              disabled={fulfillmentLoading || Boolean(encryptedFulfillment)}
+              disabled={fulfillmentLoading}
             />
           </div>
         </div>
@@ -49,7 +47,7 @@ const Fulfillment: FunctionComponent<FulfillmentProps> = ({
                   number: e.target.value,
                 })
               }
-              disabled={fulfillmentLoading || Boolean(encryptedFulfillment)}
+              disabled={fulfillmentLoading}
             />
           </div>
           <div className="relative w-full h-fit flex-col flex items-start justify-center text-center gap-2 font-dog  text-xxs">
@@ -65,12 +63,15 @@ const Fulfillment: FunctionComponent<FulfillmentProps> = ({
                   street: e.target.value,
                 })
               }
-              disabled={fulfillmentLoading || Boolean(encryptedFulfillment)}
+              disabled={fulfillmentLoading}
             />
           </div>
         </div>
         <div className="relative flex flex-row gap-6 items-center justify-start w-full h-fit">
-          <div className="relative w-full h-fit flex-col flex items-start justify-center text-center gap-2 font-dog  text-xxs" id="countrySelect">
+          <div
+            className="relative w-full h-fit flex-col flex items-start justify-center text-center gap-2 font-dog  text-xxs"
+            id="countrySelect"
+          >
             <div className="relative w-fit h-fit items-center justify-center text-black">
               Country
             </div>
@@ -82,7 +83,7 @@ const Fulfillment: FunctionComponent<FulfillmentProps> = ({
                   country: value,
                 })
               }
-              disabled={fulfillmentLoading || Boolean(encryptedFulfillment)}
+              disabled={fulfillmentLoading}
               classes="countryClass"
             />
           </div>
@@ -99,7 +100,7 @@ const Fulfillment: FunctionComponent<FulfillmentProps> = ({
                   state: value,
                 })
               }
-              disabled={fulfillmentLoading || Boolean(encryptedFulfillment)}
+              disabled={fulfillmentLoading}
               classes="countryClass"
             />
           </div>
@@ -119,28 +120,8 @@ const Fulfillment: FunctionComponent<FulfillmentProps> = ({
                   zip: e.target.value,
                 })
               }
-              disabled={fulfillmentLoading || Boolean(encryptedFulfillment)}
+              disabled={fulfillmentLoading}
             />
-          </div>
-        </div>
-        <div className="relative w-full h-fit items-center justify-center flex pt-4">
-          <div
-            className={`relative w-3/5 h-10 rounded-md bg-emeral border border-black flex items-center justify-center font-dog text-white text-xs break-words text-center ${
-              !encryptedFulfillment && !fulfillmentLoading
-                ? "cursor-pointer active:scale-95"
-                : "opacity-70"
-            } ${fulfillmentLoading && "animate-spin"}`}
-            onClick={() =>
-              !encryptedFulfillment &&
-              !fulfillmentLoading &&
-              handleEncryptFulfillment()
-            }
-          >
-            {fulfillmentLoading ? (
-              <AiOutlineLoading size={15} color="white" />
-            ) : (
-              "Encrypt Fulfillment"
-            )}
           </div>
         </div>
       </div>

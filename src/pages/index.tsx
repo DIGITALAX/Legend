@@ -39,6 +39,13 @@ export default function Home({ client }: { client: LitNodeClient }) {
   const allGrants = useSelector(
     (state: RootState) => state.app.allGrantsReducer.levels
   );
+  const { setDetails, details } = useLevelItems(
+    dispatch,
+    undefined,
+    undefined,
+    allGrants,
+    router
+  );
   const {
     handleCheckout,
     simpleCheckoutLoading,
@@ -52,7 +59,9 @@ export default function Home({ client }: { client: LitNodeClient }) {
     dispatch,
     publicClient,
     lensConnected,
-    oracleData
+    oracleData,
+    details,
+    router
   );
   const {
     handleFetchMoreGrants,
@@ -61,13 +70,6 @@ export default function Home({ client }: { client: LitNodeClient }) {
     changeCurrency,
     setChangeCurrency,
   } = useGrants(dispatch, allGrants, collectionsCache, lensConnected);
-  const { setDetails, details } = useLevelItems(
-    dispatch,
-    undefined,
-    allGrants,
-    router
-  );
-
   const {
     mirror,
     like,

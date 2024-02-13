@@ -62,7 +62,7 @@ export default function Launch() {
     details,
     setDetails,
     allCollectionsLoading,
-  } = useLevelItems(dispatch, allCollections);
+  } = useLevelItems(dispatch, postInformation, allCollections);
   const { handleLensSignIn, signInLoading } = useSignIn(
     dispatch,
     profile,

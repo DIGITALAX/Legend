@@ -4,6 +4,7 @@ import { AiOutlineLoading } from "react-icons/ai";
 import { INFURA_GATEWAY } from "../../../../lib/constants";
 import numeral from "numeral";
 import { InteractionsProps } from "../types/grant.types";
+import { setPost } from "../../../../redux/reducers/postSlice";
 
 const Interactions: FunctionComponent<InteractionsProps> = ({
   like,
@@ -130,7 +131,13 @@ const Interactions: FunctionComponent<InteractionsProps> = ({
             {
               image: "QmW7jxRRLLbBMyzMbaUqb8B4ViZPSQ6ygJ2HVYahuBQQQx",
               title: "Quote",
-              function: () => dispatch(setQuote(post)),
+              function: () =>
+                dispatch(
+                  setPost({
+                    actionQuote: post,
+                    actionValue: true,
+                  })
+                ),
               loader: false,
               width: "0.5rem",
               height: "1.3rem",
