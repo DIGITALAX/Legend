@@ -1,6 +1,6 @@
 import { ChangeEvent, useState } from "react";
 import { isValid, parse, format } from "date-fns";
-import uploadPostContent from "../../../../lib/lens/helpers/uploadPostContent";
+import uploadPostContentGrant from "../../../../lib/lens/helpers/uploadPostContentGrant";
 import { LevelInfo, PostInformation } from "../types/launch.types";
 import { ethers } from "ethers";
 import {
@@ -107,7 +107,7 @@ const useLaunch = (
     setPostLoading(true);
 
     try {
-      const contentURIValue = await uploadPostContent(postInformation);
+      const contentURIValue = await uploadPostContentGrant(postInformation);
 
       const encodedData: string = ethers.utils.defaultAbiCoder.encode(
         [

@@ -23,7 +23,7 @@ import createProfilePicture from "../../../lib/lens/helpers/createProfilePicture
 import Milestone from "@/components/Grants/modules/Milestone";
 import { Milestone as MilestoneType } from "@/components/Grants/types/grant.types";
 import useWho from "@/components/Grant/hooks/useWho";
-import WhoSwitch from "@/components/Grants/modules/WhoSwitch";
+import WhoSwitch from "@/components/Grant/modules/WhoSwitch";
 
 export default function Grant({
   router,
@@ -46,6 +46,9 @@ export default function Grant({
   );
   const cartItems = useSelector(
     (state: RootState) => state.app.cartItemsReducer.items
+  );
+  const postCollectGif = useSelector(
+    (state: RootState) => state.app.postCollectGifReducer
   );
   const collectionsCache = useSelector(
     (state: RootState) => state.app.collectionsCacheReducer.value
@@ -95,7 +98,8 @@ export default function Grant({
     handleMoreWho,
     info,
     whoLoading,
-  } = useWho();
+    handleComments,
+  } = useWho(id as string, lensConnected);
   const {
     mirror,
     like,
@@ -106,6 +110,29 @@ export default function Grant({
     setMirrorChoiceOpen,
     setMainMirrorChoiceOpen,
     mainMirrorChoiceOpen,
+    setCommentBoxOpen,
+    commentBoxOpen,
+    mainCaretCoord,
+    mainMakeComment,
+    setCaretCoord,
+    setMainMakeComment,
+    setMainCaretCoord,
+    setMainMentionProfiles,
+    setMakeComment,
+    setMentionProfiles,
+    mainMentionProfiles,
+    makeComment,
+    mentionProfiles,
+    caretCoord,
+    profilesOpen,
+    mainProfilesOpen,
+    setMainProfilesOpen,
+    setProfilesOpen,
+    comment,
+    mainContentLoading,
+    setMainContentLoading,
+    setContentLoading,
+    contentLoading,
   } = useInteractions(
     lensConnected,
     dispatch,
@@ -113,8 +140,11 @@ export default function Grant({
     publicClient,
     router,
     who as Post[],
+    [grant!],
     setGrant,
-    setWho
+    setWho,
+    handleComments,
+    postCollectGif
   );
 
   if (!grantLoading && grant) {
@@ -171,28 +201,37 @@ export default function Grant({
                   </div>
                 </div>
               </div>
-              <div className="relative rounded-sm w-full h-fit p-1 items-center justify-between flex bg-mar/75 border border-lima">
-                <Interactions
-                  like={like}
-                  router={router}
-                  index={0}
-                  interactionsLoading={mainInteractionsLoading?.[0]}
-                  post={grant?.publication!}
-                  bookmark={bookmark}
-                  mirror={mirror}
-                  dispatch={dispatch}
-                  mirrorChoiceOpen={mainMirrorChoiceOpen?.[0]}
-                  setMirrorChoiceOpen={setMainMirrorChoiceOpen}
-                  main
-                  setInteractionState={setInteractionState}
-                />
-              </div>
+              <Interactions
+                like={like}
+                router={router}
+                index={0}
+                interactionsLoading={mainInteractionsLoading?.[0]}
+                post={grant?.publication!}
+                bookmark={bookmark}
+                mirror={mirror}
+                dispatch={dispatch}
+                mirrorChoiceOpen={mainMirrorChoiceOpen?.[0]}
+                setMirrorChoiceOpen={setMainMirrorChoiceOpen}
+                main
+                setInteractionState={setInteractionState}
+              />
+
               <div
-                className="relative rounded-sm w-full h-full p-1 items-center justify-between flex bg-mar/75 border border-lima overflow-y-scroll"
+                className="relative rounded-sm w-full h-full py-3 px-6 items-start justify-between flex bg-mar/75 border border-lima overflow-y-scroll"
                 id="side"
               >
                 <WhoSwitch
+                  postCollectGif={postCollectGif}
+                  id={id as string}
+                  mainInteractionsLoading={mainInteractionsLoading}
+                  mainContentLoading={mainContentLoading}
+                  setMainContentLoading={setMainContentLoading}
+                  setContentLoading={setContentLoading}
+                  contentLoading={contentLoading}
                   info={info}
+                  lensConnected={lensConnected}
+                  setCommentBoxOpen={setCommentBoxOpen}
+                  commentBoxOpen={commentBoxOpen}
                   handleMoreWho={handleMoreWho}
                   interactionState={interactionState}
                   interactionsLoading={interactionsLoading}
@@ -202,9 +241,26 @@ export default function Grant({
                   mirror={mirror}
                   dispatch={dispatch}
                   like={like}
+                  comment={comment}
                   router={router}
                   who={who}
                   whoLoading={whoLoading}
+                  makeComment={makeComment}
+                  makeCommentMain={mainMakeComment}
+                  mentionProfiles={mentionProfiles}
+                  mentionProfilesMain={mainMentionProfiles}
+                  profilesOpen={profilesOpen}
+                  profilesOpenMain={mainProfilesOpen}
+                  caretCoord={caretCoord}
+                  caretCoordMain={mainCaretCoord}
+                  setCaretCoord={setCaretCoord}
+                  setCaretCoordMain={setMainCaretCoord}
+                  setMakeComment={setMakeComment}
+                  setMakeCommentMain={setMainMakeComment}
+                  setMentionProfiles={setMentionProfiles}
+                  setMentionProfilesMain={setMainMentionProfiles}
+                  setProfilesOpen={setProfilesOpen}
+                  setProfilesOpenMain={setMainProfilesOpen}
                 />
               </div>
             </div>
@@ -274,7 +330,7 @@ export default function Grant({
               className="relative w-full h-110 overflow-y-scroll bg-offBlack border border-lima rounded-sm flex flex-col gap-16 p-4"
               id="milestone"
             >
-              {grant.milestones.map(
+              {grant?.milestones?.map(
                 (milestone: MilestoneType, index: number) => {
                   return (
                     <Milestone

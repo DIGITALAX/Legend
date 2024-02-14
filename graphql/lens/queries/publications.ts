@@ -1,5 +1,5 @@
 import { FetchResult } from "@apollo/client";
-import { authClient } from "../../../lib/lens/client";
+import { apolloClient, authClient } from "../../../lib/lens/client";
 import {
   PublicationsDocument,
   PublicationsQuery,
@@ -7,9 +7,10 @@ import {
 } from "../../generated";
 
 const getPublications = async (
-  request: PublicationsRequest
+  request: PublicationsRequest,
+  connected: boolean
 ): Promise<FetchResult<PublicationsQuery>> => {
-  return await authClient.query({
+  return await (connected ? apolloClient : authClient).query({
     query: PublicationsDocument,
     variables: {
       request: request,

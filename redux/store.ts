@@ -15,6 +15,8 @@ import allGrantsReducer from "./reducers/allGrantsSlice";
 import oracleDataReducer from "./reducers/oracleDataSlice";
 import indexerReducer from "./reducers/indexerSlice";
 import collectionsCacheReducer from "./reducers/collectionsCacheSlice";
+import postCollectGifReducer from "./reducers/postCollectGifSlice";
+import availableCurrenciesReducer from "./reducers/availableCurrenciesSlice";
 
 const reducer = combineReducers({
   walletConnectedReducer,
@@ -31,7 +33,9 @@ const reducer = combineReducers({
   claimProfileReducer,
   indexerReducer,
   collectionsCacheReducer,
-  postReducer
+  postReducer,
+  postCollectGifReducer,
+  availableCurrenciesReducer
 });
 
 export const store = configureStore({

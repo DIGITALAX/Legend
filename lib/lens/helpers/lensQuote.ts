@@ -1,40 +1,37 @@
-import LensHubProxy from "../../../abi/LensHubProxy.json";
-import { Action, Dispatch } from "redux";
-import { polygonMumbai } from "viem/chains";
-import { PublicClient, WalletClient } from "viem";
-import { InputMaybe, OpenActionModuleInput } from "../../../graphql/generated";
-import { setIndexer } from "../../../redux/reducers/indexerSlice";
-import { LEGEND_OPEN_ACTION_CONTRACT, LENS_HUB_PROXY } from "../../constants";
-import handleIndexCheck from "../../graph/helpers/handleIndexCheck";
-import { setErrorModal } from "../../../redux/reducers/errorModalSlice";
-import validateMetadata from "../../../graphql/lens/queries/metadata";
-import cleanCollect from "../../graph/helpers/cleanCollect";
-import postOnChain from "../../../graphql/lens/mutations/onchainPost";
-import broadcast from "../../../graphql/lens/queries/broadcast";
+import quotePost from "../../../graphql/lens/mutations/quote";
 import { omit } from "lodash";
+import LensHubProxy from "./../../../abi/LensHubProxy.json";
+import { AnyAction, Dispatch } from "redux";
+import { OpenActionModuleInput, InputMaybe } from "../../../graphql/generated";
+import { polygon } from "viem/chains";
+import { PublicClient, WalletClient } from "viem";
+import { setIndexer } from "../../../redux/reducers/indexerSlice";
+import validateMetadata from "../../../graphql/lens/queries/validate";
+import cleanCollect from "../../graph/helpers/cleanCollect";
+import { setErrorModal } from "../../../redux/reducers/errorModalSlice";
+import broadcast from "../../../graphql/lens/queries/broadcast";
+import handleIndexCheck from "../../graph/helpers/handleIndexCheck";
+import { LENS_HUB_PROXY } from "../../constants";
 
-const lensPost = async (
+const lensQuote = async (
+  quoteOn: string,
   contentURI: string,
-  dispatch: Dispatch<Action>,
+  dispatch: Dispatch<AnyAction>,
   openActionModules: InputMaybe<OpenActionModuleInput[]> | undefined,
   address: `0x${string}`,
   clientWallet: WalletClient,
   publicClient: PublicClient,
-  clearBox: () => void
+  closeBox?: () => void
 ): Promise<void> => {
   if (
     openActionModules &&
     openActionModules?.[0]?.hasOwnProperty("collectOpenAction") &&
     openActionModules?.[0]?.collectOpenAction?.hasOwnProperty(
       "simpleCollectOpenAction"
-    ) &&
-    openActionModules?.[0]?.collectOpenAction?.simpleCollectOpenAction
+    )
   ) {
     openActionModules = cleanCollect(openActionModules);
-  } else if (
-    openActionModules?.[0]?.unknownOpenAction?.address !==
-    LEGEND_OPEN_ACTION_CONTRACT
-  ) {
+  } else {
     openActionModules = [
       {
         collectOpenAction: {
@@ -61,33 +58,35 @@ const lensPost = async (
     return;
   }
 
-  const data = await postOnChain({
+  const data = await quotePost({
     contentURI,
+    quoteOn,
     openActionModules,
   });
 
-  const typedData = data?.data?.createOnchainPostTypedData?.typedData;
+  const typedData = data?.data?.createOnchainQuoteTypedData?.typedData;
 
   const signature = await clientWallet.signTypedData({
     domain: omit(typedData?.domain, ["__typename"]),
     types: omit(typedData?.types, ["__typename"]),
-    primaryType: "Post",
+    primaryType: "Quote",
     message: omit(typedData?.value, ["__typename"]),
     account: address as `0x${string}`,
   });
 
   const broadcastResult = await broadcast({
-    id: data?.data?.createOnchainPostTypedData?.id,
+    id: data?.data?.createOnchainQuoteTypedData?.id,
     signature,
   });
 
-  if (broadcastResult?.data?.broadcastOnchain?.__typename === "RelaySuccess") {
+  if (broadcastResult?.data?.broadcastOnchain.__typename === "RelaySuccess") {
     dispatch(
       setIndexer({
         actionOpen: true,
         actionMessage: "Indexing Interaction",
       })
     );
+    closeBox && closeBox();
     await handleIndexCheck(
       {
         forTxId: broadcastResult?.data?.broadcastOnchain?.txId,
@@ -98,16 +97,21 @@ const lensPost = async (
     const { request } = await publicClient.simulateContract({
       address: LENS_HUB_PROXY,
       abi: LensHubProxy,
-      functionName: "post",
-      chain: polygonMumbai,
+      functionName: "quote",
+      chain: polygon,
       args: [
         {
-          profileId: parseInt(typedData?.value.profileId, 16),
+          profileId: typedData?.value.profileId,
           contentURI: typedData?.value.contentURI,
-          actionModules: typedData?.value?.actionModules,
-          actionModulesInitDatas: typedData?.value?.actionModulesInitDatas,
-          referenceModule: typedData?.value?.referenceModule,
-          referenceModuleInitData: typedData?.value?.referenceModuleInitData,
+          pointedProfileId: typedData?.value?.pointedProfileId,
+          pointedPubId: typedData?.value?.pointedPubId,
+          referrerProfileIds: typedData?.value?.referrerProfileIds,
+          referrerPubIds: typedData?.value?.referrerPubIds,
+          referenceModuleData: typedData?.value?.referenceModuleData,
+          actionModules: typedData?.value.actionModules,
+          actionModulesInitDatas: typedData?.value.actionModulesInitDatas,
+          referenceModule: typedData?.value.referenceModule,
+          referenceModuleInitData: typedData?.value.referenceModuleInitData,
         },
       ],
       account: address,
@@ -119,8 +123,8 @@ const lensPost = async (
         actionMessage: "Indexing Interaction",
       })
     );
+    closeBox && closeBox();
     const tx = await publicClient.waitForTransactionReceipt({ hash: res });
-    clearBox();
     await handleIndexCheck(
       {
         forTxHash: tx.transactionHash,
@@ -138,4 +142,4 @@ const lensPost = async (
   }, 3000);
 };
 
-export default lensPost;
+export default lensQuote;
