@@ -22,8 +22,12 @@
   src: url("/fonts/Dogica.ttf");
 }
 
-body {
+html {
   background-color: black;
+  background-image: url("https://thedial.infura-ipfs.io/ipfs/QmWDqwGn7JgWzFsvUuC6pR7P58v6ab1npPueJ9Vfaez8iW");
+}
+
+body {
   background-image: url("https://thedial.infura-ipfs.io/ipfs/QmWDqwGn7JgWzFsvUuC6pR7P58v6ab1npPueJ9Vfaez8iW");
 }
 

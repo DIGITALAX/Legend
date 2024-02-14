@@ -15,6 +15,7 @@ const Preview: FunctionComponent<PreviewProps> = ({
   details,
   setDetails,
   oracleData,
+  dispatch
 }): JSX.Element => {
   return (
     <div
@@ -249,6 +250,7 @@ const Preview: FunctionComponent<PreviewProps> = ({
                   oracleData={oracleData}
                   setDetails={setDetails}
                   mainIndex={0}
+                  dispatch={dispatch}
                 />
               );
             })}

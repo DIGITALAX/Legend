@@ -10,7 +10,8 @@ const CollectionShuffle: FunctionComponent<CollectionShuffleProps> = ({
   details,
   setDetails,
   oracleData,
-  acceptedTokens
+  acceptedTokens,
+  dispatch
 }): JSX.Element => {
   return (
     <div className="relative w-3/5 h-fit flex flex-col items-center justify-center gap-6">
@@ -54,6 +55,7 @@ const CollectionShuffle: FunctionComponent<CollectionShuffleProps> = ({
                 oracleData={oracleData}
                 setDetails={setDetails}
                 mainIndex={0}
+                dispatch={dispatch}
               />
             );
           })}

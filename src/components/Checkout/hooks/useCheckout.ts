@@ -27,7 +27,8 @@ const useCheckout = (
   lensConnected: Profile | undefined,
   oracleData: OracleData[],
   details: Details[][],
-  router: NextRouter
+  router: NextRouter,
+
 ) => {
   const [grantCheckoutLoading, setGrantCheckoutLoading] = useState<boolean[]>(
     []
@@ -372,6 +373,7 @@ const useCheckout = (
       );
 
       // dispatch(setGrantCollected(item.grant));
+      // update the totalFundedUSD so the bar updates!
     } catch (err: any) {
       console.error(err.message);
     }

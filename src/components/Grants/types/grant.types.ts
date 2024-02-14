@@ -120,8 +120,10 @@ export interface Grant {
 }
 
 export type InteractionsProps = {
-  like: (id: string, hasReacted: boolean) => Promise<void>;
-  mirror: (id: string) => Promise<void>;
+  main?: boolean;
+  setInteractionState?: (e: SetStateAction<string>) => void;
+  like: (id: string, hasReacted: boolean, main?: boolean) => Promise<void>;
+  mirror: (id: string, main?: boolean) => Promise<void>;
   post: Post;
   interactionsLoading: {
     mirror: boolean;
@@ -132,7 +134,7 @@ export type InteractionsProps = {
     simpleCollect: boolean;
   };
   dispatch: Dispatch<AnyAction>;
-  bookmark: (id: string) => Promise<void>;
+  bookmark: (id: string, main?: boolean) => Promise<void>;
   mirrorChoiceOpen: boolean;
   setMirrorChoiceOpen: (e: SetStateAction<boolean[]>) => void;
   router: NextRouter;

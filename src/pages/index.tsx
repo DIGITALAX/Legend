@@ -3,7 +3,7 @@ import Grant from "@/components/Grants/modules/Grant";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-import { useRouter } from "next/router";
+import { NextRouter, useRouter } from "next/router";
 import { Grant as GrantType } from "@/components/Grants/types/grant.types";
 import useInteractions from "@/components/Grants/hooks/useInteractions";
 import { useAccount } from "wagmi";
@@ -14,9 +14,14 @@ import Bar from "@/components/Common/modules/Bar";
 import useCheckout from "@/components/Checkout/hooks/useCheckout";
 import { LitNodeClient } from "@lit-protocol/lit-node-client";
 
-export default function Home({ client }: { client: LitNodeClient }) {
+export default function Home({
+  client,
+  router,
+}: {
+  client: LitNodeClient;
+  router: NextRouter;
+}) {
   const dispatch = useDispatch();
-  const router = useRouter();
   const { address } = useAccount();
   const publicClient = createPublicClient({
     chain: polygonMumbai,
@@ -85,19 +90,17 @@ export default function Home({ client }: { client: LitNodeClient }) {
     interactionsLoading,
     mirrorChoiceOpen,
     setMirrorChoiceOpen,
-    profileHovers,
-    setProfileHovers,
-    simpleCollect,
   } = useInteractions(
     lensConnected,
     dispatch,
     address,
     publicClient,
-    allGrants
+    allGrants,
+    router
   );
 
   return (
-    <div className="relative w-full h-full flex flex-col items-center justify-start p-2 overflow-auto flex-grow">
+    <div className="relative w-full h-full flex flex-col items-center justify-start px-2 pt-2 overflow-auto flex-grow">
       <div className="relative w-full h-fit overflow-y-scroll flex items-start justify-center">
         <InfiniteScroll
           dataLength={allGrants?.length}
@@ -111,7 +114,7 @@ export default function Home({ client }: { client: LitNodeClient }) {
               ? Array.from({ length: 10 })?.map((_, index: number) => {
                   return (
                     <div
-                      className="relative h-[20rem] w-[40rem] border border-black flex flex-col items-center justify-start bg-black animate-pulse"
+                      className="relative h-[20rem] w-full sm:w-3/4 xl:w-1/2 border border-black flex flex-col items-center justify-start bg-black animate-pulse"
                       key={index}
                     >
                       <Bar title={"Loading..."} />

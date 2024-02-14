@@ -1,7 +1,7 @@
 import useLaunch from "@/components/Launch/hooks/useLaunch";
 import Deploy from "@/components/Launch/modules/Deploy";
 import LaunchSwitch from "@/components/Launch/modules/LaunchSwitch";
-import { useRouter } from "next/router";
+import { NextRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import useSignIn from "@/components/Layout/hooks/useSignIn";
@@ -11,9 +11,8 @@ import { createPublicClient, http } from "viem";
 import { polygonMumbai } from "viem/chains";
 import { useAccount } from "wagmi";
 
-export default function Launch() {
+export default function Launch({ router }: { router: NextRouter }) {
   const { openConnectModal } = useConnectModal();
-  const router = useRouter();
   const dispatch = useDispatch();
   const publicClient = createPublicClient({
     chain: polygonMumbai,
@@ -76,6 +75,7 @@ export default function Launch() {
       >
         <LaunchSwitch
           dateOpen={dateOpen}
+          dispatch={dispatch}
           levelArray={levelArray}
           setDateOpen={setDateOpen}
           handleDateSelect={handleDateSelect}

@@ -7,13 +7,14 @@ import useSignIn from "../hooks/useSignIn";
 import { AiOutlineLoading } from "react-icons/ai";
 import Image from "next/legacy/image";
 import { INFURA_GATEWAY } from "../../../../lib/constants";
-import { useRouter } from "next/router";
+import { NextRouter } from "next/router";
 import { setCartItems } from "../../../../redux/reducers/cartItemsSlice";
 import { ImageSet, NftImage } from "../../../../graphql/generated";
 import { ImCross } from "react-icons/im";
 
-const Header: FunctionComponent = (): JSX.Element => {
-  const router = useRouter();
+const Header: FunctionComponent<{ router: NextRouter }> = ({
+  router,
+}): JSX.Element => {
   const dispatch = useDispatch();
   const { openConnectModal } = useConnectModal();
   const connected = useSelector(
@@ -165,13 +166,14 @@ const Header: FunctionComponent = (): JSX.Element => {
                   >
                     <div className="relative text-sm font-vcr text-white text-center items-center justify-center w-fit h-fit flex break-words">
                       {item?.grant?.grantMetadata?.title?.length > 8
-                        ? item?.grant?.grantMetadata?.title?.slice(
-                            0,
-                            6
-                          ) + "..."
-                        : item?.grant?.grantMetadata?.title + " " + "( Lvl. " + item.chosenLevel.level + ")"}
+                        ? item?.grant?.grantMetadata?.title?.slice(0, 6) + "..."
+                        : item?.grant?.grantMetadata?.title +
+                          " " +
+                          "( Lvl. " +
+                          item.chosenLevel.level +
+                          ")"}
                     </div>
-                    <div className="relative w-full h-56 flex items-center justify-center rounded-sm border border-mar">
+                    <div className="relative w-full h-56 flex items-center justify-center rounded-sm border border-mar bg-mar/75">
                       <Image
                         draggable={false}
                         layout="fill"
@@ -219,7 +221,8 @@ const Header: FunctionComponent = (): JSX.Element => {
                         {item.chosenLevel.collectionIds?.reduce(
                           (acc, val, index) =>
                             acc +
-                            Number(val.prices?.[item?.sizes?.[index] || 0]) / 10 ** 18,
+                            Number(val.prices?.[item?.sizes?.[index] || 0]) /
+                              10 ** 18,
                           0
                         )}
                       </div>
