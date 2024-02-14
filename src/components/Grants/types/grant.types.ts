@@ -140,3 +140,29 @@ export type InteractionsProps = {
   router: NextRouter;
   index: number;
 };
+
+export type WhoSwitchProps = {
+  interactionState: string;
+  router: NextRouter;
+  interactionsLoading: {
+    mirror: boolean;
+    bookmark: boolean;
+    like: boolean;
+    unfollow: boolean[];
+    follow: boolean[];
+    simpleCollect: boolean;
+  }[];
+  who: any[];
+  whoLoading: boolean;
+  handleMoreWho: () => Promise<void>;
+  info: {
+    hasMore: boolean;
+    cursor: string | undefined;
+  };
+  dispatch: Dispatch<AnyAction>;
+  bookmark: (id: string, main?: boolean) => Promise<void>;
+  mirrorChoiceOpen: boolean[];
+  setMirrorChoiceOpen: (e: SetStateAction<boolean[]>) => void;
+  like: (id: string, hasReacted: boolean, main?: boolean) => Promise<void>;
+  mirror: (id: string, main?: boolean) => Promise<void>;
+};

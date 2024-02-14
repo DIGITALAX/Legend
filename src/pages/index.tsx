@@ -95,8 +95,8 @@ export default function Home({
     dispatch,
     address,
     publicClient,
-    allGrants,
-    router
+    router,
+    allGrants
   );
 
   return (
