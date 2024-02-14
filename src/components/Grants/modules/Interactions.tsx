@@ -17,6 +17,8 @@ const Interactions: FunctionComponent<InteractionsProps> = ({
   router,
   index,
   dispatch,
+  main,
+  setInteractionState,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit rounded-md flex flex-row gap-2 p-2 items-center justify-between font-vcr text-lima text-sm">
@@ -24,16 +26,17 @@ const Interactions: FunctionComponent<InteractionsProps> = ({
         {
           image: "Qmc476o4FyTJV4e93xNaj9DhWWqC9uQAgExWf4SytZTcV2",
           title: "Like",
-          function: () => like(post?.id, post?.operations?.hasReacted!),
+          function: () => like(post?.id, post?.operations?.hasReacted!, main),
           loader: interactionsLoading?.like,
           amount: post?.stats?.reactions || 0,
           width: "1.3rem",
           height: "1.3rem",
+          otherFunction: () => setInteractionState!("reacts"),
         },
         {
           image: "QmUihJCeEsFyGSm9gHC5r8p5KnmYsiTJ86AssjUs3CuYm8",
           title: "Bookmark",
-          function: () => bookmark(post?.id),
+          function: () => bookmark(post?.id, main),
           loader: interactionsLoading?.bookmark,
           amount: post?.stats?.bookmarks || 0,
           width: "1.3rem",
@@ -52,20 +55,26 @@ const Interactions: FunctionComponent<InteractionsProps> = ({
           amount: (post?.stats?.mirrors || 0) + (post?.stats?.quotes || 0),
           width: "1.3rem",
           height: "1.3rem",
+          otherFunction: () => setInteractionState!("mirrors"),
         },
         {
           image: "Qmbua3Ajr1wYbNk4tmUmS2qpbQYcyr9JkzQrQjWz19TD7L",
           title: "Contributor",
-          function: () => router.push(`/grant/${post?.id}`),
+          function: () =>
+            router.asPath == "/" && router.push(`/grant/${post?.id}`),
           loader: false,
           amount: post?.stats?.countOpenActions || 0,
           width: "1.3rem",
           height: "1.3rem",
+          otherFunction: () => setInteractionState!("contributors"),
         },
         {
           image: "QmWbxnHzxzNGQswu9qLEaAyncptzuacYhUmbVi695Ftw1y",
           title: "Comment",
-          function: () => router.push(`/grant/${post?.id}`),
+          function: () =>
+            router.asPath == "/"
+              ? router.push(`/grant/${post?.id}`)
+              : setInteractionState!("comments"),
           loader: false,
           amount: post?.stats?.comments || 0,
           width: "1.2rem",
@@ -81,6 +90,7 @@ const Interactions: FunctionComponent<InteractionsProps> = ({
             amount: number;
             width: string;
             height: string;
+            otherFunction?: () => void;
           },
           indexTwo: number
         ) => {
@@ -110,7 +120,18 @@ const Interactions: FunctionComponent<InteractionsProps> = ({
                   />
                 </div>
               )}
-              <div className="relative w-fit h-fit items-center justify-center flex">
+              <div
+                className={`relative w-fit h-fit items-center justify-center flex ${
+                  router.asPath !== "/" &&
+                  item.otherFunction &&
+                  "cursor-pointer"
+                }`}
+                onClick={() =>
+                  router.asPath !== "/" &&
+                  item.otherFunction &&
+                  item.otherFunction()
+                }
+              >
                 {numeral(item.amount).format("0a")}
               </div>
             </div>
@@ -123,7 +144,7 @@ const Interactions: FunctionComponent<InteractionsProps> = ({
             {
               image: "Qmc7zi79rtM6K1Q32GSX7dWTE3MehD2uVTcW7sxCTWHgM5",
               title: "Mirror",
-              function: () => mirror(post?.id),
+              function: () => mirror(post?.id, main),
               loader: interactionsLoading?.mirror,
               width: "1.3rem",
               height: "1.3rem",

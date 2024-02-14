@@ -5,7 +5,7 @@ import {
   PublicationStats,
 } from "../../../../graphql/generated";
 import { Dispatch } from "redux";
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { PublicClient, createWalletClient, custom } from "viem";
 import { polygon } from "viem/chains";
 import { Grant } from "../types/grant.types";
@@ -15,15 +15,23 @@ import lensLike from "../../../../lib/lens/helpers/lensLike";
 import errorChoice from "../../../../lib/lens/helpers/errorChoice";
 import { setAllGrants } from "../../../../redux/reducers/allGrantsSlice";
 import lensCollect from "../../../../lib/lens/helpers/lensCollect";
+import { NextRouter } from "next/router";
 
 const useInteractions = (
   lensConnected: Profile | undefined,
   dispatch: Dispatch,
   address: `0x${string}` | undefined,
   publicClient: PublicClient,
-  feed?: Grant[]
+  feed: Grant[],
+  router: NextRouter,
+  setGrant?: (e: SetStateAction<Grant | undefined>) => void
 ) => {
   const [mirrorChoiceOpen, setMirrorChoiceOpen] = useState<boolean[]>([]);
+  const [mainMirrorChoiceOpen, setMainMirrorChoiceOpen] = useState<boolean[]>(
+    []
+  );
+  const [interactionState, setInteractionState] =
+    useState<string>("contributors");
   const [mainInteractionsLoading, setMainInteractionsLoading] = useState<
     {
       mirror: boolean;
@@ -387,11 +395,15 @@ const useInteractions = (
       };
     }
 
-    dispatch(setAllGrants(newItems));
+    if (router.asPath == "/") {
+      dispatch(setAllGrants(newItems));
+    } else {
+      setGrant!(newItems[0]);
+    }
   };
 
   useEffect(() => {
-    if (feed) {
+    if (feed?.length > 0) {
       setInteractionsLoading(
         Array.from({ length: feed?.length }, () => ({
           mirror: false,
@@ -404,8 +416,9 @@ const useInteractions = (
       );
       setMirrorChoiceOpen(Array.from({ length: feed?.length }, () => false));
       setProfileHovers(Array.from({ length: feed?.length }, () => false));
+      setMainMirrorChoiceOpen([false]);
     }
-  }, [feed]);
+  }, [feed?.length]);
 
   return {
     mirror,
@@ -418,6 +431,10 @@ const useInteractions = (
     setProfileHovers,
     simpleCollect,
     mainInteractionsLoading,
+    interactionState,
+    setInteractionState,
+    mainMirrorChoiceOpen,
+    setMainMirrorChoiceOpen,
   };
 };
 

@@ -11,6 +11,7 @@ import PurchaseTokens from "@/components/Common/modules/PurchaseTokens";
 import Splits from "../../Launch/modules/Splits";
 import { setCartAnim } from "../../../../redux/reducers/cartAnimSlice";
 import { setCartItems } from "../../../../redux/reducers/cartItemsSlice";
+import { setMediaExpand } from "../../../../redux/reducers/mediaExpandSlice";
 
 const CollectItem: FunctionComponent<CollectItemProps> = ({
   levelInfo,
@@ -86,7 +87,24 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
               </div>
             )}
             <div className="relative w-fit h-fit flex items-center justify-center gap-3 flex-col">
-              <div className="relative w-52 h-52 rounded-sm border border-black flex items-center bg-mar/70 justify-center">
+              <div
+                className="relative w-52 h-52 rounded-sm border border-black flex items-center bg-mar/70 justify-center cursor-pointer"
+                onClick={() =>
+                  dispatch(
+                    setMediaExpand({
+                      actionType: "image",
+                      actionValue: true,
+                      actionMedia: `${INFURA_GATEWAY}/ipfs/${
+                        levelInfo?.collectionIds?.[
+                          details?.collectionIndex
+                        ]?.collectionMetadata?.images?.[
+                          details?.imageIndex?.[details?.collectionIndex]
+                        ]?.split("ipfs://")[1]
+                      }`,
+                    })
+                  )
+                }
+              >
                 {levelInfo?.collectionIds?.[
                   details?.collectionIndex
                 ]?.collectionMetadata?.images?.[

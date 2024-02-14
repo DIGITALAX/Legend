@@ -41,6 +41,7 @@ const LaunchSwitch: FunctionComponent<LaunchSwitchProps> = ({
   details,
   setDetails,
   oracleData,
+  dispatch
 }) => {
   switch (grantStage) {
     case 0:
@@ -59,7 +60,8 @@ const LaunchSwitch: FunctionComponent<LaunchSwitchProps> = ({
             <Bar title="Accepted Currencies" />
             <div className="relative bg-offWhite w-full h-fit flex flex-col items-center justify-start p-3 gap-4 border border-black rounded-b-sm">
               <div className="relative text-center w-3/5 h-fit font-dog text-offBlack text-xxs break-words">
-                Choose which currencies you&apos;d like to accept for Grant contributions.
+                Choose which currencies you&apos;d like to accept for Grant
+                contributions.
               </div>
               <div className="relative w-3/4 justify-center items-center flex flex-row gap-5">
                 {ACCEPTED_TOKENS_MUMBAI?.map(
@@ -150,11 +152,13 @@ const LaunchSwitch: FunctionComponent<LaunchSwitchProps> = ({
           details={details}
           oracleData={oracleData}
           setDetails={setDetails}
+          dispatch={dispatch}
         />
       );
     case 4:
       return (
         <Preview
+          dispatch={dispatch}
           postInformation={postInformation}
           levelArray={levelArray}
           oracleData={oracleData}

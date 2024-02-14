@@ -1,7 +1,7 @@
 import { NextRouter } from "next/router";
 import { ChangeEvent, SetStateAction } from "react";
 import { AnyAction, Dispatch } from "redux";
-import { Profile } from "../../../../graphql/generated";
+import { Post, Profile } from "../../../../graphql/generated";
 import { CartItem } from "@/components/Checkout/types/checkout.types";
 import { Grant } from "@/components/Grants/types/grant.types";
 
@@ -35,6 +35,7 @@ export type PreviewProps = {
   levelArray: LevelInfo[];
   oracleData: OracleData[];
   details: Details[][];
+  dispatch: Dispatch<AnyAction>;
   setDetails: (e: SetStateAction<Details[][]>) => void;
 };
 
@@ -106,6 +107,7 @@ export type SplitsProps = {
 
 export type LaunchSwitchProps = {
   postInformation: PostInformation;
+  dispatch: Dispatch<AnyAction>;
   levelArray: LevelInfo[];
   handleShuffleCollectionLevels: () => void;
   setPostInformation: (e: SetStateAction<PostInformation>) => void;
@@ -160,7 +162,8 @@ export interface Milestone {
 export type CollectionShuffleProps = {
   handleShuffleCollectionLevels: () => void;
   levelArray: LevelInfo[];
-  acceptedTokens: string[]
+  acceptedTokens: string[];
+  dispatch: Dispatch<AnyAction>;
   allCollectionsLoading: boolean;
   details: Details[][];
   setDetails: (e: SetStateAction<Details[][]>) => void;
@@ -177,7 +180,7 @@ export type CollectItemProps = {
   cart?: boolean;
   cartItems?: CartItem[];
   router?: NextRouter;
-  dispatch?: Dispatch<AnyAction>;
+  dispatch: Dispatch<AnyAction>;
   grant?: Grant;
 };
 
@@ -202,7 +205,7 @@ export type SuccessProps = {
 
 export type LevelOneProps = {
   details: Details;
-  acceptedTokens: string[]
+  acceptedTokens: string[];
   setDetails: (e: SetStateAction<Details[][]>) => void;
   mainIndex: number;
   oracleData: OracleData[];
@@ -210,6 +213,6 @@ export type LevelOneProps = {
   simpleCheckoutLoading?: boolean;
   cart?: boolean;
   grant?: Grant;
-  spendApproved?: boolean
+  spendApproved?: boolean;
   approvePurchase?: (item: CartItem, currency: string) => Promise<void>;
 };

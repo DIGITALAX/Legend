@@ -25,7 +25,8 @@ const useLevelItems = (
       }
     | undefined,
   allGrants?: Grant[],
-  router?: NextRouter
+  router?: NextRouter,
+  grant?: Grant
 ) => {
   const [allCollectionsLoading, setAllCollectionsLoading] =
     useState<boolean>(false);
@@ -203,8 +204,33 @@ const useLevelItems = (
           }))
         )
       );
+    } else if (grant) {
+      setDetails([
+        Array.from({ length: 7 }, (_, indexTwo: number) => ({
+          currency: ACCEPTED_TOKENS_MUMBAI[2][2],
+          sizeIndex: Array.from(
+            {
+              length: grant?.levelInfo[indexTwo]?.collectionIds?.length,
+            },
+            () => 0
+          ),
+          colorIndex: Array.from(
+            {
+              length: grant?.levelInfo[indexTwo]?.collectionIds?.length,
+            },
+            () => 0
+          ),
+          imageIndex: Array.from(
+            {
+              length: grant?.levelInfo[indexTwo]?.collectionIds?.length,
+            },
+            () => 0
+          ),
+          collectionIndex: 0,
+        })),
+      ]);
     }
-  }, [allGrants?.length, router]);
+  }, [allGrants?.length, router, grant]);
 
   return {
     allCollectionsLoading,
