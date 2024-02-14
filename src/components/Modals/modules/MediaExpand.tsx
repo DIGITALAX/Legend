@@ -10,7 +10,7 @@ const MediaExpand: FunctionComponent<MediaExpandProps> = ({
 }): JSX.Element => {
   return (
     <div
-      className="inset-0 fixed z-60 bg-opacity-50 backdrop-blur-sm overflow-y-hidden w-screen h-screen items-center justify-center"
+      className="inset-0 fixed z-60 bg-opacity-50 backdrop-blur-sm overflow-y-hidden cursor-pointer w-screen h-screen items-center justify-center"
       onClick={() =>
         dispatch(
           setMediaExpand({

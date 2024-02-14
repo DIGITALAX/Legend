@@ -81,7 +81,7 @@ export default function App({ Component, pageProps }: AppProps) {
             <Header router={router} />
             <Component {...pageProps} client={client} router={router} />
             <Modals />
-          </div>
+          </div> 
         </Provider>
       </RainbowKitProvider>
     </WagmiConfig>

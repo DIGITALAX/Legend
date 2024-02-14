@@ -48,20 +48,19 @@ const Grant: FunctionComponent<GrantProps> = ({
         link={`/grant/${grant?.publication?.id}`}
       />
       <div className="relative w-full h-full flex flex-col gap-8 px-4 py-3 bg-grant bg-repeat bg-contain">
-        <div className="relative rounded-sm w-full h-fit p-1 items-center justify-between flex bg-mar/75 border border-lima">
-          <Interactions
-            like={like}
-            router={router}
-            index={mainIndex}
-            interactionsLoading={interactionsLoading}
-            post={grant?.publication!}
-            bookmark={bookmark}
-            mirror={mirror}
-            dispatch={dispatch}
-            mirrorChoiceOpen={mirrorChoiceOpen?.[mainIndex]}
-            setMirrorChoiceOpen={setMirrorChoiceOpen}
-          />
-        </div>
+        <Interactions
+          like={like}
+          router={router}
+          index={mainIndex}
+          interactionsLoading={interactionsLoading}
+          post={grant?.publication!}
+          bookmark={bookmark}
+          mirror={mirror}
+          dispatch={dispatch}
+          mirrorChoiceOpen={mirrorChoiceOpen?.[mainIndex]}
+          setMirrorChoiceOpen={setMirrorChoiceOpen}
+        />
+
         {grant?.totalFundedUSD > 0 && (
           <div
             className={`relative w-full h-8 bg-lima/75 border border-lima flex rounded-lg`}
@@ -157,7 +156,7 @@ const Grant: FunctionComponent<GrantProps> = ({
             className="relative w-full h-110 overflow-y-scroll bg-offBlack border border-lima rounded-sm flex flex-col gap-16 p-4"
             id="milestone"
           >
-            {grant.milestones.map((milestone: MilestoneType, index: number) => {
+            {grant?.milestones?.map((milestone: MilestoneType, index: number) => {
               return (
                 <Milestone
                   acceptedTokens={grant?.acceptedCurrencies}
