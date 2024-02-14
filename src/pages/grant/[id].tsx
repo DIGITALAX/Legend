@@ -16,12 +16,14 @@ import { createPublicClient, http } from "viem";
 import { polygonMumbai } from "viem/chains";
 import useInteractions from "@/components/Grants/hooks/useInteractions";
 import moment from "moment";
-import { ImageMetadataV3, Profile } from "../../../graphql/generated";
+import { ImageMetadataV3, Post, Profile } from "../../../graphql/generated";
 import Image from "next/legacy/image";
 import { INFURA_GATEWAY } from "../../../lib/constants";
 import createProfilePicture from "../../../lib/lens/helpers/createProfilePicture";
 import Milestone from "@/components/Grants/modules/Milestone";
 import { Milestone as MilestoneType } from "@/components/Grants/types/grant.types";
+import useWho from "@/components/Grant/hooks/useWho";
+import WhoSwitch from "@/components/Grants/modules/WhoSwitch";
 
 export default function Grant({
   router,
@@ -86,27 +88,33 @@ export default function Grant({
     router
   );
   const {
+    setInteractionState,
+    interactionState,
+    who,
+    setWho,
+    handleMoreWho,
+    info,
+    whoLoading,
+  } = useWho();
+  const {
     mirror,
     like,
     bookmark,
-    interactionsLoading,
     mainInteractionsLoading,
+    interactionsLoading,
     mirrorChoiceOpen,
     setMirrorChoiceOpen,
-    setInteractionState,
-    interactionState,
     setMainMirrorChoiceOpen,
     mainMirrorChoiceOpen,
-    setProfileHovers,
-    profileHovers,
   } = useInteractions(
     lensConnected,
     dispatch,
     address,
     publicClient,
-    [grant!],
     router,
-    setGrant
+    who as Post[],
+    setGrant,
+    setWho
   );
 
   if (!grantLoading && grant) {
@@ -116,13 +124,13 @@ export default function Grant({
         id="side"
       >
         <div className="relative w-5/6 flex-col gap-10 flex items-center justify-start h-fit">
-          <div className="relative w-full h-fit flex items-center justify-center flex-row gap-10">
-            <div className="relative w-full h-fit flex flex-col gap-3 justify-center items-center">
+          <div className="relative w-full h-[47rem] flex items-start justify-between flex-row gap-10">
+            <div className="relative w-full h-full flex flex-col gap-3 justify-center items-center ml-0">
               <div
-                className="relative w-full h-fit max-h-[13rem] overflow-y-scroll flex items-start justify-center rounded-sm bg-offBlack border border-lima pb-3 px-1.5"
+                className="relative w-full h-fit max-h-[13rem] flex items-start justify-center rounded-sm bg-offBlack border border-lima pb-3 px-1.5"
                 id="side"
               >
-                <div className="relative w-full h-fit flex justify-start items-start flex-col ml-0 gap-2">
+                <div className="relative overflow-y-scroll w-full h-fit flex justify-start items-start flex-col ml-0 gap-2">
                   <div className="relative font-gam text-xl justify-start items-start flex text-white">
                     Grant Team
                   </div>
@@ -179,10 +187,28 @@ export default function Grant({
                   setInteractionState={setInteractionState}
                 />
               </div>
-              <div className="relative w-full h-fit flex items-center justify-center"></div>
+              <div
+                className="relative rounded-sm w-full h-full p-1 items-center justify-between flex bg-mar/75 border border-lima overflow-y-scroll"
+                id="side"
+              >
+                <WhoSwitch
+                  info={info}
+                  handleMoreWho={handleMoreWho}
+                  interactionState={interactionState}
+                  interactionsLoading={interactionsLoading}
+                  mirrorChoiceOpen={mirrorChoiceOpen}
+                  setMirrorChoiceOpen={setMirrorChoiceOpen}
+                  bookmark={bookmark}
+                  mirror={mirror}
+                  dispatch={dispatch}
+                  like={like}
+                  router={router}
+                  who={who}
+                  whoLoading={whoLoading}
+                />
+              </div>
             </div>
-
-            <div className="relative w-full h-fit flex flex-col items-start justify-start">
+            <div className="relative w-full h-full flex flex-col items-start justify-start mr-0">
               <Bar
                 title={
                   (grant?.publication?.metadata as ImageMetadataV3)?.title! +
@@ -190,68 +216,53 @@ export default function Grant({
                   `(${moment(grant?.publication?.createdAt).fromNow()})`
                 }
               />
-              <div className="relative bg-offWhite w-full h-fit flex flex-col items-center justify-start p-3 gap-6 border border-black rounded-b-sm min-w-fit">
-                <div className="relative flex flex-row items-center justify-center gap-5 w-full h-48">
-                  <div className="relative w-fit h-full flex items-center justify-center">
-                    <div className="relative w-48 h-full flex items-center justify-center border border-black rounded-sm">
-                      <Image
-                        layout="fill"
-                        src={`${INFURA_GATEWAY}/ipfs/${grant?.grantMetadata?.cover}`}
-                        className="relative rounded-sm w-full h-full flex"
-                        objectFit="cover"
-                      />
-                    </div>
-                  </div>
-                  <div className="relative w-full h-full flex items-start justify-center">
-                    <div className="bg-offWhite w-full h-full border border-black p-2 rounded-sm font-dog text-black text-xs overflow-y-scroll">
-                      {grant?.grantMetadata?.description}
-                    </div>
-                  </div>
-                </div>
-                <div className="relative w-full h-fit flex flex-row items-start justify-start gap-4">
-                  <div className="relative flex flex-col justify-start items-start w-full h-full font-dog text-black text-xs gap-2">
-                    <div className="relative w-fit h-fit flex justify-start items-start">
-                      Maintenance Strategy
-                    </div>
-                    <div className="relative w-full h-44">
-                      <div className="bg-offWhite w-full h-full border border-black p-2 rounded-sm overflow-y-scroll">
-                        {grant?.grantMetadata?.strategy}
+              <div className="relative overflow-y-scroll bg-offWhite w-full h-full flex flex-col items-center justify-start p-3 gap-6 border border-black rounded-b-sm">
+                {[
+                  {
+                    title: "Overview",
+                    description: grant?.grantMetadata?.description,
+                  },
+                  {
+                    title: "Maintenance Strategy",
+                    description: grant?.grantMetadata?.strategy,
+                  },
+                  {
+                    title: "Tech Stack",
+                    description: grant?.grantMetadata?.tech,
+                  },
+                  {
+                    title: "Team Experience",
+                    description: grant?.grantMetadata?.experience,
+                  },
+                  {
+                    title: "Who's Involved",
+                    description: grant?.grantMetadata?.team,
+                  },
+                ].map(
+                  (
+                    item: {
+                      title: string;
+                      description: string;
+                    },
+                    index: number
+                  ) => {
+                    return (
+                      <div
+                        key={index}
+                        className="relative flex flex-col justify-start items-start w-full h-full font-dog text-black text-xs gap-2"
+                      >
+                        <div className="relative w-fit h-fit flex justify-start items-start">
+                          {item.title}
+                        </div>
+                        <div className="relative w-full h-44">
+                          <div className="w-full h-full border border-black p-2 rounded-sm overflow-y-scroll">
+                            {item.description}
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                  <div className="relative flex flex-col justify-start items-start w-full h-full font-dog text-black text-xs gap-2">
-                    <div className="relative w-fit h-fit flex justify-start items-start">
-                      Tech Stack
-                    </div>
-                    <div className="relative w-full h-44 ">
-                      <div className="bg-offWhite w-full h-full border border-black p-2 rounded-sm overflow-y-scroll">
-                        {grant?.grantMetadata?.tech}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="relative w-full h-fit flex flex-row items-start justify-start gap-4">
-                  <div className="relative flex flex-col justify-start items-start w-full h-full font-dog text-black text-xs gap-2">
-                    <div className="relative w-fit h-fit flex justify-start items-start">
-                      Team Experience
-                    </div>
-                    <div className="relative w-full h-48">
-                      <div className="bg-offWhite w-full h-full border border-black p-2 rounded-sm overflow-y-scroll">
-                        {grant?.grantMetadata?.experience}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="relative flex flex-col justify-start items-start w-full h-full font-dog text-black text-xs gap-2">
-                    <div className="relative w-fit h-fit flex justify-start items-start">
-                      Who&apos;s Involved
-                    </div>
-                    <div className="relative w-full h-48">
-                      <div className="bg-offWhite w-full h-full border border-black p-2 rounded-sm overflow-y-scroll">
-                        {grant?.grantMetadata?.team}
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                    );
+                  }
+                )}
               </div>
             </div>
           </div>
@@ -307,7 +318,7 @@ export default function Grant({
               collect grant
             </div>
             <div
-              className="relative w-full h-fit  p-2 rounded-sm overflow-x-scroll bg-offBlack items-start justify-start flex flex-col"
+              className="relative w-full h-fit  p-2 rounded-sm overflow-x-scroll bg-offBlack items-start justify-start flex flex-col border border-lima"
               id="milestone"
             >
               <div className="relative w-fit h-fit flex flex-row gap-4 pb-2 items-start justify-start">

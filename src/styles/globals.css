@@ -176,3 +176,10 @@ div::-webkit-scrollbar-track:active {
 div::-webkit-scrollbar-thumb:active {
   background-color: transparent !important;
 }
+
+
+.infinite-scroll-component__outerdiv {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}

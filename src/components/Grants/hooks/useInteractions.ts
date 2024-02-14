@@ -22,16 +22,15 @@ const useInteractions = (
   dispatch: Dispatch,
   address: `0x${string}` | undefined,
   publicClient: PublicClient,
-  feed: Grant[],
   router: NextRouter,
-  setGrant?: (e: SetStateAction<Grant | undefined>) => void
+  feed: (Grant | Post)[],
+  setGrant?: (e: SetStateAction<Grant | undefined>) => void,
+  setWho?: (e: SetStateAction<Post[]>) => void
 ) => {
   const [mirrorChoiceOpen, setMirrorChoiceOpen] = useState<boolean[]>([]);
-  const [mainMirrorChoiceOpen, setMainMirrorChoiceOpen] = useState<boolean[]>(
-    []
-  );
-  const [interactionState, setInteractionState] =
-    useState<string>("contributors");
+  const [mainMirrorChoiceOpen, setMainMirrorChoiceOpen] = useState<boolean[]>([
+    false,
+  ]);
   const [mainInteractionsLoading, setMainInteractionsLoading] = useState<
     {
       mirror: boolean;
@@ -51,7 +50,6 @@ const useInteractions = (
       simpleCollect: false,
     },
   ]);
-  const [profileHovers, setProfileHovers] = useState<boolean[]>([]);
   const [interactionsLoading, setInteractionsLoading] = useState<
     {
       mirror: boolean;
@@ -69,7 +67,11 @@ const useInteractions = (
     let index = 0;
 
     if (!main) {
-      index = feed?.findIndex((pub) => pub?.publication?.id === id) as number;
+      index = feed?.findIndex((pub) =>
+        router.asPath == "/"
+          ? (pub as Grant)?.publication?.id
+          : (pub as Post)?.id === id
+      ) as number;
 
       if (index == -1) {
         return;
@@ -141,7 +143,11 @@ const useInteractions = (
     let index = 0;
 
     if (!main) {
-      index = feed?.findIndex((pub) => pub?.publication?.id === id) as number;
+      index = feed?.findIndex((pub) =>
+        router.asPath == "/"
+          ? (pub as Grant)?.publication?.id
+          : (pub as Post)?.id === id
+      ) as number;
 
       if (index == -1) {
         return;
@@ -223,7 +229,11 @@ const useInteractions = (
     let index = 0;
 
     if (!main) {
-      index = feed?.findIndex((pub) => pub?.publication?.id === id) as number;
+      index = feed?.findIndex((pub) =>
+        router.asPath == "/"
+          ? (pub as Grant)?.publication?.id
+          : (pub as Post)?.id === id
+      ) as number;
 
       if (index == -1) {
         return;
@@ -295,7 +305,11 @@ const useInteractions = (
     let index = 0;
 
     if (!main) {
-      index = feed?.findIndex((pub) => pub?.publication?.id === id) as number;
+      index = feed?.findIndex((pub) =>
+        router.asPath == "/"
+          ? (pub as Grant)?.publication?.id
+          : (pub as Post)?.id === id
+      ) as number;
 
       if (index == -1) {
         return;
@@ -372,38 +386,57 @@ const useInteractions = (
     type: string,
     increase: boolean
   ) => {
-    if (!feed) return;
-    const newItems = [...feed];
-
-    if (index !== -1 && newItems[index]?.publication) {
-      newItems[index] = {
-        ...newItems[index],
-        publication: {
-          ...(newItems[index]?.publication as Post),
+    let newItems = [...feed];
+    if (router.asPath !== "/") {
+      if (index !== -1) {
+        newItems[index] = {
+          ...newItems[index],
+          ...newItems[index],
           operations: {
-            ...newItems[index]?.publication?.operations,
+            ...(newItems[index] as Post)?.operations,
             ...value,
           } as PublicationOperations,
           stats: {
-            ...newItems[index]?.publication?.stats,
+            ...(newItems[index] as Post)?.stats,
             [type]:
-              newItems[index]?.publication?.stats?.[
+              (newItems[index] as Post)?.stats?.[
                 type as keyof PublicationStats
               ] + (increase ? 1 : -1),
           } as PublicationStats,
-        },
-      };
-    }
-
-    if (router.asPath == "/") {
-      dispatch(setAllGrants(newItems));
+        };
+      }
+      setWho!(newItems as Post[]);
     } else {
-      setGrant!(newItems[0]);
+      if (index !== -1 && (newItems[index] as Grant)?.publication) {
+        newItems[index] = {
+          ...newItems[index],
+          publication: {
+            ...((newItems[index] as Grant)?.publication as Post),
+            operations: {
+              ...(newItems[index] as Grant)?.publication?.operations,
+              ...value,
+            } as PublicationOperations,
+            stats: {
+              ...(newItems[index] as Grant)?.publication?.stats,
+              [type]:
+                (newItems[index] as Grant)?.publication?.stats?.[
+                  type as keyof PublicationStats
+                ] + (increase ? 1 : -1),
+            } as PublicationStats,
+          },
+        };
+      }
+
+      if (router.asPath == "/") {
+        dispatch(setAllGrants(newItems as Grant[]));
+      } else {
+        setGrant!(newItems[0] as Grant);
+      }
     }
   };
 
   useEffect(() => {
-    if (feed?.length > 0) {
+    if (feed && feed?.length > 0) {
       setInteractionsLoading(
         Array.from({ length: feed?.length }, () => ({
           mirror: false,
@@ -415,8 +448,6 @@ const useInteractions = (
         }))
       );
       setMirrorChoiceOpen(Array.from({ length: feed?.length }, () => false));
-      setProfileHovers(Array.from({ length: feed?.length }, () => false));
-      setMainMirrorChoiceOpen([false]);
     }
   }, [feed?.length]);
 
@@ -427,12 +458,8 @@ const useInteractions = (
     interactionsLoading,
     mirrorChoiceOpen,
     setMirrorChoiceOpen,
-    profileHovers,
-    setProfileHovers,
     simpleCollect,
     mainInteractionsLoading,
-    interactionState,
-    setInteractionState,
     mainMirrorChoiceOpen,
     setMainMirrorChoiceOpen,
   };
