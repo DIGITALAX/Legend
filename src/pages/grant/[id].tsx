@@ -354,7 +354,11 @@ export default function Grant({
                 className={`relative w-full h-8 bg-lima/75 border border-lima flex rounded-lg`}
               >
                 <div
-                  className="relative h-full cursor-pointer rounded-lg bg-mar/75 flex"
+                  className={`relative h-full cursor-pointer ${
+                    grant?.totalFundedUSD / grant?.totalGoalUSD >= 100
+                      ? "rounded-lg"
+                      : "rounded-l-lg"
+                  } bg-mar/75 flex`}
                   style={{
                     width: `${grant?.totalFundedUSD / grant?.totalGoalUSD}%`,
                   }}

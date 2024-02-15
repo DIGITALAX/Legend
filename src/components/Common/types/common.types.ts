@@ -1,7 +1,7 @@
 import { Details } from "@/components/Launch/types/launch.types";
 import { NextRouter } from "next/router";
 import { ChangeEvent, Ref, SetStateAction } from "react";
-import { Profile } from "../../../../graphql/generated";
+import { Post, Profile } from "../../../../graphql/generated";
 import { AnyAction, Dispatch } from "redux";
 import { PostCollectGifState } from "../../../../redux/reducers/postCollectGifSlice";
 
@@ -95,7 +95,6 @@ export type MakeCommentProps = {
   setProfilesOpen: (e: SetStateAction<boolean[]>) => void;
 };
 
-
 export type FilterProps = {
   router: NextRouter;
   searchFilters: {
@@ -124,4 +123,49 @@ export type FilterProps = {
       y: number;
     }>
   ) => void;
+};
+
+export type PublicationProps = {
+  dispatch?: Dispatch<AnyAction>;
+  index?: number;
+  disabled?: boolean;
+  bookmark?: (id: string, main?: boolean) => Promise<void>;
+  mirrorChoiceOpen?: boolean[];
+  setMirrorChoiceOpen?: (e: SetStateAction<boolean[]>) => void;
+  like?: (id: string, hasReacted: boolean, main?: boolean) => Promise<void>;
+  comment?: (id: string, main?: boolean) => Promise<void>;
+  mirror?: (id: string, main?: boolean) => Promise<void>;
+  item: Post;
+  router?: NextRouter;
+  caretCoord?: {
+    x: number;
+    y: number;
+  };
+  setCaretCoord?: (
+    e: SetStateAction<{
+      x: number;
+      y: number;
+    }>
+  ) => void;
+  setMakeComment?: (e: SetStateAction<MakePostComment[]>) => void;
+  setMentionProfiles?: (e: SetStateAction<Profile[]>) => void;
+  profilesOpen?: boolean[];
+  makeComment?: MakePostComment[];
+  mentionProfiles?: Profile[];
+  setProfilesOpen?: (e: SetStateAction<boolean[]>) => void;
+  lensConnected?: Profile | undefined;
+  postCollectGif?: PostCollectGifState;
+  interactionsLoading?: {
+    mirror: boolean;
+    bookmark: boolean;
+    like: boolean;
+    comment: boolean;
+    simpleCollect: boolean;
+  }[];
+  setCommentBoxOpen?: (e: SetStateAction<boolean[]>) => void;
+  commentBoxOpen?: boolean[];
+  setContentLoading?: (
+    e: SetStateAction<{ image: boolean; video: boolean }[]>
+  ) => void;
+  contentLoading?: { image: boolean; video: boolean }[];
 };

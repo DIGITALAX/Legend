@@ -1,10 +1,15 @@
 import { AnyAction, Dispatch } from "redux";
 import {
   Erc20,
+  Post,
+  Profile,
+  Quote,
   SimpleCollectOpenActionModuleInput,
 } from "../../../../graphql/generated";
 import { SetStateAction } from "react";
-
+import { NextRouter } from "next/router";
+import { PostCollectGifState } from "../../../../redux/reducers/postCollectGifSlice";
+import { MakePostComment } from "@/components/Common/types/common.types";
 
 export type PostCollectGifProps = {
   dispatch: Dispatch<AnyAction>;
@@ -50,7 +55,6 @@ export type PostCollectGifProps = {
     | undefined;
   searchGifLoading: boolean;
 };
-
 
 export type CollectOptionsProps = {
   id: string;
@@ -112,4 +116,40 @@ export type ClaimProfileProps = {
 
 export type IndexProps = {
   message: string;
+};
+
+export type PostBoxProps = {
+  dispatch: Dispatch<AnyAction>;
+  quote: Post;
+  postCollectGif: PostCollectGifState;
+  router: NextRouter;
+  lensConnected: Profile | undefined;
+  caretCoord: {
+    x: number;
+    y: number;
+  };
+  setCaretCoord: (
+    e: SetStateAction<{
+      x: number;
+      y: number;
+    }>
+  ) => void;
+  setMentionProfiles: (e: SetStateAction<Profile[]>) => void;
+  profilesOpen: boolean[];
+  mentionProfiles: Profile[];
+  setProfilesOpen: (e: SetStateAction<boolean[]>) => void;
+  interactionsLoading: {
+    mirror: boolean;
+    bookmark: boolean;
+    like: boolean;
+    comment: boolean;
+    simpleCollect: boolean;
+  }[];
+  setContentLoading: (
+    e: SetStateAction<{ image: boolean; video: boolean }[]>
+  ) => void;
+  contentLoading: { image: boolean; video: boolean }[];
+  setMakeComment: (e: SetStateAction<MakePostComment[]>) => void;
+  makeComment: MakePostComment[];
+  comment: (id: string, main?: boolean) => Promise<void>;
 };

@@ -10,8 +10,13 @@ import useCollectGif from "./hooks/useCollectGif";
 import { useAccount } from "wagmi";
 import { createPublicClient, http } from "viem";
 import { polygon } from "viem/chains";
+import QuoteBox from "./modules/QuoteBox";
+import { NextRouter } from "next/router";
+import useInteractions from "../Grants/hooks/useInteractions";
 
-const Modals: FunctionComponent = (): JSX.Element => {
+const Modals: FunctionComponent<{
+  router: NextRouter;
+}> = ({ router }): JSX.Element => {
   const dispatch = useDispatch();
   const { address } = useAccount();
   const publicClient = createPublicClient({
@@ -50,10 +55,58 @@ const Modals: FunctionComponent = (): JSX.Element => {
       publicClient,
       address
     );
+  const {
+    setMainCaretCoord,
+    mainCaretCoord,
+    mainInteractionsLoading,
+    mainContentLoading,
+    setMainContentLoading,
+    mainMakeComment,
+    setMainMakeComment,
+    mainProfilesOpen,
+    setMainMentionProfiles,
+    setMainProfilesOpen,
+    mainMentionProfiles,
+    quote,
+  } = useInteractions(
+    lensConnected,
+    dispatch,
+    address,
+    publicClient,
+    router,
+    [],
+    () => {},
+    undefined,
+    undefined,
+    postCollectGif,
+    undefined,
+    postBox?.quote?.id
+  );
   return (
     <>
       {errorModal.value && (
         <Error message={errorModal.message} dispatch={dispatch} />
+      )}
+      {postBox.value && (
+        <QuoteBox
+          quote={postBox.quote!}
+          dispatch={dispatch}
+          postCollectGif={postCollectGif}
+          router={router}
+          lensConnected={lensConnected}
+          caretCoord={mainCaretCoord}
+          profilesOpen={mainProfilesOpen}
+          mentionProfiles={mainMentionProfiles}
+          setMentionProfiles={setMainMentionProfiles}
+          setProfilesOpen={setMainProfilesOpen}
+          setCaretCoord={setMainCaretCoord}
+          interactionsLoading={mainInteractionsLoading}
+          contentLoading={mainContentLoading}
+          setContentLoading={setMainContentLoading}
+          setMakeComment={setMainMakeComment}
+          makeComment={mainMakeComment}
+          comment={quote}
+        />
       )}
       {postCollectGif?.type && (
         <PostCollectGif
@@ -76,6 +129,7 @@ const Modals: FunctionComponent = (): JSX.Element => {
           dispatch={dispatch}
         />
       )}
+
       {claimProfile?.value && <ClaimProfile dispatch={dispatch} />}
       {indexer?.open && <Index message={indexer?.message!} />}
     </>

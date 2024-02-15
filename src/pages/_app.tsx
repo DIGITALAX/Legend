@@ -80,8 +80,8 @@ export default function App({ Component, pageProps }: AppProps) {
           <div className="relative w-full h-screen flex flex-col overflow-hidden">
             <Header router={router} />
             <Component {...pageProps} client={client} router={router} />
-            <Modals />
-          </div> 
+            <Modals router={router} />
+          </div>
         </Provider>
       </RainbowKitProvider>
     </WagmiConfig>
