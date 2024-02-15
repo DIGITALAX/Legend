@@ -20,6 +20,8 @@ import { MakePostComment } from "@/components/Common/types/common.types";
 import { PostCollectGifState } from "../../../../redux/reducers/postCollectGifSlice";
 import uploadPostContent from "../../../../lib/lens/helpers/uploadPostContent";
 import lensComment from "../../../../lib/lens/helpers/lensComment";
+import lensQuote from "../../../../lib/lens/helpers/lensQuote";
+import { setPost } from "../../../../redux/reducers/postSlice";
 
 const useInteractions = (
   lensConnected: Profile | undefined,
@@ -32,7 +34,8 @@ const useInteractions = (
   grant?: Grant[],
   getComments?: () => Promise<void>,
   postCollectGif?: PostCollectGifState,
-  setGrant?: (newItems: Grant) => void
+  setGrant?: (newItems: Grant) => void,
+  quoteId?: string
 ) => {
   const [mainContentLoading, setMainContentLoading] = useState<
     {
@@ -695,6 +698,100 @@ const useInteractions = (
     }
   };
 
+  const quote = async () => {
+    if (!lensConnected?.id) return;
+    let content: string | undefined,
+      images:
+        | {
+            media: string;
+            type: string;
+          }[]
+        | undefined,
+      videos: string[] | undefined;
+
+    if (
+      !mainMakeComment[0]?.content &&
+      !mainMakeComment[0]?.images &&
+      !mainMakeComment[0]?.videos &&
+      !postCollectGif?.gifs?.["quote"]
+    )
+      return;
+
+    content = mainMakeComment[0]?.content;
+    images = mainMakeComment[0]?.images!;
+    videos = mainMakeComment[0]?.videos!;
+
+    setMainInteractionsLoading((prev) => {
+      const arr = [...prev];
+      arr[0] = {
+        ...arr[0],
+        comment: true,
+      };
+      return arr;
+    });
+
+    try {
+      const contentURI = await uploadPostContent(
+        content?.trim() == "" ? " " : content,
+        images || [],
+        videos || [],
+        [],
+        postCollectGif?.gifs?.["quote"] || []
+      );
+
+      const clientWallet = createWalletClient({
+        chain: polygon,
+        transport: custom((window as any).ethereum),
+      });
+
+      await lensQuote(
+        quoteId!,
+        contentURI?.string!,
+        dispatch,
+        postCollectGif?.collectTypes?.["quote"]
+          ? [
+              {
+                collectOpenAction: {
+                  simpleCollectOpenAction:
+                    postCollectGif?.collectTypes?.["quote"],
+                },
+              },
+            ]
+          : undefined,
+        address as `0x${string}`,
+        clientWallet,
+        publicClient,
+        () => clearBox()
+      );
+    } catch (err: any) {
+      errorChoice(err, () => {}, dispatch);
+    }
+
+    setMainInteractionsLoading((prev) => {
+      const arr = [...prev];
+      arr[0] = {
+        ...arr[0],
+        comment: false,
+      };
+      return arr;
+    });
+  };
+
+  const clearBox = () => {
+    setMainMakeComment([
+      {
+        content: "",
+        images: [],
+        videos: [],
+      },
+    ]);
+    dispatch(
+      setPost({
+        actionOpen: false,
+      })
+    );
+  };
+
   useEffect(() => {
     if (feed && feed?.length > 0) {
       setInteractionsLoading(
@@ -759,6 +856,7 @@ const useInteractions = (
     contentLoading,
     mainContentLoading,
     setMainContentLoading,
+    quote,
   };
 };
 

@@ -66,7 +66,11 @@ const Grant: FunctionComponent<GrantProps> = ({
             className={`relative w-full h-8 bg-lima/75 border border-lima flex rounded-lg`}
           >
             <div
-              className="relative h-full cursor-pointer rounded-lg bg-mar/75 flex"
+              className={`relative h-full cursor-pointer bg-mar/75 flex ${
+                grant?.totalFundedUSD / grant?.totalGoalUSD >= 100
+                  ? "rounded-lg"
+                  : "rounded-l-lg"
+              }`}
               style={{
                 width: `${grant?.totalFundedUSD / grant?.totalGoalUSD}%`,
               }}
@@ -156,20 +160,22 @@ const Grant: FunctionComponent<GrantProps> = ({
             className="relative w-full h-110 overflow-y-scroll bg-offBlack border border-lima rounded-sm flex flex-col gap-16 p-4"
             id="milestone"
           >
-            {grant?.milestones?.map((milestone: MilestoneType, index: number) => {
-              return (
-                <Milestone
-                  acceptedTokens={grant?.acceptedCurrencies}
-                  key={index}
-                  mainIndex={mainIndex}
-                  metadata={grant?.grantMetadata?.milestones?.[index]}
-                  milestone={milestone}
-                  index={index}
-                  changeCurrency={changeCurrency}
-                  setChangeCurrency={setChangeCurrency}
-                />
-              );
-            })}
+            {grant?.milestones?.map(
+              (milestone: MilestoneType, index: number) => {
+                return (
+                  <Milestone
+                    acceptedTokens={grant?.acceptedCurrencies}
+                    key={index}
+                    mainIndex={mainIndex}
+                    metadata={grant?.grantMetadata?.milestones?.[index]}
+                    milestone={milestone}
+                    index={index}
+                    changeCurrency={changeCurrency}
+                    setChangeCurrency={setChangeCurrency}
+                  />
+                );
+              }
+            )}
           </div>
         </div>
         <div className="relative flex flex-col items-center justify-center w-full h-fit gap-2 pb-5">
