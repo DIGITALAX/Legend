@@ -115,10 +115,11 @@ const useInteractions = (
     let index = 0;
 
     if (!main) {
-      index = feed?.findIndex((pub) =>
-        router.asPath == "/" || main
-          ? (pub as Grant)?.publication?.id
-          : (pub as Post)?.id === id
+      index = feed?.findIndex(
+        (pub) =>
+          (!router.asPath.includes("/grant/") || main
+            ? (pub as Grant)?.publication?.id
+            : (pub as Post)?.id) === id
       ) as number;
 
       if (index == -1) {
@@ -201,10 +202,11 @@ const useInteractions = (
     let index = 0;
 
     if (!main) {
-      index = feed?.findIndex((pub) =>
-        router.asPath == "/" || main
-          ? (pub as Grant)?.publication?.id
-          : (pub as Post)?.id === id
+      index = feed?.findIndex(
+        (pub) =>
+          (!router.asPath.includes("/grant/") || main
+            ? (pub as Grant)?.publication?.id
+            : (pub as Post)?.id) === id
       ) as number;
 
       if (index == -1) {
@@ -297,10 +299,11 @@ const useInteractions = (
     let index = 0;
 
     if (!main) {
-      index = feed?.findIndex((pub) =>
-        router.asPath == "/" || main
-          ? (pub as Grant)?.publication?.id
-          : (pub as Post)?.id === id
+      index = feed?.findIndex(
+        (pub) =>
+          (!router.asPath.includes("/grant/") || main
+            ? (pub as Grant)?.publication?.id
+            : (pub as Post)?.id) === id
       ) as number;
 
       if (index == -1) {
@@ -383,10 +386,11 @@ const useInteractions = (
     let index = 0;
 
     if (!main) {
-      index = feed?.findIndex((pub) =>
-        router.asPath == "/" || main
-          ? (pub as Grant)?.publication?.id
-          : (pub as Post)?.id === id
+      index = feed?.findIndex(
+        (pub) =>
+          (!router.asPath.includes("/grant/") || main
+            ? (pub as Grant)?.publication?.id
+            : (pub as Post)?.id) === id
       ) as number;
 
       if (index == -1) {
@@ -474,7 +478,7 @@ const useInteractions = (
     increase: boolean,
     main: boolean
   ) => {
-    if (router.asPath !== "/" && !main) {
+    if (router.asPath.includes("/grant/") && !main) {
       let newItems = [...feed];
       if (index !== -1) {
         newItems[index] = {
@@ -519,7 +523,11 @@ const useInteractions = (
       if (router.asPath == "/") {
         dispatch(setAllGrants(newItems as Grant[]));
       } else {
-        setGrant!(newItems[0] as Grant);
+        if (!router.asPath.includes("/grant/")) {
+          setWho!(newItems as any[]);
+        } else {
+          setGrant!(newItems[0] as Grant);
+        }
       }
     }
   };
@@ -538,10 +546,11 @@ const useInteractions = (
     let index = 0;
 
     if (!main) {
-      index = feed?.findIndex((pub) =>
-        router.asPath == "/" || main
-          ? (pub as Grant)?.publication?.id
-          : (pub as Post)?.id === id
+      index = feed?.findIndex(
+        (pub) =>
+          (!router.asPath.includes("/grant/") || main
+            ? (pub as Grant)?.publication?.id
+            : (pub as Post)?.id) === id
       ) as number;
 
       if (index == -1) {

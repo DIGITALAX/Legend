@@ -120,6 +120,7 @@ export interface Grant {
 
 export type InteractionsProps = {
   main?: boolean;
+  grant?: string;
   setInteractionState?: (e: SetStateAction<string>) => void;
   setCommentBoxOpen?: (e: SetStateAction<boolean[]>) => void;
   like: (id: string, hasReacted: boolean, main?: boolean) => Promise<void>;

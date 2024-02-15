@@ -25,7 +25,12 @@ const Bar: FunctionComponent<BarProps> = ({
           className={`relative w-5 h-5 rounded-sm bg-azul border border-black p-1 items-center justify-center flex ${
             link && "cursor-pointer active:scale-95"
           }`}
-          onClick={() => link && router && router.push(link)}
+          onClick={() =>
+            link &&
+            (link.includes("https")
+              ? window.open(link)
+              : router && router.push(link))
+          }
         >
           <div className="relative border border-black items-center justify-center flex bg-white w-full h-full"></div>
         </div>
