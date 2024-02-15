@@ -46,8 +46,8 @@ const Header: FunctionComponent<{ router: NextRouter }> = ({
       <div className="relative w-fit h-fit flex items-center justify-center flex-row gap-2">
         {[
           ["storefront", "store", "#F8F87F"],
-          ["all grants", "", "#7BF678"],
-          ["launch grant", "launch", "#D07BF7"],
+          ["feed", "", "#7BF678"],
+          ["launch", "launch", "#D07BF7"],
           ["web3 public goods", "web3", "#59ABF7"],
         ].map((item: string[], index: number) => {
           return (

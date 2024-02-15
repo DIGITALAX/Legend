@@ -102,7 +102,6 @@ const MakeComment: FunctionComponent<MakeCommentProps> = ({
                     <div className="relative flex flex-row w-full h-full text-white font-dog items-center justify-center gap-2 text-xxs">
                       <div
                         className={`relative rounded-full flex bg-black w-3 h-3 items-center justify-center`}
-                        id="pfp"
                       >
                         {profileImage && (
                           <Image

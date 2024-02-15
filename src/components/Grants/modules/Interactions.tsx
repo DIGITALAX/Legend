@@ -20,6 +20,7 @@ const Interactions: FunctionComponent<InteractionsProps> = ({
   main,
   setInteractionState,
   setCommentBoxOpen,
+  grant
 }): JSX.Element => {
   return (
     <div className="relative rounded-sm w-full h-fit p-1 items-center justify-between flex bg-mar/75 border border-lima">
@@ -63,8 +64,10 @@ const Interactions: FunctionComponent<InteractionsProps> = ({
             image: "Qmbua3Ajr1wYbNk4tmUmS2qpbQYcyr9JkzQrQjWz19TD7L",
             title: "Contributor",
             function: () =>
-              router.asPath == "/"
-                ? router.push(`/grant/${post?.id}`)
+              router.asPath == "/" || !router.asPath.includes("/grant")
+                ? grant
+                  ? window.open(grant)
+                  : router.push(`/grant/${post?.id}`)
                 : setInteractionState!("contributors"),
             loader: false,
             amount: post?.stats?.countOpenActions || 0,
@@ -76,8 +79,10 @@ const Interactions: FunctionComponent<InteractionsProps> = ({
             image: "QmWbxnHzxzNGQswu9qLEaAyncptzuacYhUmbVi695Ftw1y",
             title: "Comment",
             function: () =>
-              router.asPath == "/"
-                ? router.push(`/grant/${post?.id}`)
+              router.asPath == "/" || !router.asPath.includes("/grant")
+                ? grant
+                  ? window.open(grant)
+                  : router.push(`/grant/${post?.id}`)
                 : main
                 ? setInteractionState!("comments")
                 : setCommentBoxOpen!((prev) => {

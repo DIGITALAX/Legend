@@ -77,6 +77,9 @@ export interface PrintItem {
   fulfillerPercent: number;
   designerPercent: number;
   fulfillerBase: number;
+  publication?: Post;
+  grants?: Grant[];
+  blockTimestamp: string;
 }
 
 export enum PrintType {
