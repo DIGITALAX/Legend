@@ -1,18 +1,18 @@
-import useStore from "@/components/Store/hooks/useStore";
-import Filter from "@/components/Store/modules/Filter";
-import Item from "@/components/Store/modules/StoreItem";
+import Filter from "@/components/Common/modules/Filter";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import useInteractions from "@/components/Grants/hooks/useInteractions";
-import { PrintItem } from "@/components/Launch/types/launch.types";
 import { createPublicClient, http } from "viem";
 import { polygonMumbai } from "viem/chains";
 import { useAccount } from "wagmi";
 import { NextRouter } from "next/router";
 import Bar from "@/components/Common/modules/Bar";
+import useWeb3 from "@/components/Web3/hooks/useWeb3";
+import { Grant } from "@/components/Grants/types/grant.types";
+import GrantItem from "@/components/Web3/modules/Item";
 
-export default function Web3({ router }: { router: NextRouter }) {
+export default function PublicGoods({ router }: { router: NextRouter }) {
   const dispatch = useDispatch();
   const publicClient = createPublicClient({
     chain: polygonMumbai,
@@ -21,24 +21,30 @@ export default function Web3({ router }: { router: NextRouter }) {
     ),
   });
   const { address } = useAccount();
+  const oracleData = useSelector(
+    (state: RootState) => state.app.oracleDataReducer.data
+  );
   const lensConnected = useSelector(
     (state: RootState) => state.app.lensProfileReducer.profile
   );
   const {
+    mentionProfiles,
+    setMentionProfiles,
+    profilesOpen,
+    setProfilesOpen,
+    grantsLoading,
+    info,
+    inputElement,
+    setCaretCoord,
     searchFilters,
     setSearchFilters,
-    collections,
-    handleMoreCollections,
-    info,
-    collectionsLoading,
-    setCollections,
-    setCaretCoord,
-    setMentionProfiles,
-    setProfilesOpen,
-    profilesOpen,
-    inputElement,
-    mentionProfiles,
-  } = useStore(lensConnected);
+    handleMoreFilteredGrants,
+    handleMoreGrants,
+    grants,
+    setGrants,
+    setShowFundedHover,
+    showFundedHover,
+  } = useWeb3(lensConnected, oracleData);
   const {
     like,
     bookmark,
@@ -52,10 +58,8 @@ export default function Web3({ router }: { router: NextRouter }) {
     address,
     publicClient,
     router,
-    collections as any[],
-    undefined,
-    undefined,
-    setCollections as any
+    grants,
+    (newItems) => setGrants(newItems as Grant[])
   );
 
   return (
@@ -70,6 +74,7 @@ export default function Web3({ router }: { router: NextRouter }) {
         profilesOpen={profilesOpen}
         inputElement={inputElement}
         mentionProfiles={mentionProfiles}
+        router={router}
       />
       <div
         className="relative w-full h-full flex items-start justify-start overflow-y-scroll"
@@ -79,10 +84,16 @@ export default function Web3({ router }: { router: NextRouter }) {
           dataLength={14}
           loader={<></>}
           hasMore={info?.hasMore}
-          next={handleMoreCollections}
+          next={
+            searchFilters?.printType?.length > 0 ||
+            searchFilters?.designer?.trim() !== "" ||
+            searchFilters?.grant?.trim() !== ""
+              ? handleMoreFilteredGrants
+              : handleMoreGrants
+          }
           className={`w-full h-fit grid grid-cols-3 gap-4`}
         >
-          {collectionsLoading
+          {grantsLoading
             ? Array.from({ length: 10 })?.map((_, index: number) => {
                 return (
                   <div
@@ -94,38 +105,20 @@ export default function Web3({ router }: { router: NextRouter }) {
                   </div>
                 );
               })
-            : collections
-                ?.filter((coll) =>
-                  searchFilters?.printType?.length > 0
-                    ? searchFilters.printType.includes(coll.printType)
-                    : coll
-                )
-                ?.filter((coll) =>
-                  searchFilters?.grant?.trim() !== ""
-                    ? coll?.grants?.some((grant) =>
-                        grant.grantMetadata?.title.includes(
-                          searchFilters?.grant
-                        )
-                      )
-                    : coll
-                )
-                ?.filter((coll) =>
-                  searchFilters.designer?.trim() !== "" &&
-                  searchFilters.designer?.trim() !== "@"
-                    ? coll.owner?.toLowerCase() ===
-                      searchFilters.designerAddress?.toLowerCase()
-                    : coll
-                )
+            : grants
+
                 ?.sort((a, b) =>
                   searchFilters?.timestamp == "latest"
                     ? Number(a.blockTimestamp) - Number(b.blockTimestamp)
                     : Number(b.blockTimestamp) - Number(a.blockTimestamp)
                 )
-                ?.map((item: PrintItem, index: number) => {
+                ?.map((item: Grant, index: number) => {
                   return (
-                    <Item
+                    <GrantItem
+                      setShowFundedHover={setShowFundedHover}
+                      showFundedHover={showFundedHover?.[index]}
                       key={index}
-                      collection={item}
+                      grant={item}
                       index={index}
                       like={like}
                       bookmark={bookmark}

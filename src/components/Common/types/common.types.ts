@@ -1,6 +1,6 @@
 import { Details } from "@/components/Launch/types/launch.types";
 import { NextRouter } from "next/router";
-import { ChangeEvent, SetStateAction } from "react";
+import { ChangeEvent, Ref, SetStateAction } from "react";
 import { Profile } from "../../../../graphql/generated";
 import { AnyAction, Dispatch } from "redux";
 import { PostCollectGifState } from "../../../../redux/reducers/postCollectGifSlice";
@@ -93,4 +93,35 @@ export type MakeCommentProps = {
   index: number;
   setMentionProfiles: (e: SetStateAction<Profile[]>) => void;
   setProfilesOpen: (e: SetStateAction<boolean[]>) => void;
+};
+
+
+export type FilterProps = {
+  router: NextRouter;
+  searchFilters: {
+    printType: string[];
+    timestamp: string;
+    grant: string;
+    designer: string;
+    designerAddress: string;
+  };
+  setSearchFilters: (e: {
+    printType: string[];
+    timestamp: string;
+    grant: string;
+    designer: string;
+    designerAddress: string;
+  }) => void;
+  inputElement: Ref<HTMLInputElement>;
+  lensConnected: Profile | undefined;
+  setProfilesOpen: (e: SetStateAction<boolean[]>) => void;
+  profilesOpen: boolean[];
+  setMentionProfiles: (e: SetStateAction<Profile[]>) => void;
+  mentionProfiles: Profile[];
+  setCaretCoord: (
+    e: SetStateAction<{
+      x: number;
+      y: number;
+    }>
+  ) => void;
 };

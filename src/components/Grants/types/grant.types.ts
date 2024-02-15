@@ -140,3 +140,4 @@ export type InteractionsProps = {
   router: NextRouter;
   index: number;
 };
+

@@ -2,10 +2,10 @@ import Bar from "@/components/Common/modules/Bar";
 import Image from "next/legacy/image";
 import { FunctionComponent } from "react";
 import { INFURA_GATEWAY } from "../../../../lib/constants";
-import { FilterProps } from "../types/store.types";
 import handleSearchProfiles from "../../../../lib/lens/helpers/handleSearchProfiles";
 import createProfilePicture from "../../../../lib/lens/helpers/createProfilePicture";
 import { Profile } from "../../../../graphql/generated";
+import { FilterProps } from "../types/common.types";
 
 const Filter: FunctionComponent<FilterProps> = ({
   searchFilters,
@@ -17,6 +17,7 @@ const Filter: FunctionComponent<FilterProps> = ({
   setCaretCoord,
   profilesOpen,
   mentionProfiles,
+  router,
 }): JSX.Element => {
   return (
     <div className="static w-fit h-fit flex items-center justify-start flex-col bg-offBlack">
@@ -24,7 +25,9 @@ const Filter: FunctionComponent<FilterProps> = ({
       <div className="relative w-full h-fit gap-6 flex flex-col bg- px-3 pb-3 pt-7 text-white">
         <div className="relative flex flex-col gap-2 justify-start items-start">
           <div className="relative w-fit h-fit font-dog text-xxs">
-            Sort by Print
+            {router?.asPath?.includes("/store")
+              ? "Sort by Print"
+              : "Sort by Level Prints"}
           </div>
           <div className="relative grid grid-cols-2 gap-1.5 items-center justify-start w-full h-fit">
             {[
@@ -86,7 +89,9 @@ const Filter: FunctionComponent<FilterProps> = ({
         </div>
         <div className="relative flex flex-col gap-2 justify-start items-start w-full">
           <div className="relative w-fit h-fit font-dog text-xxs">
-            Sort by Designer
+          {router?.asPath?.includes("/store")
+              ? "Sort by Designer"
+              : "Sort by Grantee"}
           </div>
           <div className="relative w-72 h-8 border border-viol rounded-sm items-center justify-center flex">
             <input

@@ -48,7 +48,7 @@ const Header: FunctionComponent<{ router: NextRouter }> = ({
           ["storefront", "store", "#F8F87F"],
           ["feed", "", "#7BF678"],
           ["launch", "launch", "#D07BF7"],
-          ["web3 public goods", "web3", "#59ABF7"],
+          ["web3 public goods", "public-goods", "#59ABF7"],
         ].map((item: string[], index: number) => {
           return (
             <Link

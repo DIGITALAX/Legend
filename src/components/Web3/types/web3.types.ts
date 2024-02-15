@@ -1,21 +1,16 @@
-import { PrintItem } from "@/components/Launch/types/launch.types";
+import { Grant } from "@/components/Grants/types/grant.types";
 import { NextRouter } from "next/router";
-import { Ref, SetStateAction } from "react";
+import { SetStateAction } from "react";
 import { AnyAction, Dispatch } from "redux";
-import { Profile } from "../../../../graphql/generated";
 
-export type StoreItemProps = {
-  collection: PrintItem;
+export type GrantItemProps = {
+  grant: Grant;
+  index: number;
+  like: (id: string, hasReacted: boolean, main?: boolean) => Promise<void>;
   mirrorChoiceOpen: boolean;
   setMirrorChoiceOpen: (e: SetStateAction<boolean[]>) => void;
-  index: number;
   mirror: (id: string) => Promise<void>;
   bookmark: (id: string) => Promise<void>;
-  like: (
-    id: string,
-    hasReacted: boolean,
-    main?: boolean | undefined
-  ) => Promise<void>;
   dispatch: Dispatch<AnyAction>;
   router: NextRouter;
   interactionsLoading: {
@@ -25,4 +20,6 @@ export type StoreItemProps = {
     comment: boolean;
     simpleCollect: boolean;
   };
+  showFundedHover: boolean;
+  setShowFundedHover: (e: SetStateAction<boolean[]>) => void;
 };

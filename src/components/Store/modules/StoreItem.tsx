@@ -69,13 +69,13 @@ const StoreItem: FunctionComponent<StoreItemProps> = ({
             )}
             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-transparent to-offBlack flex"></div>
           </div>
-          <div className="absolute bottom-2 left-2 w-full h-fit flex flex-row justify-start items-center gap-2 overflow-x-scroll">
-            <div className="relative w-fit h-fit flex justify-start items-center flex-row">
+          <div className="absolute bottom-2 left-2 w-full h-fit flex flex-row justify-start items-center overflow-x-scroll">
+            <div className="relative w-fit h-fit flex justify-start items-center flex-row gap-2">
               {collection?.grants?.map((item: Grant, index: number) => {
                 return (
                   <div
                     key={index}
-                    className="relative w-10 h-10 flex items-center justify-center rounded-full border border-viol cursor-pointer active:scale-95"
+                    className="relative w-10 h-10 flex items-center justify-center rounded-full border border-viol cursor-pointer bg-offBlack active:scale-95"
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();

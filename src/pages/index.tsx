@@ -3,7 +3,7 @@ import Grant from "@/components/Grants/modules/Grant";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-import { NextRouter, useRouter } from "next/router";
+import { NextRouter } from "next/router";
 import { Grant as GrantType } from "@/components/Grants/types/grant.types";
 import useInteractions from "@/components/Grants/hooks/useInteractions";
 import { useAccount } from "wagmi";
@@ -13,6 +13,7 @@ import useLevelItems from "@/components/Launch/hooks/useLevelItems";
 import Bar from "@/components/Common/modules/Bar";
 import useCheckout from "@/components/Checkout/hooks/useCheckout";
 import { LitNodeClient } from "@lit-protocol/lit-node-client";
+import { setAllGrants } from "../../redux/reducers/allGrantsSlice";
 
 export default function Home({
   client,
@@ -96,7 +97,8 @@ export default function Home({
     address,
     publicClient,
     router,
-    allGrants
+    allGrants,
+    (newItems) => dispatch(setAllGrants(newItems as GrantType[]))
   );
 
   return (

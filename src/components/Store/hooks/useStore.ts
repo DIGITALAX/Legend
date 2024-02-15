@@ -30,7 +30,6 @@ const useStore = (lensConnected: Profile | undefined) => {
   });
   const [mentionProfiles, setMentionProfiles] = useState<Profile[]>([]);
   const [profilesOpen, setProfilesOpen] = useState<boolean[]>([false]);
-
   const inputElement = useRef<HTMLInputElement | null>(null);
   const [info, setInfo] = useState<{ hasMore: boolean; cursor: number }>({
     hasMore: false,
@@ -56,14 +55,13 @@ const useStore = (lensConnected: Profile | undefined) => {
     setCollectionsLoading(true);
     try {
       let collectionWhere = {
-        and: [{ origin: 0 }],
+        and: [{ origin: "0" }],
       };
       let grantWhere = {};
       if (searchFilters?.printType?.length > 0) {
         const prints = searchFilters?.printType?.map((s) => ({
-          printType: Number(
-            printStringToNumber[s?.slice(0, 1).toUpperCase() + s?.slice(1)]
-          ),
+          printType:
+            printStringToNumber[s?.slice(0, 1).toUpperCase() + s?.slice(1)],
         }));
 
         if (searchFilters?.printType?.length > 1) {
@@ -96,68 +94,60 @@ const useStore = (lensConnected: Profile | undefined) => {
 
       if (searchFilters?.grant?.trim() !== "") {
         grantWhere = {
-          and: [
-            ...(grantWhere as any).and,
-            { grantMetadata_: { title_contains_nocase: searchFilters?.grant } },
-          ],
+          grantMetadata_: { title_contains_nocase: searchFilters?.grant },
         };
       }
-
-      console.log({ grantWhere, collectionWhere });
 
       let collectedAwaited: PrintItem[] = [];
       let grantAwaited: PrintItem[] = [];
 
-      if (collectionWhere?.and?.filter((item) => !item.origin)?.length > 0) {
-        const data = await getCollectionsFilter(20, 0, collectionWhere);
-        console.log({ data });
+      const { data } = await getCollectionsFilter(20, 0, collectionWhere);
 
-        collectedAwaited = await Promise.all(
-          data?.collectionCreateds?.map(
-            async (item: {
-              pubId: string;
-              profileId: string;
-              collectionId: string;
-              printType: string;
-            }) => {
-              const publication = await getPublication(
-                {
-                  forId: `${toHexWithLeadingZero(
-                    Number(item.profileId)
-                  )}-${toHexWithLeadingZero(Number(item.pubId))}`,
-                },
-                lensConnected?.id
-              );
-              const { data } = await getGrantsByCollectionId(
-                Number(item?.collectionId)
-              );
+      collectedAwaited = await Promise.all(
+        data?.collectionCreateds?.map(
+          async (item: {
+            pubId: string;
+            profileId: string;
+            collectionId: string;
+            printType: string;
+          }) => {
+            const publication = await getPublication(
+              {
+                forId: `${toHexWithLeadingZero(
+                  Number(item.profileId)
+                )}-${toHexWithLeadingZero(Number(item.pubId))}`,
+              },
+              lensConnected?.id
+            );
+            const { data } = await getGrantsByCollectionId(
+              Number(item?.collectionId)
+            );
 
-              const grants = await Promise.all(
-                data?.collectionGrantIds?.[0]?.grants?.map(
-                  async (item: { grantMetadata: {}; uri: string }) => {
-                    if (!item?.grantMetadata) {
-                      const data = await fetchIpfsJson(item?.uri);
-                      item = {
-                        ...item,
-                        grantMetadata: data,
-                      };
-                    }
-
-                    return item;
+            const grants = await Promise.all(
+              data?.collectionGrantIds?.[0]?.grants?.map(
+                async (item: { grantMetadata: {}; uri: string }) => {
+                  if (!item?.grantMetadata) {
+                    const data = await fetchIpfsJson(item?.uri);
+                    item = {
+                      ...item,
+                      grantMetadata: data,
+                    };
                   }
-                )
-              );
-              return {
-                ...item,
-                publication: publication?.data?.publication,
-                printType:
-                  printTypeToString[numberToPrintType[Number(item?.printType)]],
-                grants,
-              };
-            }
-          )
-        );
-      }
+
+                  return item;
+                }
+              )
+            );
+            return {
+              ...item,
+              publication: publication?.data?.publication,
+              printType:
+                printTypeToString[numberToPrintType[Number(item?.printType)]],
+              grants,
+            };
+          }
+        )
+      );
 
       if (!isEmpty(Object.values(grantWhere))) {
         const { data } = await getGrantsByCollectionIdFilter(20, 0, grantWhere);
@@ -340,14 +330,13 @@ const useStore = (lensConnected: Profile | undefined) => {
     if (!info?.hasMore) return;
     try {
       let collectionWhere = {
-        and: [{ origin: 0 }],
+        and: [{ origin: "0" }],
       };
       let grantWhere = {};
       if (searchFilters?.printType?.length > 0) {
         const prints = searchFilters?.printType?.map((s) => ({
-          printType: Number(
-            printStringToNumber[s?.slice(0, 1).toUpperCase() + s?.slice(1)]
-          ),
+          printType:
+            printStringToNumber[s?.slice(0, 1).toUpperCase() + s?.slice(1)],
         }));
         if (searchFilters?.printType?.length > 1) {
           collectionWhere = {
@@ -379,69 +368,64 @@ const useStore = (lensConnected: Profile | undefined) => {
 
       if (searchFilters?.grant?.trim() !== "") {
         grantWhere = {
-          and: [
-            ...(grantWhere as any).and,
-            { grantMetadata_: { title_contains_nocase: searchFilters?.grant } },
-          ],
+          grantMetadata_: { title_contains_nocase: searchFilters?.grant },
         };
       }
 
       let collectedAwaited: PrintItem[] = [];
       let grantAwaited: PrintItem[] = [];
 
-      if (collectionWhere?.and?.filter((item) => !item.origin)?.length > 0) {
-        const { data } = await getCollectionsFilter(
-          20,
-          info.cursor,
-          collectionWhere
-        );
+      const { data } = await getCollectionsFilter(
+        20,
+        info.cursor,
+        collectionWhere
+      );
 
-        collectedAwaited = await Promise.all(
-          data?.collectionCreateds?.map(
-            async (item: {
-              pubId: string;
-              profileId: string;
-              collectionId: string;
-              printType: string;
-            }) => {
-              const publication = await getPublication(
-                {
-                  forId: `${toHexWithLeadingZero(
-                    Number(item.profileId)
-                  )}-${toHexWithLeadingZero(Number(item.pubId))}`,
-                },
-                lensConnected?.id
-              );
-              const { data } = await getGrantsByCollectionId(
-                Number(item?.collectionId)
-              );
+      collectedAwaited = await Promise.all(
+        data?.collectionCreateds?.map(
+          async (item: {
+            pubId: string;
+            profileId: string;
+            collectionId: string;
+            printType: string;
+          }) => {
+            const publication = await getPublication(
+              {
+                forId: `${toHexWithLeadingZero(
+                  Number(item.profileId)
+                )}-${toHexWithLeadingZero(Number(item.pubId))}`,
+              },
+              lensConnected?.id
+            );
+            const { data } = await getGrantsByCollectionId(
+              Number(item?.collectionId)
+            );
 
-              const grants = await Promise.all(
-                data?.collectionGrantIds?.[0]?.grants?.map(
-                  async (item: { grantMetadata: {}; uri: string }) => {
-                    if (!item?.grantMetadata) {
-                      const data = await fetchIpfsJson(item?.uri);
-                      item = {
-                        ...item,
-                        grantMetadata: data,
-                      };
-                    }
-
-                    return item;
+            const grants = await Promise.all(
+              data?.collectionGrantIds?.[0]?.grants?.map(
+                async (item: { grantMetadata: {}; uri: string }) => {
+                  if (!item?.grantMetadata) {
+                    const data = await fetchIpfsJson(item?.uri);
+                    item = {
+                      ...item,
+                      grantMetadata: data,
+                    };
                   }
-                )
-              );
-              return {
-                ...item,
-                publication: publication?.data?.publication,
-                printType:
-                  printTypeToString[numberToPrintType[Number(item?.printType)]],
-                grants,
-              };
-            }
-          )
-        );
-      }
+
+                  return item;
+                }
+              )
+            );
+            return {
+              ...item,
+              publication: publication?.data?.publication,
+              printType:
+                printTypeToString[numberToPrintType[Number(item?.printType)]],
+              grants,
+            };
+          }
+        )
+      );
 
       if (!isEmpty(Object.values(grantWhere))) {
         const { data } = await getGrantsByCollectionIdFilter(20, 0, grantWhere);

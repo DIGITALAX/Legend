@@ -1,5 +1,5 @@
 import useStore from "@/components/Store/hooks/useStore";
-import Filter from "@/components/Store/modules/Filter";
+import Filter from "@/components/Common/modules/Filter";
 import Item from "@/components/Store/modules/StoreItem";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useDispatch, useSelector } from "react-redux";
@@ -54,14 +54,13 @@ export default function Store({ router }: { router: NextRouter }) {
     publicClient,
     router,
     collections as any[],
-    undefined,
-    undefined,
-    setCollections as any
+    (newItems) => setCollections(newItems as any)
   );
 
   return (
     <div className="relative w-full h-fit flex flex-row items-start justify-center p-5 gap-10">
       <Filter
+        router={router}
         searchFilters={searchFilters}
         setSearchFilters={setSearchFilters}
         lensConnected={lensConnected}
