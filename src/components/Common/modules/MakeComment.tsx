@@ -227,8 +227,8 @@ const MakeComment: FunctionComponent<MakeCommentProps> = ({
         postCollectGif?.gifs?.[id!]?.length > 0) ||
         makePostComment?.images?.length > 0 ||
         makePostComment?.videos?.length > 0) && (
-        <div className="relative w-full h-fit flex overflow-x-scroll justify-start items-start pt-4">
-          <div className="relative gap-4 items-center justify-start flex flex-row">
+        <div className="relative w-[30rem] h-fit flex overflow-x-scroll justify-start items-start pt-4">
+          <div className="relative gap-4 items-center justify-start flex flex-row w-fit h-fit">
             {[
               ...makePostComment?.videos?.map((video) => ({
                 type: "video",
