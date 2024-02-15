@@ -140,11 +140,11 @@ export default function Grant({
     publicClient,
     router,
     who as Post[],
+    (newItems) => setWho(newItems as Post[]),
     [grant!],
-    setGrant,
-    setWho,
     handleComments,
-    postCollectGif
+    postCollectGif,
+    setGrant
   );
 
   if (!grantLoading && grant) {

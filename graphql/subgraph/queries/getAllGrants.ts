@@ -228,3 +228,78 @@ export const getGrantsByCollectionIdFilter = async (
     return result;
   }
 };
+
+
+
+export const getGrantsWhere = async (
+  first: number,
+  skip: number,
+  where: Object
+): Promise<any> => {
+  const queryPromise = graphLegendClient.query({
+    query: gql(`query($first: Int, $skip: Int) {
+      grantCreateds(first: $first, skip: $skip, where: {${serializeQuery(
+        where
+      )}}) {
+        grantId
+        creator
+        pubId
+        grantMetadata {
+          cover
+          description
+          experience
+          strategy
+          milestones
+          team
+          tech
+          title
+        }
+        fundedAmount {
+          currency
+          funded
+        }
+        granteeAddresses
+        splits
+        uri
+        profileId
+        milestones {
+          allClaimed
+          status
+          submitBy
+          granteeClaimed
+          currencyGoal {
+            currency
+            amount
+          }
+        }
+        levelInfo {
+          amounts
+          collectionIds
+          level
+        }
+        acceptedCurrencies
+        blockTimestamp
+        blockNumber
+      }
+    }`),
+    variables: {
+      first,
+      skip,
+    },
+    fetchPolicy: "no-cache",
+    errorPolicy: "all",
+  });
+
+  const timeoutPromise = new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({ timedOut: true });
+    }, 60000); // 1 minute timeout
+  });
+
+  const result: any = await Promise.race([queryPromise, timeoutPromise]);
+  if (result.timedOut) {
+    return;
+  } else {
+    return result;
+  }
+};

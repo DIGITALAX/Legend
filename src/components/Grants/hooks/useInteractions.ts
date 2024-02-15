@@ -28,11 +28,11 @@ const useInteractions = (
   publicClient: PublicClient,
   router: NextRouter,
   feed: (Grant | Post)[],
+  setter: (newItems: Grant[] | Post[]) => void,
   grant?: Grant[],
-  setGrant?: (e: SetStateAction<Grant | undefined>) => void,
-  setWho?: (e: SetStateAction<Post[]>) => void,
   getComments?: () => Promise<void>,
-  postCollectGif?: PostCollectGifState
+  postCollectGif?: PostCollectGifState,
+  setGrant?: (newItems: Grant) => void
 ) => {
   const [mainContentLoading, setMainContentLoading] = useState<
     {
@@ -497,7 +497,7 @@ const useInteractions = (
           } as PublicationStats,
         };
       }
-      setWho!(newItems as Post[]);
+      setter(newItems as Post[]);
     } else {
       let newItems = [...((main ? grant : feed) || [])];
       if (index !== -1 && (newItems[index] as Grant)?.publication) {
@@ -524,7 +524,7 @@ const useInteractions = (
         dispatch(setAllGrants(newItems as Grant[]));
       } else {
         if (!router.asPath.includes("/grant/")) {
-          setWho!(newItems as any[]);
+          setter(newItems as any[]);
         } else {
           setGrant!(newItems[0] as Grant);
         }

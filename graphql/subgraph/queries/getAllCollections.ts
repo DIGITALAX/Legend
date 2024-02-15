@@ -30,8 +30,6 @@ const COLLECTIONS = `
 const COLLECTIONS_PAGINATED = `
   query($first: Int, $skip: Int) {
     collectionCreateds(where: {origin: "0"}, first: $first, skip: $skip) {
-      fulfiller
-      unlimited
       printType
       prices
       owner
@@ -42,14 +40,9 @@ const COLLECTIONS_PAGINATED = `
         images
         title
       }
-      amount
       uri
       pubId
       profileId
-      acceptedTokens
-      designerPercent
-      fulfillerBase
-      fulfillerPercent
       blockTimestamp
     }
   }
@@ -104,6 +97,7 @@ export const getCollections = async (
   }
 };
 
+
 export const getCollectionsFilter = async (
   first: number,
   skip: number,
@@ -115,27 +109,20 @@ export const getCollectionsFilter = async (
       collectionCreateds(where: {${serializeQuery(
         where
       )}}, first: $first, skip: $skip) {
-        fulfiller
-        unlimited
-        printType
-        prices
-        owner
-        collectionId
-        collectionMetadata {
-          sizes
-          colors
-          images
-          title
-        }
-        amount
-        uri
-        pubId
-        profileId
-        acceptedTokens
-        designerPercent
-        fulfillerBase
-        fulfillerPercent
-        blockTimestamp
+      printType
+      prices
+      owner
+      collectionId
+      collectionMetadata {
+        sizes
+        colors
+        images
+        title
+      }
+      uri
+      pubId
+      profileId
+      blockTimestamp
       }
     }
   `),
