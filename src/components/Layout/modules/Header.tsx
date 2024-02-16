@@ -134,7 +134,14 @@ const Header: FunctionComponent<{ router: NextRouter }> = ({
               ? openConnectModal
               : connected && !profile
               ? () => !signInLoading && handleLensSignIn()
-              : () => router.push("/account")
+              : () =>
+                  router.push(
+                    `/grantee/${
+                      profile?.handle?.suggestedFormatted?.localName?.split(
+                        "@"
+                      )?.[1]
+                    }`
+                  )
           }
         >
           <div

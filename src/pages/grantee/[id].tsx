@@ -89,7 +89,7 @@ export default function Grantee({ router }: { router: NextRouter }) {
             ? Array.from({ length: 10 })?.map((_, index: number) => {
                 return (
                   <div
-                    className="relative h-80 w-full w-full border border-black flex flex-col items-center justify-start bg-black animate-pulse"
+                    className="relative h-80 w-full w-full border border-black flex flex-col items-center justify-start bg-offWhite animate-pulse"
                     key={index}
                   >
                     <Bar title={"Loading..."} />
