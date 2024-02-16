@@ -36,6 +36,11 @@ body {
   background-size: cover;
 }
 
+#barContain {
+  background-image: url("https://thedial.infura-ipfs.io/ipfs/QmeQ2sdjGXxUCQHCnK6kHU2c9Do3rjs557hU87jGorAvTs");
+  background-size: contain;
+}
+
 #imageCover {
   background-image: url("https://thedial.infura-ipfs.io/ipfs/Qmak9Amfys6xPL1uk8juyBYtsELwNYPZ6pg4b5Yf6HbyS2");
   background-size: cover;

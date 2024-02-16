@@ -30,11 +30,14 @@ const GrantItem: FunctionComponent<GrantItemProps> = ({
               ? grant?.grantMetadata?.title?.slice(0, 6) + "..."
               : grant?.grantMetadata?.title
           }
-          link={`grant/${grant?.publication?.id}`}
+          link={`/grant/${grant?.publication?.id}`}
           router={router}
         />
         <div className="relative w-full h-60 border border-viol rounded-sm bg-offBlack p-1">
-          <div className="relative w-full h-full rounded-sm flex items-center justify-center">
+          <div
+            className="relative w-full h-full rounded-sm flex items-center justify-center cursor-pointer"
+            onClick={() => router.push(`/grant/${grant?.publication?.id}`)}
+          >
             {grant?.grantMetadata?.cover && (
               <Image
                 src={`${INFURA_GATEWAY}/ipfs/${
@@ -55,15 +58,17 @@ const GrantItem: FunctionComponent<GrantItemProps> = ({
                   <div
                     key={index}
                     className="relative w-10 h-10 flex items-center justify-center bg-offBlack rounded-full border border-viol cursor-pointer active:scale-95"
-                    onClick={() =>
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
                       router.push(
                         `/grantee/${
                           item?.handle?.suggestedFormatted?.localName?.split(
                             "@"
                           )?.[1]
                         }`
-                      )
-                    }
+                      );
+                    }}
                     title={item?.handle?.suggestedFormatted?.localName}
                   >
                     {pfp && (
@@ -88,7 +93,9 @@ const GrantItem: FunctionComponent<GrantItemProps> = ({
       >
         <div
           className={`relative h-full cursor-pointer bg-mar/75 flex ${
-            grant?.totalFundedUSD / grant?.totalGoalUSD >= 100 ? "rounded-lg" : "rounded-l-lg"
+            grant?.totalFundedUSD / grant?.totalGoalUSD >= 100
+              ? "rounded-lg"
+              : "rounded-l-lg"
           }`}
           style={{
             width: `${grant?.totalFundedUSD / grant?.totalGoalUSD}%`,

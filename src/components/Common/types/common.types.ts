@@ -9,6 +9,7 @@ export type BarProps = {
   title: string;
   link?: string;
   router?: NextRouter;
+  contain?: boolean;
 };
 
 export type PurchaseTokensProps = {
