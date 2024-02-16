@@ -40,8 +40,11 @@ export default function Grantee({ router }: { router: NextRouter }) {
     setGrants,
   } = useGrantee(id as string, lensConnected, oracleData);
   const { followLoading, followProfile, unfollowProfile } = useFollow(
-    id as string,
-    lensConnected
+    grantee?.id,
+    lensConnected,
+    dispatch,
+    address as `0x${string}`,
+    publicClient
   );
   const {
     like,
@@ -61,7 +64,7 @@ export default function Grantee({ router }: { router: NextRouter }) {
   );
   return (
     <div
-      className="relative w-full h-fit overflow-y-scroll flex items-start justify-center pt-5 px-5 gap-10"
+      className="relative w-full h-full overflow-y-scroll flex items-start justify-center bg-black pt-5 px-5 gap-10 flex-col"
       id="side"
     >
       <Account
@@ -80,7 +83,7 @@ export default function Grantee({ router }: { router: NextRouter }) {
           loader={<></>}
           hasMore={info?.hasMore}
           next={handleMoreGrants}
-          className={`w-full h-fit grid grid-cols-3 gap-4`}
+          className={`w-full h-fit grid grid-cols-5 gap-4`}
         >
           {granteeLoading
             ? Array.from({ length: 10 })?.map((_, index: number) => {

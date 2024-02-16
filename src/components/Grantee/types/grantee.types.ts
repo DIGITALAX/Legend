@@ -1,3 +1,4 @@
+import { NextRouter } from "next/router";
 import { Profile } from "../../../../graphql/generated";
 
 export type AccountProps = {

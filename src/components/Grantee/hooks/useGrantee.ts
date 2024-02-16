@@ -505,7 +505,7 @@ const useGrantee = (
 
   useEffect(() => {
     if (id && !grantee) {
-      getGrantProfile;
+      getGrantProfile();
     }
   }, [id]);
 

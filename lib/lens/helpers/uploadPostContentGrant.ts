@@ -31,7 +31,7 @@ const uploadPostContent = async (
       image: newImages[0],
       title: postInformation.title,
       content: formattedText,
-      attachments: newImages,
+      attachments: newImages?.slice(1),
       appId: "legend",
       id: uuidv4(),
       hideFromFeed: false,

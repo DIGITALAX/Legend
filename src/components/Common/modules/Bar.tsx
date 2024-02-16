@@ -5,11 +5,12 @@ const Bar: FunctionComponent<BarProps> = ({
   title,
   link,
   router,
+  contain
 }): JSX.Element => {
   return (
     <div
       className="relative w-full min-w-fit h-8 flex flex-row items-center justify-between p-1.5 font-dog gap-2"
-      id="bar"
+      id={contain ? "barContain" : "bar"}
     >
       <div className="relative p-1 whitespace-nowrap bg-offWhite/70 text-black items-center justify-start flex text-xxs w-fit h-fit">
         {title}

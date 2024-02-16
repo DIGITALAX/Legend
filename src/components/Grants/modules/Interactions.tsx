@@ -20,7 +20,7 @@ const Interactions: FunctionComponent<InteractionsProps> = ({
   main,
   setInteractionState,
   setCommentBoxOpen,
-  grant
+  grant,
 }): JSX.Element => {
   return (
     <div className="relative rounded-sm w-full h-fit p-1 items-center justify-between flex bg-mar/75 border border-lima">
@@ -34,7 +34,9 @@ const Interactions: FunctionComponent<InteractionsProps> = ({
             amount: post?.stats?.reactions || 0,
             width: "1.3rem",
             height: "1.3rem",
-            otherFunction: () => setInteractionState!("reacts"),
+            otherFunction: router.asPath.includes("/grant/")
+              ? () => setInteractionState!("reacts")
+              : undefined,
           },
           {
             image: "QmUihJCeEsFyGSm9gHC5r8p5KnmYsiTJ86AssjUs3CuYm8",
@@ -58,13 +60,15 @@ const Interactions: FunctionComponent<InteractionsProps> = ({
             amount: (post?.stats?.mirrors || 0) + (post?.stats?.quotes || 0),
             width: "1.3rem",
             height: "1.3rem",
-            otherFunction: () => setInteractionState!("mirrors"),
+            otherFunction: router.asPath.includes("/grant/")
+              ? () => setInteractionState!("mirrors")
+              : undefined,
           },
           {
             image: "Qmbua3Ajr1wYbNk4tmUmS2qpbQYcyr9JkzQrQjWz19TD7L",
             title: "Contributor",
             function: () =>
-              router.asPath == "/" || !router.asPath.includes("/grant")
+              router.asPath == "/" || !router.asPath.includes("/grant/")
                 ? grant
                   ? window.open(grant)
                   : router.push(`/grant/${post?.id}`)
@@ -73,13 +77,15 @@ const Interactions: FunctionComponent<InteractionsProps> = ({
             amount: post?.stats?.countOpenActions || 0,
             width: "1.3rem",
             height: "1.3rem",
-            otherFunction: () => setInteractionState!("contributors"),
+            otherFunction: router.asPath.includes("/grant/")
+              ? () => setInteractionState!("contributors")
+              : undefined,
           },
           {
             image: "QmWbxnHzxzNGQswu9qLEaAyncptzuacYhUmbVi695Ftw1y",
             title: "Comment",
             function: () =>
-              router.asPath == "/" || !router.asPath.includes("/grant")
+              router.asPath == "/" || !router.asPath.includes("/grant/")
                 ? grant
                   ? window.open(grant)
                   : router.push(`/grant/${post?.id}`)
@@ -90,7 +96,9 @@ const Interactions: FunctionComponent<InteractionsProps> = ({
                     arr[index] = !arr[index];
                     return arr;
                   }),
-            otherFunction: () => setInteractionState!("comments"),
+            otherFunction: router.asPath.includes("/grant/")
+              ? () => setInteractionState!("comments")
+              : undefined,
             loader: false,
             amount: post?.stats?.comments || 0,
             width: "1.2rem",
@@ -138,14 +146,10 @@ const Interactions: FunctionComponent<InteractionsProps> = ({
                 )}
                 <div
                   className={`relative w-fit h-fit items-center justify-center flex ${
-                    router.asPath !== "/" &&
-                    item.otherFunction &&
-                    "cursor-pointer"
+                    item.otherFunction !== undefined && "cursor-pointer"
                   }`}
                   onClick={() =>
-                    router.asPath !== "/" &&
-                    item.otherFunction &&
-                    item.otherFunction()
+                    item.otherFunction !== undefined && item.otherFunction()
                   }
                 >
                   {numeral(item.amount).format("0a")}
