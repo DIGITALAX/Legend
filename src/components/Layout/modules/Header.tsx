@@ -48,18 +48,20 @@ const Header: FunctionComponent<{ router: NextRouter }> = ({
           ["storefront", "store", "#F8F87F"],
           ["feed", "", "#7BF678"],
           ["launch", "launch", "#D07BF7"],
-          ["web3 public goods", "public-goods", "#59ABF7"],
+          ["public goods", "public-goods", "#59ABF7"],
         ].map((item: string[], index: number) => {
           return (
             <Link
               key={index}
               href={`/${item[1]}`}
-              className="relative w-fit h-fit px-2 py-1.5 items-center justify-center rounded-sm border font-vcr text-white text-xs active:scale-95 hover:opacity-70"
+              className="relative w-28 h-fit flex px-2 py-1.5 items-center justify-center rounded-sm border font-vcr text-white text-xs active:scale-95 hover:opacity-70"
               style={{
                 borderColor: item[2],
               }}
             >
-              {item[0]}
+              <div className="relative w-fit h-fit flex items-center justify-center">
+                {item[0]}
+              </div>
             </Link>
           );
         })}

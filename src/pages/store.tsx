@@ -76,7 +76,7 @@ export default function Store({ router }: { router: NextRouter }) {
         id="side"
       >
         <InfiniteScroll
-          dataLength={14}
+          dataLength={collections?.length}
           loader={<></>}
           hasMore={info?.hasMore}
           next={

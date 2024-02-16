@@ -11,9 +11,11 @@ const useWho = (id: string, lensConnected: Profile | undefined) => {
   const [info, setInfo] = useState<{
     hasMore: boolean;
     cursor: string | undefined;
+    cursorQuote?: string | undefined;
   }>({
     hasMore: true,
     cursor: undefined,
+    cursorQuote: undefined,
   });
   const [who, setWho] = useState<any[]>([]);
 
@@ -51,13 +53,37 @@ const useWho = (id: string, lensConnected: Profile | undefined) => {
         lensConnected?.id
       );
 
-      setWho(data?.publications?.items || []);
+      const quoteData = await getPublications(
+        {
+          where: {
+            quoteOn: id,
+          },
+          limit: LimitType.Ten,
+          cursor: info?.cursor,
+        },
+        lensConnected?.id
+      );
+
+      setWho(
+        [
+          ...(data?.publications?.items || []),
+          ...(quoteData?.data?.publications?.items || []),
+        ].sort(() => Math.random() - 0.5)
+      );
 
       setInfo({
-        hasMore: data?.publications?.items?.length == 10 ? true : false,
+        hasMore:
+          data?.publications?.items?.length == 10 ||
+          quoteData?.data?.publications?.items?.length == 10
+            ? true
+            : false,
         cursor:
           data?.publications?.items?.length == 10
             ? data?.publications?.pageInfo?.next
+            : undefined,
+        cursorQuote:
+          quoteData?.data?.publications?.items?.length == 10
+            ? quoteData?.data?.publications?.pageInfo?.next
             : undefined,
       });
     } catch (err: any) {
@@ -142,25 +168,53 @@ const useWho = (id: string, lensConnected: Profile | undefined) => {
 
   const handleMoreMirrors = async () => {
     try {
-      const { data } = await getPublications(
-        {
-          where: {
-            mirrorOn: id,
+      let mirrorData: any[] = [],
+        quoteData: any[] = [],
+        quoteNext: string | undefined,
+        mirrorNext: string | undefined;
+      if (info?.cursor) {
+        const { data } = await getPublications(
+          {
+            where: {
+              mirrorOn: id,
+            },
+            limit: LimitType.Ten,
+            cursor: info?.cursor,
           },
-          limit: LimitType.Ten,
-          cursor: info?.cursor,
-        },
-        lensConnected?.id
+          lensConnected?.id
+        );
+
+        mirrorData = data?.publications?.items as any[];
+        mirrorNext = data?.publications?.pageInfo?.next;
+      }
+
+      if (info?.cursorQuote) {
+        const { data } = await getPublications(
+          {
+            where: {
+              quoteOn: id,
+            },
+            limit: LimitType.Ten,
+            cursor: info?.cursorQuote,
+          },
+          lensConnected?.id
+        );
+
+        quoteData = data?.publications?.items as any[];
+        quoteNext = data?.publications?.pageInfo?.next;
+      }
+
+      setWho(
+        [...who, ...[...(mirrorData || []), ...(quoteData || [])]].sort(
+          () => Math.random() - 0.5
+        )
       );
 
-      setWho([...who, ...(data?.publications?.items || [])]);
-
       setInfo({
-        hasMore: data?.publications?.items?.length == 10 ? true : false,
-        cursor:
-          data?.publications?.items?.length == 10
-            ? data?.publications?.pageInfo?.next
-            : undefined,
+        hasMore:
+          mirrorData?.length == 10 || quoteData?.length == 10 ? true : false,
+        cursor: mirrorData?.length == 10 ? mirrorNext : undefined,
+        cursorQuote: quoteData?.length == 10 ? quoteNext : undefined,
       });
     } catch (err: any) {
       console.error(err.message);
