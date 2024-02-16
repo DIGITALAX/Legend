@@ -94,6 +94,52 @@ const GRANT = `
   }
 `;
 
+const GRANTS_BY_PROFILE = `
+  query($first: Int, $skip: Int, $profileId: Int) {
+    grantCreateds(first: $first, skip: $skip, where: {profileId: $profileId}) {
+      grantId
+      creator
+      pubId
+      grantMetadata {
+        cover
+        description
+        experience
+        strategy
+        milestones
+        team
+        tech
+        title
+      }
+      fundedAmount {
+        currency
+        funded
+      }
+      granteeAddresses
+      splits
+      uri
+      profileId
+      milestones {
+        allClaimed
+        status
+        submitBy
+        granteeClaimed
+        currencyGoal {
+          currency
+          amount
+        }
+      }
+      levelInfo {
+        amounts
+        collectionIds
+        level
+      }
+      acceptedCurrencies
+      blockTimestamp
+      blockNumber
+    }
+  }
+`;
+
 const GRANTS_BY_COLLECTION = `
   query($collectionId: Int) {
     collectionGrantIds(where: {collectionId: $collectionId}) {
@@ -105,6 +151,54 @@ const GRANTS_BY_COLLECTION = `
           cover
           title
         }
+      }
+    }
+  }
+`;
+
+const GRANTS_FUNDED = `
+  query($funder: String, $first: Int, $skip: Int) {
+    grantFundeds(where: {funder: $funder}, first: $first, skip: $skip) {
+      grant {
+        grantId
+      creator
+      pubId
+      grantMetadata {
+        cover
+        description
+        experience
+        strategy
+        milestones
+        team
+        tech
+        title
+      }
+      fundedAmount {
+        currency
+        funded
+      }
+      granteeAddresses
+      splits
+      uri
+      profileId
+      milestones {
+        allClaimed
+        status
+        submitBy
+        granteeClaimed
+        currencyGoal {
+          currency
+          amount
+        }
+      }
+      levelInfo {
+        amounts
+        collectionIds
+        level
+      }
+      acceptedCurrencies
+      blockTimestamp
+      blockNumber
       }
     }
   }
@@ -192,6 +286,66 @@ export const getGrantsByCollectionId = async (
   }
 };
 
+export const getGrantsByProfile = async (
+  first: number,
+  skip: number,
+  profileId: number
+): Promise<any> => {
+  const queryPromise = graphLegendClient.query({
+    query: gql(GRANTS_BY_PROFILE),
+    variables: {
+      first,
+      skip,
+      profileId,
+    },
+    fetchPolicy: "no-cache",
+    errorPolicy: "all",
+  });
+
+  const timeoutPromise = new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({ timedOut: true });
+    }, 60000); // 1 minute timeout
+  });
+
+  const result: any = await Promise.race([queryPromise, timeoutPromise]);
+  if (result.timedOut) {
+    return;
+  } else {
+    return result;
+  }
+};
+
+export const getGrantsFunded = async (
+  first: number,
+  skip: number,
+  funder: string
+): Promise<any> => {
+  const queryPromise = graphLegendClient.query({
+    query: gql(GRANTS_FUNDED),
+    variables: {
+      first,
+      skip,
+      funder,
+    },
+    fetchPolicy: "no-cache",
+    errorPolicy: "all",
+  });
+
+  const timeoutPromise = new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({ timedOut: true });
+    }, 60000); // 1 minute timeout
+  });
+
+  const result: any = await Promise.race([queryPromise, timeoutPromise]);
+  if (result.timedOut) {
+    return;
+  } else {
+    return result;
+  }
+};
+
 export const getGrantsByCollectionIdFilter = async (
   first: number,
   skip: number,
@@ -228,8 +382,6 @@ export const getGrantsByCollectionIdFilter = async (
     return result;
   }
 };
-
-
 
 export const getGrantsWhere = async (
   first: number,

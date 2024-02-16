@@ -32,7 +32,7 @@ const useStore = (lensConnected: Profile | undefined) => {
   const [profilesOpen, setProfilesOpen] = useState<boolean[]>([false]);
   const inputElement = useRef<HTMLInputElement | null>(null);
   const [info, setInfo] = useState<{ hasMore: boolean; cursor: number }>({
-    hasMore: false,
+    hasMore: true,
     cursor: 0,
   });
   const [collectionsLoading, setCollectionsLoading] = useState<boolean>(false);
@@ -203,6 +203,7 @@ const useStore = (lensConnected: Profile | undefined) => {
   };
 
   const handleCollections = async () => {
+    setCollectionsLoading(true);
     try {
       const data = await getCollections(20, 0);
 
@@ -260,6 +261,7 @@ const useStore = (lensConnected: Profile | undefined) => {
     } catch (err: any) {
       console.error(err.message);
     }
+    setCollectionsLoading(false);
   };
 
   const handleMoreCollections = async () => {

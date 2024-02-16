@@ -24,7 +24,7 @@ const useWeb3 = (
   const inputElement = useRef<HTMLInputElement | null>(null);
   const [showFundedHover, setShowFundedHover] = useState<boolean[]>([]);
   const [info, setInfo] = useState<{ hasMore: boolean; cursor: number }>({
-    hasMore: false,
+    hasMore: true,
     cursor: 0,
   });
   const [_, setCaretCoord] = useState<{

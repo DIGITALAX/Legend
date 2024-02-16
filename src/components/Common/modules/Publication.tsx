@@ -92,7 +92,7 @@ const Publication: FunctionComponent<PublicationProps> = ({
         </div>
       </div>
       <div
-        className="relative w-full h-[7rem] max-h-[15rem] bg-offBlack rounded-sm py-2 px-1.5 text-white overflow-y-scroll flex items-start justify-start break-words text-xxs whitespace-preline overflow-y-scroll font-dog"
+        className="relative w-full h-[7rem] max-h-[15rem] bg-offBlack rounded-sm py-2 px-1.5 text-white overflow-y-scroll flex items-start justify-start break-words text-xxs whitespace-preline overflow-y-scroll font-dog border border-white"
         dangerouslySetInnerHTML={{
           __html: descriptionRegex(
             (item?.metadata as ImageMetadataV3)?.content,

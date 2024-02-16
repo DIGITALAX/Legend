@@ -81,7 +81,7 @@ export default function PublicGoods({ router }: { router: NextRouter }) {
         id="side"
       >
         <InfiniteScroll
-          dataLength={14}
+          dataLength={grants?.length}
           loader={<></>}
           hasMore={info?.hasMore}
           next={
