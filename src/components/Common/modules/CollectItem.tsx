@@ -45,15 +45,16 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                   onClick={() =>
                     setDetails((prev) => {
                       const arr = [...prev];
-                      arr[mainIndex][levelInfo.level] = {
-                        ...arr[mainIndex][levelInfo.level],
+                      arr[mainIndex][levelInfo.level - 1] = {
+                        ...arr[mainIndex][levelInfo.level - 1],
                         collectionIndex:
-                          arr[mainIndex][levelInfo?.level]?.collectionIndex -
+                          arr[mainIndex][levelInfo?.level - 1]
+                            ?.collectionIndex -
                             1 >=
                           0
-                            ? arr[mainIndex][levelInfo?.level]
+                            ? arr[mainIndex][levelInfo?.level - 1]
                                 ?.collectionIndex - 1
-                            : levelInfo.collectionIds.length,
+                            : levelInfo.collectionIds.length - 1,
                       };
 
                       return arr;
@@ -67,13 +68,14 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                   onClick={() =>
                     setDetails((prev) => {
                       const arr = [...prev];
-                      arr[mainIndex][levelInfo.level] = {
-                        ...arr[mainIndex][levelInfo.level],
+                      arr[mainIndex][levelInfo.level - 1] = {
+                        ...arr[mainIndex][levelInfo.level - 1],
                         collectionIndex:
-                          arr[mainIndex][levelInfo?.level]?.collectionIndex +
+                          arr[mainIndex][levelInfo?.level - 1]
+                            ?.collectionIndex +
                             1 <
                           levelInfo.collectionIds.length
-                            ? arr[mainIndex][levelInfo?.level]
+                            ? arr[mainIndex][levelInfo?.level - 1]
                                 ?.collectionIndex + 1
                             : 0,
                       };
@@ -98,7 +100,7 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                         levelInfo?.collectionIds?.[
                           details?.collectionIndex
                         ]?.collectionMetadata?.images?.[
-                          details?.imageIndex?.[details?.collectionIndex]
+                          details?.imageIndex?.[details?.collectionIndex] || 0
                         ]?.split("ipfs://")[1]
                       }`,
                     })
@@ -108,7 +110,7 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                 {levelInfo?.collectionIds?.[
                   details?.collectionIndex
                 ]?.collectionMetadata?.images?.[
-                  details?.imageIndex?.[details.collectionIndex]
+                  details?.imageIndex?.[details.collectionIndex] || 0
                 ]?.split("ipfs://")[1] && (
                   <Image
                     layout="fill"
@@ -116,7 +118,7 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                       levelInfo?.collectionIds?.[
                         details?.collectionIndex
                       ]?.collectionMetadata?.images?.[
-                        details?.imageIndex?.[details?.collectionIndex]
+                        details?.imageIndex?.[details?.collectionIndex] || 0
                       ]?.split("ipfs://")[1]
                     }`}
                     draggable={false}
@@ -135,7 +137,8 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                           setDetails((prev) => {
                             const arr = [...prev];
                             const images = [
-                              ...arr[mainIndex][levelInfo.level]?.imageIndex,
+                              ...arr[mainIndex][levelInfo.level - 1]
+                                ?.imageIndex,
                             ];
 
                             images[details?.collectionIndex] =
@@ -145,8 +148,8 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                                     details?.collectionIndex
                                   ]?.collectionMetadata?.images?.length;
 
-                            arr[mainIndex][levelInfo.level] = {
-                              ...arr[mainIndex][levelInfo.level],
+                            arr[mainIndex][levelInfo.level - 1] = {
+                              ...arr[mainIndex][levelInfo.level - 1],
                               imageIndex: images,
                             };
 
@@ -169,7 +172,8 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                           setDetails((prev) => {
                             const arr = [...prev];
                             const images = [
-                              ...arr[mainIndex][levelInfo.level]?.imageIndex,
+                              ...arr[mainIndex][levelInfo.level - 1]
+                                ?.imageIndex,
                             ];
 
                             images[details?.collectionIndex] =
@@ -180,8 +184,8 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                                 ? images[details?.collectionIndex] + 1
                                 : 0;
 
-                            arr[mainIndex][levelInfo.level] = {
-                              ...arr[mainIndex][levelInfo.level],
+                            arr[mainIndex][levelInfo.level - 1] = {
+                              ...arr[mainIndex][levelInfo.level - 1],
                               imageIndex: images,
                             };
 
@@ -240,14 +244,14 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                         setDetails((prev) => {
                           let arr = [...prev];
                           let obj = {
-                            ...arr[mainIndex][levelInfo.level],
+                            ...arr[mainIndex][levelInfo.level - 1],
                           };
 
                           const sizes = [...obj.sizeIndex];
                           sizes[details?.collectionIndex] = indexThree;
 
                           obj.sizeIndex = sizes;
-                          arr[mainIndex][levelInfo.level] = obj;
+                          arr[mainIndex][levelInfo.level - 1] = obj;
                           return arr;
                         })
                       }
@@ -296,14 +300,14 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                             setDetails((prev) => {
                               let arr = [...prev];
                               let obj = {
-                                ...arr[mainIndex][levelInfo.level],
+                                ...arr[mainIndex][levelInfo.level - 1],
                               };
 
                               const colors = [...obj.colorIndex];
                               colors[details?.collectionIndex] = indexThree;
 
                               obj.colorIndex = colors;
-                              arr[mainIndex][levelInfo.level] = obj;
+                              arr[mainIndex][levelInfo.level - 1] = obj;
                               return arr;
                             })
                           }
@@ -370,13 +374,18 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                 )?.[1]
               }`}
             </div>
-            <PurchaseTokens
-              details={details}
-              setDetails={setDetails}
-              mainIndex={mainIndex}
-              levelIndex={levelInfo.level}
-              tokens={grant?.acceptedCurrencies!}
-            />
+            <div className="relative w-3/4 h-fit flex items-center justify-center">
+              <PurchaseTokens
+                details={details}
+                setDetails={setDetails}
+                mainIndex={mainIndex}
+                levelIndex={levelInfo.level - 1}
+                tokens={
+                  levelInfo.collectionIds?.[details?.collectionIndex]
+                    ?.acceptedTokens
+                }
+              />
+            </div>
           </div>
           {cart && (
             <div
@@ -384,7 +393,11 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                 !cartItems?.some(
                   (item) =>
                     item.chosenLevel.level === levelInfo.level &&
-                    grant?.publication?.id == item?.grant?.publication?.id
+                    grant?.publication?.id == item?.grant?.publication?.id &&
+                    JSON.stringify(item?.colors?.flat()) ===
+                      JSON.stringify(details?.colorIndex?.flat()) &&
+                    JSON.stringify(item?.sizes?.flat()) ===
+                      JSON.stringify(details?.sizeIndex?.flat())
                 )
                   ? "bg-mar/70 text-lima"
                   : "bg-viol/70 text-white"
@@ -394,7 +407,11 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                   cartItems?.some(
                     (item) =>
                       item.chosenLevel.level === levelInfo.level &&
-                      grant?.publication?.id == item?.grant?.publication?.id
+                      grant?.publication?.id == item?.grant?.publication?.id &&
+                      JSON.stringify(item?.colors?.flat()) ===
+                        JSON.stringify(details?.colorIndex?.flat()) &&
+                      JSON.stringify(item?.sizes?.flat()) ===
+                        JSON.stringify(details?.sizeIndex?.flat())
                   )
                 ) {
                   router!.push("/checkout");
@@ -427,7 +444,11 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                 {cartItems?.some(
                   (item) =>
                     item.chosenLevel.level === levelInfo.level &&
-                    grant?.publication?.id == item?.grant?.publication?.id
+                    grant?.publication?.id == item?.grant?.publication?.id &&
+                    JSON.stringify(item?.colors?.flat()) ===
+                      JSON.stringify(details?.colorIndex?.flat()) &&
+                    JSON.stringify(item?.sizes?.flat()) ===
+                      JSON.stringify(details?.sizeIndex?.flat())
                 )
                   ? "Go to Cart"
                   : "Choose Level"}

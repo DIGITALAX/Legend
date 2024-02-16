@@ -13,11 +13,14 @@ export type BarProps = {
 };
 
 export type PurchaseTokensProps = {
-  details: Details;
-  setDetails: (e: SetStateAction<Details[][]>) => void;
+  details: Details | string;
+  setDetails:
+    | ((e: SetStateAction<Details[][]>) => void)
+    | ((e: SetStateAction<string>) => void);
   mainIndex: number;
   levelIndex: number;
   tokens: string[];
+  main?: boolean;
 };
 
 export interface MakePostComment {

@@ -211,7 +211,7 @@ const Grant: FunctionComponent<GrantProps> = ({
                     cart
                     mainIndex={mainIndex}
                     setDetails={setDetails}
-                    details={details?.[level.level]}
+                    details={details?.[level.level - 1]}
                     oracleData={oracleData}
                     cartItems={cartItems}
                   />

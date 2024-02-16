@@ -82,13 +82,13 @@ export default function Grant({
     cartItems,
     litNodeClient,
     address,
-    [],
     dispatch,
     publicClient,
     lensConnected,
     oracleData,
-    details,
-    router
+    router,
+    undefined,
+    details
   );
   const {
     setInteractionState,
@@ -406,7 +406,7 @@ export default function Grant({
                       cart
                       mainIndex={0}
                       setDetails={setDetails}
-                      details={details?.[0]?.[level.level]}
+                      details={details?.[0]?.[level.level - 1]}
                       oracleData={oracleData}
                       cartItems={cartItems}
                     />

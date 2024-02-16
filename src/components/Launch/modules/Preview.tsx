@@ -246,7 +246,7 @@ const Preview: FunctionComponent<PreviewProps> = ({
                 <CollectItem
                   key={index}
                   levelInfo={levelInfo}
-                  details={details?.[0]?.[levelInfo.level]}
+                  details={details?.[0]?.[levelInfo.level - 1]}
                   oracleData={oracleData}
                   setDetails={setDetails}
                   mainIndex={0}

@@ -21,17 +21,18 @@ const useCheckout = (
   cartItems: CartItem[],
   litNodeClient: LitJsSDK.LitNodeClient,
   address: `0x${string}` | undefined,
-  allGrants: Grant[],
   dispatch: Dispatch,
   publicClient: PublicClient,
   lensConnected: Profile | undefined,
   oracleData: OracleData[],
-  details: Details[][],
   router: NextRouter,
-
+  allGrants?: Grant[],
+  details?: Details[][]
 ) => {
-  const [grantCheckoutLoading, setGrantCheckoutLoading] = useState<boolean[]>(
-    []
+  const [checkoutLoading, setCheckoutLoading] = useState<boolean>(false);
+  const [checkoutApproved, setCheckoutApproved] = useState<boolean>(false);
+  const [currency, setCurrency] = useState<string>(
+    cartItems?.[0]?.grant?.acceptedCurrencies?.[0]
   );
   const [spendApproved, setSpendApproved] = useState<boolean[]>([]);
   const [simpleCheckoutLoading, setSimpleCheckoutLoading] = useState<boolean[]>(
@@ -51,12 +52,12 @@ const useCheckout = (
 
   const approvePurchase = async (item: CartItem, currency: string) => {
     if (!address || !lensConnected?.id) return;
-    let index = -1;
+    let index: number = -1;
     try {
       if (item.chosenLevel.level == 1) {
-        index = allGrants.findIndex(
+        index = allGrants?.findIndex(
           (pub) => pub.publication?.id == item?.grant?.publication?.id
-        );
+        )!;
 
         if (index === -1) {
           return;
@@ -64,23 +65,12 @@ const useCheckout = (
 
         setSimpleCheckoutLoading((prev) => {
           const arr = [...prev];
-          arr[index] = true;
+          arr[index!] = true;
 
           return arr;
         });
       } else {
-        index = cartItems.findIndex(
-          (pub) => pub.grant.publication?.id == item?.grant?.publication?.id
-        );
-        if (index === -1) {
-          return;
-        }
-
-        setGrantCheckoutLoading((prev) => {
-          const updatedArray = [...prev];
-          updatedArray[index] = true;
-          return updatedArray;
-        });
+        setCheckoutLoading(true);
       }
 
       const clientWallet = createWalletClient({
@@ -179,18 +169,23 @@ const useCheckout = (
 
       const res = await clientWallet.writeContract(request);
       await publicClient.waitForTransactionReceipt({ hash: res });
-      setSpendApproved((prev) => {
-        const arr = [...prev];
 
-        arr[index] = true;
-        return arr;
-      });
+      if (item.chosenLevel.level == 1) {
+        setSpendApproved((prev) => {
+          const arr = [...prev];
+
+          arr[index] = true;
+          return arr;
+        });
+      } else {
+        setCheckoutApproved(true);
+      }
     } catch (err: any) {
       console.error(err.message);
     }
 
     if (item.chosenLevel.level == 1) {
-      const index = allGrants.findIndex(
+      index = allGrants!?.findIndex(
         (pub) => pub.publication?.id == item?.grant?.publication?.id
       );
 
@@ -205,18 +200,7 @@ const useCheckout = (
         return arr;
       });
     } else {
-      const index = cartItems.findIndex(
-        (pub) => pub.grant.publication?.id == item?.grant?.publication?.id
-      );
-      if (index === -1) {
-        return;
-      }
-
-      setGrantCheckoutLoading((prev) => {
-        const updatedArray = [...prev];
-        updatedArray[index] = false;
-        return updatedArray;
-      });
+      setCheckoutLoading(false);
     }
   };
 
@@ -301,7 +285,7 @@ const useCheckout = (
       return;
     }
     if (item.chosenLevel.level == 1) {
-      const index = allGrants.findIndex(
+      const index = allGrants?.findIndex(
         (pub) => pub.publication?.id == item?.grant?.publication?.id
       );
 
@@ -311,23 +295,12 @@ const useCheckout = (
 
       setSimpleCheckoutLoading((prev) => {
         const arr = [...prev];
-        arr[index] = true;
+        arr[index!] = true;
 
         return arr;
       });
     } else {
-      const index = cartItems.findIndex(
-        (pub) => pub.grant.publication?.id == item?.grant?.publication?.id
-      );
-      if (index === -1) {
-        return;
-      }
-
-      setGrantCheckoutLoading((prev) => {
-        const updatedArray = [...prev];
-        updatedArray[index] = true;
-        return updatedArray;
-      });
+      setCheckoutLoading(true);
     }
 
     try {
@@ -379,26 +352,72 @@ const useCheckout = (
     }
 
     if (item.chosenLevel.level == 1) {
-      const index = allGrants.findIndex(
+      const index = allGrants?.findIndex(
         (pub) => pub.publication?.id == item?.grant?.publication?.id
       );
 
       setSimpleCheckoutLoading((prev) => {
         const arr = [...prev];
-        arr[index] = false;
+        arr[index!] = false;
 
         return arr;
       });
     } else {
-      const index = cartItems.findIndex(
-        (pub) => pub.grant.publication?.id == item?.grant?.publication?.id
-      );
+      setCheckoutLoading(false);
+    }
+  };
 
-      setGrantCheckoutLoading((prev) => {
-        const updatedArray = [...prev];
-        updatedArray[index] = false;
-        return updatedArray;
+  const checkCheckoutApproved = async () => {
+    try {
+      const data = await publicClient.readContract({
+        address: currency as `0x${string}`,
+        abi: [
+          {
+            inputs: [
+              {
+                internalType: "address",
+                name: "owner",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "spender",
+                type: "address",
+              },
+            ],
+            name: "allowance",
+            outputs: [
+              {
+                internalType: "uint256",
+                name: "",
+                type: "uint256",
+              },
+            ],
+            stateMutability: "view",
+            type: "function",
+          },
+        ],
+        functionName: "allowance",
+        args: [address as `0x${string}`, LEGEND_OPEN_ACTION_CONTRACT],
+        account: address,
       });
+
+      if (
+        Number((data as any)?.toString()) *
+          Number(
+            oracleData?.find((oracle) => oracle.currency === currency)?.wei
+          ) >=
+        Number(10 ** 18) /
+          Number(
+            oracleData?.find((oracle) => oracle.currency === currency)?.rate
+          )
+      ) {
+        setCheckoutApproved(true);
+      } else {
+        setCheckoutApproved(false);
+      }
+    } catch (err: any) {
+      console.error(err.message);
     }
   };
 
@@ -407,9 +426,9 @@ const useCheckout = (
       if (address) {
         let spends: boolean[] = [];
         await Promise.all(
-          allGrants.map(async (_, index) => {
+          allGrants!?.map(async (_, index) => {
             const data = await publicClient.readContract({
-              address: details[index][0].currency as `0x${string}`,
+              address: details?.[index]?.[0]?.currency as `0x${string}`,
               abi: [
                 {
                   inputs: [
@@ -445,13 +464,15 @@ const useCheckout = (
               Number((data as any)?.toString()) *
                 Number(
                   oracleData?.find(
-                    (oracle) => oracle.currency === details[index][0].currency
+                    (oracle) =>
+                      oracle.currency === details?.[index]?.[0]?.currency
                   )?.wei
                 ) >=
               Number(10 ** 18) /
                 Number(
                   oracleData?.find(
-                    (oracle) => oracle.currency === details[index][0].currency
+                    (oracle) =>
+                      oracle.currency === details?.[index]?.[0]?.currency
                   )?.rate
                 )
             ) {
@@ -469,27 +490,30 @@ const useCheckout = (
   };
 
   useEffect(() => {
-    if (cartItems?.length > 0) {
-      setGrantCheckoutLoading(
-        Array.from({ length: cartItems.length }, () => false)
-      );
-    }
-  }, [cartItems]);
-
-  useEffect(() => {
     if (
-      allGrants.length > 0 &&
-      router.asPath.includes("/") &&
-      details.length > 0 &&
+      allGrants &&
+      allGrants?.length > 0 &&
+      router.asPath == "/" &&
+      details &&
+      details?.length > 0 &&
       address
     ) {
       checkSpendApproved();
     }
-  }, [allGrants.length, details, address]);
+  }, [allGrants?.length, details, address]);
+
+  useEffect(() => {
+    if (currency && router.asPath == "/checkout") {
+      checkCheckoutApproved();
+    }
+  }, [address, currency]);
+
+  useEffect(() => {
+    setCurrency(cartItems?.[0]?.grant?.acceptedCurrencies?.[0]);
+  }, [chosenCartItem]);
 
   return {
     handleCheckout,
-    grantCheckoutLoading,
     fulfillment,
     setFulfillment,
     setChosenCartItem,
@@ -497,6 +521,10 @@ const useCheckout = (
     simpleCheckoutLoading,
     spendApproved,
     approvePurchase,
+    currency,
+    setCurrency,
+    checkoutLoading,
+    checkoutApproved,
   };
 };
 
