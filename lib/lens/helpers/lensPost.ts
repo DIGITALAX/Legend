@@ -20,7 +20,7 @@ const lensPost = async (
   address: `0x${string}`,
   clientWallet: WalletClient,
   publicClient: PublicClient,
-  clearBox: () => void
+  clearBox?: () => void
 ): Promise<void> => {
   if (
     openActionModules &&
@@ -120,7 +120,7 @@ const lensPost = async (
       })
     );
     const tx = await publicClient.waitForTransactionReceipt({ hash: res });
-    clearBox();
+    clearBox && clearBox();
     await handleIndexCheck(
       {
         forTxHash: tx.transactionHash,
