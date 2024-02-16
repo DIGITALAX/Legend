@@ -14,6 +14,8 @@ import Bar from "@/components/Common/modules/Bar";
 import useCheckout from "@/components/Checkout/hooks/useCheckout";
 import { LitNodeClient } from "@lit-protocol/lit-node-client";
 import { setAllGrants } from "../../redux/reducers/allGrantsSlice";
+import { INFURA_GATEWAY } from "../../lib/constants";
+import Image from "next/legacy/image";
 
 export default function Home({
   client,
@@ -61,13 +63,13 @@ export default function Home({
     cartItems,
     client,
     address,
-    allGrants,
     dispatch,
     publicClient,
     lensConnected,
     oracleData,
-    details,
-    router
+    router,
+    allGrants,
+    details
   );
   const {
     handleFetchMoreGrants,
@@ -103,59 +105,83 @@ export default function Home({
 
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-start px-2 pt-2 overflow-auto flex-grow">
-      <div className="relative w-full h-fit overflow-y-scroll flex items-start justify-center">
-        <InfiniteScroll
-          dataLength={allGrants?.length}
-          loader={<></>}
-          hasMore={grantInfo?.hasMore}
-          next={handleFetchMoreGrants}
-          className={`w-full h-full items-start justify-center flex`}
-        >
-          <div className="relative w-full h-fit flex flex-col items-center justify-start gap-8">
-            {allGrantsLoading
-              ? Array.from({ length: 10 })?.map((_, index: number) => {
-                  return (
-                    <div
-                      className="relative h-[20rem] w-full sm:w-3/4 xl:w-1/2 border border-black flex flex-col items-center justify-start bg-black animate-pulse"
-                      key={index}
-                    >
-                      <Bar title={"Loading..."} />
-                      <div className="relative w-full h-full flex flex-col bg-grant bg-repeat bg-contain"></div>
-                    </div>
-                  );
-                })
-              : allGrants?.map((grant: GrantType, index: number) => {
-                  return (
-                    <Grant
-                      setShowFundedHover={setShowFundedHover}
-                      showFundedHover={showFundedHover?.[index]}
-                      key={index}
-                      oracleData={oracleData}
-                      grant={grant}
-                      spendApproved={spendApproved?.[index]}
-                      approvePurchase={approvePurchase}
-                      simpleCollectLoading={simpleCheckoutLoading?.[index]}
-                      mainIndex={index}
-                      cartItems={cartItems}
-                      interactionsLoading={interactionsLoading?.[index]}
-                      mirror={mirror}
-                      like={like}
-                      handleCheckout={handleCheckout}
-                      bookmark={bookmark}
-                      setMirrorChoiceOpen={setMirrorChoiceOpen}
-                      mirrorChoiceOpen={mirrorChoiceOpen}
-                      dispatch={dispatch}
-                      router={router}
-                      details={details?.[index]}
-                      setDetails={setDetails}
-                      changeCurrency={changeCurrency?.[index]}
-                      setChangeCurrency={setChangeCurrency}
-                    />
-                  );
-                })}
+      {allGrantsLoading || allGrants?.length > 0 ? (
+        <div className="relative w-full h-fit overflow-y-scroll flex items-start justify-center">
+          <InfiniteScroll
+            dataLength={allGrants?.length}
+            loader={<></>}
+            hasMore={grantInfo?.hasMore}
+            next={handleFetchMoreGrants}
+            className={`w-full h-full items-start justify-center flex`}
+          >
+            <div className="relative w-full h-fit flex flex-col items-center justify-start gap-8">
+              {allGrantsLoading
+                ? Array.from({ length: 10 })?.map((_, index: number) => {
+                    return (
+                      <div
+                        className="relative h-[20rem] w-full sm:w-3/4 xl:w-1/2 border border-black flex flex-col items-center justify-start bg-black animate-pulse"
+                        key={index}
+                      >
+                        <Bar title={"Loading..."} />
+                        <div className="relative w-full h-full flex flex-col bg-grant bg-repeat bg-contain"></div>
+                      </div>
+                    );
+                  })
+                : allGrants?.map((grant: GrantType, index: number) => {
+                    return (
+                      <Grant
+                        setShowFundedHover={setShowFundedHover}
+                        showFundedHover={showFundedHover?.[index]}
+                        key={index}
+                        oracleData={oracleData}
+                        grant={grant}
+                        spendApproved={spendApproved?.[index]}
+                        approvePurchase={approvePurchase}
+                        simpleCollectLoading={simpleCheckoutLoading?.[index]}
+                        mainIndex={index}
+                        cartItems={cartItems}
+                        interactionsLoading={interactionsLoading?.[index]}
+                        mirror={mirror}
+                        like={like}
+                        handleCheckout={handleCheckout}
+                        bookmark={bookmark}
+                        setMirrorChoiceOpen={setMirrorChoiceOpen}
+                        mirrorChoiceOpen={mirrorChoiceOpen}
+                        dispatch={dispatch}
+                        router={router}
+                        details={details?.[index]}
+                        setDetails={setDetails}
+                        changeCurrency={changeCurrency?.[index]}
+                        setChangeCurrency={setChangeCurrency}
+                      />
+                    );
+                  })}
+            </div>
+          </InfiniteScroll>
+        </div>
+      ) : (
+        <div className="relative w-full h-full flex items-center justify-center">
+          <div className="w-96 h-fit flex flex-col items-center justify-center bg-offWhite">
+            <Bar title={"Loading..."} />
+            <div className="relative w-full h-fit flex flex-col gap-3 px-3 py-6">
+              <div className="relative w-full h-fit flex items-center justify-center text-black font-dog text-xxs text-center">
+                No Live Grants yet. <br />
+                <br /> Check back in a bit...
+              </div>
+              <div className="relative w-full h-fit flex items-center justify-center">
+                <div className="flex items-center justify-center w-28 h-28">
+                  <Image
+                    layout="fill"
+                    objectFit="contain"
+                    draggable={false}
+                    src={`${INFURA_GATEWAY}/ipfs/QmYJqd9BfBjERoAzAe7p27Yiv82crFoTdZF8RRPFUZ674U`}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
-        </InfiniteScroll>
-      </div>
+        </div>
+      )}
     </div>
   );
 }

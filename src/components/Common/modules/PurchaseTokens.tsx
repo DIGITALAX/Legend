@@ -1,10 +1,11 @@
 import Image from "next/legacy/image";
-import { FunctionComponent } from "react";
+import { FunctionComponent, SetStateAction } from "react";
 import {
   ACCEPTED_TOKENS_MUMBAI,
   INFURA_GATEWAY,
 } from "../../../../lib/constants";
 import { PurchaseTokensProps } from "../types/common.types";
+import { Details } from "@/components/Launch/types/launch.types";
 
 const PurchaseTokens: FunctionComponent<PurchaseTokensProps> = ({
   details,
@@ -12,27 +13,34 @@ const PurchaseTokens: FunctionComponent<PurchaseTokensProps> = ({
   mainIndex,
   levelIndex,
   tokens,
+  main,
 }): JSX.Element => {
   return (
-    <div className="relative w-3/4 justify-center items-center flex flex-row gap-1 h-fit">
+    <div className="relative w-fit justify-center items-center flex flex-row gap-1 h-fit">
       {ACCEPTED_TOKENS_MUMBAI?.filter((token) =>
         tokens?.includes(token[2])
       )?.map((item: string[], indexTwo: number) => {
         return (
           <div
-            className={`relative w-6 h-7 rounded-full flex items-center cursor-pointer active:scale-95 ${
-              details?.currency === item[2] ? "opacity-50" : "opacity-100"
-            }`}
+            className={`relative rounded-full flex items-center cursor-pointer active:scale-95 ${
+              (main ? details : (details as Details)?.currency) === item[2]
+                ? "opacity-50"
+                : "opacity-100"
+            } ${main ? "w-8 h-9" : "w-6 h-7"}`}
             key={indexTwo}
             onClick={() =>
-              setDetails((prev) => {
-                const arr = [...prev];
-                arr[mainIndex][levelIndex] = {
-                  ...arr[mainIndex][levelIndex],
-                  currency: item[2],
-                };
-                return arr;
-              })
+              main
+                ? (setDetails as (e: SetStateAction<string>) => void)(item[2])
+                : (setDetails as (e: SetStateAction<Details[][]>) => void)(
+                    (prev) => {
+                      const arr = [...prev];
+                      arr[mainIndex][levelIndex] = {
+                        ...arr[mainIndex][levelIndex],
+                        currency: item[2],
+                      };
+                      return arr;
+                    }
+                  )
             }
           >
             <Image

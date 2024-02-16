@@ -39,9 +39,11 @@ const useLevelItems = (
 
       const filteredCollections = data?.collectionCreateds?.filter(
         (item: { acceptedTokens: string[] }) =>
-          postInformation?.currencies.filter((curr) =>
-            item.acceptedTokens.includes(curr)
-          )
+          (postInformation?.currencies &&
+          postInformation?.currencies?.length > 0
+            ? postInformation?.currencies
+            : ACCEPTED_TOKENS_MUMBAI?.map((item) => item[2])
+          ).filter((curr) => item.acceptedTokens.includes(curr))
       );
 
       const categorizedCollections: { [key: string]: PrintItem[] } = {
@@ -143,15 +145,24 @@ const useLevelItems = (
       Array.from({ length: 7 }, (_, index: number) => ({
         currency: ACCEPTED_TOKENS_MUMBAI[2][2],
         sizeIndex: Array.from(
-          { length: levelArray[index]?.collectionIds?.length },
+          {
+            length:
+              index == 0 ? 1 : levelArray[index - 1]?.collectionIds?.length,
+          },
           () => 0
         ),
         colorIndex: Array.from(
-          { length: levelArray[index]?.collectionIds?.length },
+          {
+            length:
+              index == 0 ? 1 : levelArray[index - 1]?.collectionIds?.length,
+          },
           () => 0
         ),
         imageIndex: Array.from(
-          { length: levelArray[index]?.collectionIds?.length },
+          {
+            length:
+              index == 0 ? 1 : levelArray[index - 1]?.collectionIds?.length,
+          },
           () => 0
         ),
         collectionIndex: 0,
@@ -162,16 +173,19 @@ const useLevelItems = (
   };
 
   useEffect(() => {
-    if (allCollections) {
+    if (allCollections && Object.keys(allCollections)?.length > 0) {
       handleShuffleCollectionLevels();
     }
   }, [allCollections]);
 
   useEffect(() => {
-    if (!allCollections || Object.keys(allCollections)?.length < 1) {
+    if (
+      !allCollections ||
+      (postInformation && postInformation?.currencies?.length > 0)
+    ) {
       getAllAvailableCollections();
     }
-  }, []);
+  }, [allCollections, postInformation]);
 
   useEffect(() => {
     if (router?.asPath == "/" && allGrants && allGrants?.length > 0) {
@@ -182,21 +196,30 @@ const useLevelItems = (
             sizeIndex: Array.from(
               {
                 length:
-                  allGrants[index].levelInfo[indexTwo]?.collectionIds?.length,
+                  indexTwo == 0
+                    ? 1
+                    : allGrants[index].levelInfo[indexTwo - 1]?.collectionIds
+                        ?.length,
               },
               () => 0
             ),
             colorIndex: Array.from(
               {
                 length:
-                  allGrants[index].levelInfo[indexTwo]?.collectionIds?.length,
+                  indexTwo == 0
+                    ? 1
+                    : allGrants[index].levelInfo[indexTwo - 1]?.collectionIds
+                        ?.length,
               },
               () => 0
             ),
             imageIndex: Array.from(
               {
                 length:
-                  allGrants[index].levelInfo[indexTwo]?.collectionIds?.length,
+                  indexTwo == 0
+                    ? 1
+                    : allGrants[index].levelInfo[indexTwo - 1]?.collectionIds
+                        ?.length,
               },
               () => 0
             ),
@@ -210,19 +233,28 @@ const useLevelItems = (
           currency: ACCEPTED_TOKENS_MUMBAI[2][2],
           sizeIndex: Array.from(
             {
-              length: grant?.levelInfo[indexTwo]?.collectionIds?.length,
+              length:
+                indexTwo == 0
+                  ? 1
+                  : grant?.levelInfo[indexTwo - 1]?.collectionIds?.length,
             },
             () => 0
           ),
           colorIndex: Array.from(
             {
-              length: grant?.levelInfo[indexTwo]?.collectionIds?.length,
+              length:
+                indexTwo == 0
+                  ? 1
+                  : grant?.levelInfo[indexTwo - 1]?.collectionIds?.length,
             },
             () => 0
           ),
           imageIndex: Array.from(
             {
-              length: grant?.levelInfo[indexTwo]?.collectionIds?.length,
+              length:
+                indexTwo == 0
+                  ? 1
+                  : grant?.levelInfo[indexTwo - 1]?.collectionIds?.length,
             },
             () => 0
           ),

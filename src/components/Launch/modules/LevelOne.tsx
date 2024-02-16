@@ -68,13 +68,15 @@ const LevelOne: FunctionComponent<LevelOneProps> = ({
                 )?.[1]
               }`}
             </div>
-            <PurchaseTokens
-              mainIndex={mainIndex}
-              levelIndex={0}
-              details={details}
-              setDetails={setDetails}
-              tokens={acceptedTokens}
-            />
+            <div className="relative w-3/4 h-fit flex items-center justify-center">
+              <PurchaseTokens
+                mainIndex={mainIndex}
+                levelIndex={0}
+                details={details}
+                setDetails={setDetails}
+                tokens={acceptedTokens}
+              />
+            </div>
           </div>
 
           {cart && (

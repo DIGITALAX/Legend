@@ -11,6 +11,7 @@ import { NextRouter } from "next/router";
 import { setCartItems } from "../../../../redux/reducers/cartItemsSlice";
 import { ImageSet, NftImage } from "../../../../graphql/generated";
 import { ImCross } from "react-icons/im";
+import { CartItem } from "@/components/Checkout/types/checkout.types";
 
 const Header: FunctionComponent<{ router: NextRouter }> = ({
   router,
@@ -191,7 +192,7 @@ const Header: FunctionComponent<{ router: NextRouter }> = ({
                         className="absolute flex -top-1 -right-1 items-center justify-center w-fit h-fit cursor-pointer active:scale-95 border border-white bg-black rounded-full p-1 hover:opacity-70"
                         onClick={() => {
                           const newItems = cartItems
-                            .filter((value) => {
+                            .map((value) => {
                               if (
                                 value.grant.grantId == item.grant.grantId &&
                                 value.chosenLevel.level ==
@@ -204,18 +205,65 @@ const Header: FunctionComponent<{ router: NextRouter }> = ({
                             })
                             .filter(Boolean);
 
-                          dispatch(setCartItems(newItems));
+                          dispatch(setCartItems(newItems as CartItem[]));
                         }}
                       >
                         <ImCross color="white" size={7} />
                       </div>
                     </div>
                     <div className="relative flex flex-row items-center justify-between gap-2 w-fit h-fit">
-                      <div className="relative w-fit h-fit flex items-center justify-center flex-row">
-                        <div className="relative w-fit h-fit flex"></div>
-                        <div></div>
+                      <div className="relative w-fit h-fit flex items-center justify-center flex-row font-dog text-super text-white">
+                        <div
+                          className="relative w-5 h-4 flex cursor-pointer items-center justify-center active:scale-95 border-y border-l border-mar/75"
+                          onClick={() => {
+                            const newItems = cartItems.map((value) => {
+                              if (
+                                value.grant.grantId == item.grant.grantId &&
+                                value.chosenLevel.level ==
+                                  item.chosenLevel.level
+                              ) {
+                                return {
+                                  ...value,
+                                  amount: value.amount + 1,
+                                };
+                              } else {
+                                return value;
+                              }
+                            });
+
+                            dispatch(setCartItems(newItems));
+                          }}
+                        >
+                          +
+                        </div>
+                        <div
+                          className="relative w-5 h-4 flex cursor-pointer items-center justify-center active:scale-95 border border-mar/75"
+                          onClick={() => {
+                            const newItems = cartItems
+                              .map((value) => {
+                                if (
+                                  value.grant.grantId == item.grant.grantId &&
+                                  value.chosenLevel.level ==
+                                    item.chosenLevel.level
+                                ) {
+                                  return value.amount - 1 != 0
+                                    ? {
+                                        ...value,
+                                        amount: value.amount - 1,
+                                      }
+                                    : undefined;
+                                } else {
+                                  return value;
+                                }
+                              })
+                              .filter(Boolean);
+                            dispatch(setCartItems(newItems as CartItem[]));
+                          }}
+                        >
+                          -
+                        </div>
                       </div>
-                      <div className="relative font-dog items-center justify-center w-fit h-fit text-center cursor-pointer active:scale-95 text-white text-xxs">
+                      <div className="relative font-dog items-center justify-center w-fit h-fit text-center text-white text-xxs">
                         {item.amount} x
                       </div>
                       <div className="relative w-fit h-fit items-center justify-center font-dog text-xxs text-white break-words text-center">

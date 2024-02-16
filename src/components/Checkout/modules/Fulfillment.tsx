@@ -1,7 +1,6 @@
 import { FunctionComponent } from "react";
 import { FulfillmentProps } from "../types/checkout.types";
 import Bar from "@/components/Common/modules/Bar";
-import { AiOutlineLoading } from "react-icons/ai";
 import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
 
 const Fulfillment: FunctionComponent<FulfillmentProps> = ({
@@ -20,7 +19,7 @@ const Fulfillment: FunctionComponent<FulfillmentProps> = ({
             </div>
             <input
               className="bg-arco text-left flex items-center justify-center w-full h-9 p-1 text-lig border border-gris rounded-sm"
-              type="number"
+              type="text"
               value={fulfillment?.name}
               onChange={(e) =>
                 setFulfillment({

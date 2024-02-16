@@ -36,9 +36,6 @@ export default function Launch({ router }: { router: NextRouter }) {
   const oracleData = useSelector(
     (state: RootState) => state.app.oracleDataReducer.data
   );
-  const levelItems = useSelector(
-    (state: RootState) => state.app.levelArrayReducer.collections
-  );
   const {
     handleInputDateChange,
     handleDateSelect,
