@@ -13,6 +13,7 @@ import {
   ACCEPTED_TOKENS_MUMBAI,
   INFURA_GATEWAY,
 } from "../../../../lib/constants";
+import toHexWithLeadingZero from "../../../../lib/lens/helpers/toHexWithLeadingZero";
 
 const LaunchSwitch: FunctionComponent<LaunchSwitchProps> = ({
   grantStage,
@@ -41,7 +42,7 @@ const LaunchSwitch: FunctionComponent<LaunchSwitchProps> = ({
   details,
   setDetails,
   oracleData,
-  dispatch
+  dispatch,
 }) => {
   switch (grantStage) {
     case 0:
@@ -82,17 +83,40 @@ const LaunchSwitch: FunctionComponent<LaunchSwitchProps> = ({
 
                             let newCurrencies = prev.currencies;
 
+                            const currencyIndex = newCurrencies.findIndex(
+                              (value) => value == item[2]
+                            );
+
                             if (newCurrencies.includes(item[2])) {
+                              const newMil = newInfo.milestones.map((mil) => {
+                                const currencyAmount =
+                                  mil.currencyAmount.filter(
+                                    (_, index) => index !== currencyIndex
+                                  );
+
+                                return {
+                                  ...mil,
+                                  currencyAmount,
+                                };
+                              });
+
                               newCurrencies = newCurrencies
                                 .filter((value) => value !== item[2])
                                 .filter(Boolean);
+
+                              newInfo = {
+                                ...newInfo,
+                                milestones: newMil,
+                                currencies: newCurrencies,
+                              };
                             } else {
                               newCurrencies = [...newCurrencies, item[2]];
+
+                              newInfo = {
+                                ...newInfo,
+                                currencies: newCurrencies,
+                              };
                             }
-                            newInfo = {
-                              ...newInfo,
-                              currencies: newCurrencies,
-                            };
 
                             return newInfo;
                           })
@@ -184,7 +208,9 @@ const LaunchSwitch: FunctionComponent<LaunchSwitchProps> = ({
       return (
         <Success
           router={router}
-          pubId={`${profileId}-${pubId?.toString(16)}`}
+          pubId={`${toHexWithLeadingZero(
+            Number(profileId)
+          )}-${toHexWithLeadingZero(Number(pubId))}`}
         />
       );
 

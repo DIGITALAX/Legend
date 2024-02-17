@@ -23,7 +23,6 @@ const GrantItem: FunctionComponent<GrantItemProps> = ({
   type,
   owner,
   setEdit,
-  edit,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit flex flex-col items-center justify-center gap-2">
@@ -56,7 +55,7 @@ const GrantItem: FunctionComponent<GrantItemProps> = ({
           </div>
           {(owner || type) && (
             <div
-              className={`absolute top-2 right-2 flex items-center justify-center w-fit h-fit ${
+              className={`absolute top-2 right-2 flex items-center justify-center w-fit h-fit bg-mar/75 border border-lima rounded-full p-1 ${
                 owner && "cursor-pointer active:scale-95"
               }`}
               onClick={(e) => {
@@ -69,9 +68,7 @@ const GrantItem: FunctionComponent<GrantItemProps> = ({
               title={owner ? "Edit" : type}
             >
               <div
-                className={`relative flex items-center justify-center ${
-                  owner ? "w-4 h-7" : "h-5 w-5"
-                }`}
+                className={`relative flex items-center justify-center h-4 w-4`}
               >
                 <Image
                   draggable={false}
@@ -82,6 +79,7 @@ const GrantItem: FunctionComponent<GrantItemProps> = ({
                       ? "QmXZ9eEEnVgYs2Eij4nkASJwhx3VNc9cnRTXown3eYRCp1"
                       : "Qmbx2hwZyDePDk5oyFA4TshPJJPYQyestDKNWAqEpV3NyL"
                   }`}
+                  objectFit="contain"
                   layout="fill"
                 />
               </div>
