@@ -25,5 +25,4 @@ export type GrantItemProps = {
   setShowFundedHover: (e: SetStateAction<boolean[]>) => void;
   type?: string;
   setEdit?: (e: Grant | undefined) => void;
-  edit?: Grant | undefined;
 };

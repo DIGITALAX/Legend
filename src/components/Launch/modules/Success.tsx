@@ -31,9 +31,7 @@ const Success: FunctionComponent<SuccessProps> = ({
           >
             <div
               className={`relative w-fit h-fit text-center font-dog text-white`}
-              onClick={() =>
-                router.push(`/grant/${Number(pubId)?.toString(16)}`)
-              }
+              onClick={() => router.push(`/grant/${pubId}`)}
             >
               Go to Grant
             </div>

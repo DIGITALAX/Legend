@@ -122,7 +122,6 @@ export default function Grantee({ router }: { router: NextRouter }) {
                   return (
                     <GrantItem
                       type={item?.type}
-                      edit={edit}
                       setEdit={setEdit}
                       setShowFundedHover={setShowFundedHover}
                       showFundedHover={showFundedHover?.[index]}
