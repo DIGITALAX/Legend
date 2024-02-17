@@ -5,11 +5,12 @@ import lensProfileReducer from "./reducers/lensProfileSlice";
 import claimProfileReducer from "./reducers/claimProfileSlice";
 import cartItemsReducer from "./reducers/cartItemsSlice";
 import cartAnimReducer from "./reducers/cartAnimSlice";
-import granteeReducer from "./reducers/granteeSlice";
+import isGranteeReducer from "./reducers/isGranteeSlice";
 import errorModalReducer from "./reducers/errorModalSlice";
 import imageExpandReducer from "./reducers/mediaExpandSlice";
 import availableCollectionsReducer from "./reducers/availableCollectionsSlice";
 import postReducer from "./reducers/postSlice";
+import grantCollectedReducer from "./reducers/grantCollectedSlice";
 import levelArrayReducer from "./reducers/levelArraySlice";
 import allGrantsReducer from "./reducers/allGrantsSlice";
 import oracleDataReducer from "./reducers/oracleDataSlice";
@@ -17,13 +18,14 @@ import indexerReducer from "./reducers/indexerSlice";
 import collectionsCacheReducer from "./reducers/collectionsCacheSlice";
 import postCollectGifReducer from "./reducers/postCollectGifSlice";
 import availableCurrenciesReducer from "./reducers/availableCurrenciesSlice";
+import granteeModalReducer from "./reducers/granteeModalSlice";
 
 const reducer = combineReducers({
   walletConnectedReducer,
   lensProfileReducer,
   cartItemsReducer,
   cartAnimReducer,
-  granteeReducer,
+  isGranteeReducer,
   errorModalReducer,
   imageExpandReducer,
   availableCollectionsReducer,
@@ -35,7 +37,9 @@ const reducer = combineReducers({
   collectionsCacheReducer,
   postReducer,
   postCollectGifReducer,
-  availableCurrenciesReducer
+  availableCurrenciesReducer,
+  granteeModalReducer,
+  grantCollectedReducer,
 });
 
 export const store = configureStore({

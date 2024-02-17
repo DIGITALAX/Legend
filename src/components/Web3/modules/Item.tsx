@@ -20,6 +20,10 @@ const GrantItem: FunctionComponent<GrantItemProps> = ({
   mirrorChoiceOpen,
   showFundedHover,
   setShowFundedHover,
+  type,
+  owner,
+  setEdit,
+  edit,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit flex flex-col items-center justify-center gap-2">
@@ -50,6 +54,39 @@ const GrantItem: FunctionComponent<GrantItemProps> = ({
             )}
             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-transparent to-offBlack flex"></div>
           </div>
+          {(owner || type) && (
+            <div
+              className={`absolute top-2 right-2 flex items-center justify-center w-fit h-fit ${
+                owner && "cursor-pointer active:scale-95"
+              }`}
+              onClick={(e) => {
+                if (owner) {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  setEdit!(grant);
+                }
+              }}
+              title={owner ? "Edit" : type}
+            >
+              <div
+                className={`relative flex items-center justify-center ${
+                  owner ? "w-4 h-7" : "h-5 w-5"
+                }`}
+              >
+                <Image
+                  draggable={false}
+                  src={`${INFURA_GATEWAY}/ipfs/${
+                    owner
+                      ? "QmfLefdTi1BHgNydkdCrcde91Zg8ijEayw6j246U4iCTyS"
+                      : type == "contributed"
+                      ? "QmXZ9eEEnVgYs2Eij4nkASJwhx3VNc9cnRTXown3eYRCp1"
+                      : "Qmbx2hwZyDePDk5oyFA4TshPJJPYQyestDKNWAqEpV3NyL"
+                  }`}
+                  layout="fill"
+                />
+              </div>
+            </div>
+          )}
           <div className="absolute bottom-2 left-2 w-full h-fit flex flex-row justify-start items-center overflow-x-scroll">
             <div className="relative w-fit h-fit flex justify-start items-center flex-row gap-2">
               {grant?.grantees?.map((item: Profile, index: number) => {

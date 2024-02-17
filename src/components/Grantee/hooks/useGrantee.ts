@@ -18,6 +18,7 @@ const useGrantee = (
   oracleData: OracleData[]
 ) => {
   const [showFundedHover, setShowFundedHover] = useState<boolean[]>([]);
+  const [orders, setOrders] = useState<boolean>(false);
   const [info, setInfo] = useState<{
     hasMore: boolean;
     cursorContributed: number;
@@ -29,6 +30,7 @@ const useGrantee = (
   });
   const [granteeLoading, setGranteeLoading] = useState<boolean>(false);
   const [grants, setGrants] = useState<(Grant & { type: string })[]>([]);
+  const [edit, setEdit] = useState<Grant | undefined>();
   const [grantee, setGrantee] = useState<Profile | undefined>();
 
   const getGrantProfile = async () => {
@@ -518,6 +520,10 @@ const useGrantee = (
     info,
     handleMoreGrants,
     setGrants,
+    edit,
+    setEdit,
+    orders,
+    setOrders,
   };
 };
 

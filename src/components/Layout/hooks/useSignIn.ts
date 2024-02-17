@@ -21,11 +21,16 @@ import { setClaimProfile } from "../../../../redux/reducers/claimProfileSlice";
 import { getOracleData } from "../../../../graphql/subgraph/queries/getOracleData";
 import { setOracleData } from "../../../../redux/reducers/oracleDataSlice";
 import { OracleData } from "@/components/Launch/types/launch.types";
+import { setIsGrantee } from "../../../../redux/reducers/isGranteeSlice";
+import { PublicClient } from "viem";
+import { LEGEND_ACCESS_CONTROL } from "../../../../lib/constants";
 
 const useSignIn = (
   dispatch: Dispatch,
   lensConnected: Profile | undefined,
-  oracleData: OracleData[]
+  oracleData: OracleData[],
+  isGrantee: boolean,
+  publicClient: PublicClient
 ) => {
   const { signMessageAsync } = useSignMessage();
   const [signInLoading, setSignInLoading] = useState<boolean>(false);
@@ -34,6 +39,42 @@ const useSignIn = (
   const cartAnim = useSelector(
     (state: RootState) => state.app.cartAnimReducer.value
   );
+
+  const checkIsGrantee = async () => {
+    try {
+      const data = await publicClient.readContract({
+        address: LEGEND_ACCESS_CONTROL,
+        abi: [
+          {
+            inputs: [
+              {
+                internalType: "address",
+                name: "_address",
+                type: "address",
+              },
+            ],
+            name: "isGrantee",
+            outputs: [
+              {
+                internalType: "bool",
+                name: "",
+                type: "bool",
+              },
+            ],
+            stateMutability: "view",
+            type: "function",
+          },
+        ],
+        functionName: "isGrantee",
+        args: [address as `0x${string}`],
+        account: address,
+      });
+
+      dispatch(setIsGrantee(data));
+    } catch (err: any) {
+      console.error(err.message);
+    }
+  };
 
   const handleLensSignIn = async () => {
     setSignInLoading(true);
@@ -136,6 +177,12 @@ const useSignIn = (
       handleOracles();
     }
   }, []);
+
+  useEffect(() => {
+    if (address && !isGrantee) {
+      checkIsGrantee();
+    }
+  }, [address, isGrantee]);
 
   return {
     handleLensSignIn,

@@ -1,12 +1,11 @@
 import { FunctionComponent } from "react";
 import Image from "next/legacy/image";
-import { ErrorProps } from "../types/modals.types";
+import { NotGranteeProps } from "../types/modals.types";
 import { INFURA_GATEWAY } from "../../../../lib/constants";
 import { ImCross } from "react-icons/im";
-import { setErrorModal } from "../../../../redux/reducers/errorModalSlice";
+import { setGranteeModal } from "../../../../redux/reducers/granteeModalSlice";
 
-const Error: FunctionComponent<ErrorProps> = ({
-  message,
+const NotGrantee: FunctionComponent<NotGranteeProps> = ({
   dispatch,
 }): JSX.Element => {
   return (
@@ -17,18 +16,13 @@ const Error: FunctionComponent<ErrorProps> = ({
             <ImCross
               color="#D07BF7"
               size={10}
-              onClick={() =>
-                dispatch(
-                  setErrorModal({
-                    actionValue: false,
-                  })
-                )
-              }
+              onClick={() => dispatch(setGranteeModal(false))}
             />
           </div>
           <div className="relative w-full h-fit items-center justify-center flex flex-col gap-3 pb-4">
             <div className="relative w-2/3 h-fit items-center justify-center text-center break-words font-vcr text-white text-sm">
-              {message}
+              Your address is not yet verified. Send us a message on XMTP if
+              you're interested in publishing a grant.
             </div>
             <div
               className="relative w-full sm:w-2/3 h-full min-h-[25vh] flex items-center justify-center rounded-sm p-px"
@@ -49,4 +43,4 @@ const Error: FunctionComponent<ErrorProps> = ({
   );
 };
 
-export default Error;
+export default NotGrantee;

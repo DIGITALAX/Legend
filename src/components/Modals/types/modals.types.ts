@@ -10,6 +10,7 @@ import { SetStateAction } from "react";
 import { NextRouter } from "next/router";
 import { PostCollectGifState } from "../../../../redux/reducers/postCollectGifSlice";
 import { MakePostComment } from "@/components/Common/types/common.types";
+import { CartItem } from "@/components/Checkout/types/checkout.types";
 
 export type PostCollectGifProps = {
   dispatch: Dispatch<AnyAction>;
@@ -108,6 +109,15 @@ export type MediaExpandProps = {
 export type ErrorProps = {
   dispatch: Dispatch<AnyAction>;
   message: string;
+};
+
+export type NotGranteeProps = {
+  dispatch: Dispatch<AnyAction>;
+};
+
+export type GrantCollectedProps = {
+  dispatch: Dispatch<AnyAction>;
+  details: CartItem;
 };
 
 export type ClaimProfileProps = {

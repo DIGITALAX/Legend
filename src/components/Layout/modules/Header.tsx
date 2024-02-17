@@ -12,10 +12,18 @@ import { setCartItems } from "../../../../redux/reducers/cartItemsSlice";
 import { ImageSet, NftImage } from "../../../../graphql/generated";
 import { ImCross } from "react-icons/im";
 import { CartItem } from "@/components/Checkout/types/checkout.types";
+import { polygonMumbai } from "viem/chains";
+import { createPublicClient, http } from "viem";
 
 const Header: FunctionComponent<{ router: NextRouter }> = ({
   router,
 }): JSX.Element => {
+  const publicClient = createPublicClient({
+    chain: polygonMumbai,
+    transport: http(
+      `https://polygon-mumbai.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_MUMBAI}`
+    ),
+  });
   const dispatch = useDispatch();
   const { openConnectModal } = useConnectModal();
   const connected = useSelector(
@@ -27,6 +35,9 @@ const Header: FunctionComponent<{ router: NextRouter }> = ({
   const oracleData = useSelector(
     (state: RootState) => state.app.oracleDataReducer?.data
   );
+  const isGrantee = useSelector(
+    (state: RootState) => state.app.isGranteeReducer.value
+  );
   const cartAnim = useSelector(
     (state: RootState) => state.app.cartAnimReducer.value
   );
@@ -34,7 +45,7 @@ const Header: FunctionComponent<{ router: NextRouter }> = ({
     (state: RootState) => state.app.cartItemsReducer.items
   );
   const { signInLoading, handleLensSignIn, checkoutOpen, setCheckoutOpen } =
-    useSignIn(dispatch, profile, oracleData);
+    useSignIn(dispatch, profile, oracleData, isGrantee, publicClient);
 
   return (
     <div className="relative bg-black h-12 p-2 justify-center items-center flex flex-row w-full h-fit">

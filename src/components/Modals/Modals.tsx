@@ -13,6 +13,8 @@ import { polygon } from "viem/chains";
 import QuoteBox from "./modules/QuoteBox";
 import { NextRouter } from "next/router";
 import useInteractions from "../Grants/hooks/useInteractions";
+import NotGrantee from "./modules/NotGrantee";
+import GrantCollected from "./modules/GrantCollected";
 
 const Modals: FunctionComponent<{
   router: NextRouter;
@@ -41,8 +43,14 @@ const Modals: FunctionComponent<{
   const lensConnected = useSelector(
     (state: RootState) => state.app.lensProfileReducer?.profile
   );
+  const grantCollected = useSelector(
+    (state: RootState) => state.app.grantCollectedReducer
+  );
   const claimProfile = useSelector(
     (state: RootState) => state.app.claimProfileReducer
+  );
+  const grantee = useSelector(
+    (state: RootState) => state.app.granteeModalReducer
   );
   const indexer = useSelector((state: RootState) => state.app.indexerReducer);
   const { openMeasure, setOpenMeasure, handleGif, searchGifLoading } =
@@ -87,6 +95,7 @@ const Modals: FunctionComponent<{
       {errorModal.value && (
         <Error message={errorModal.message} dispatch={dispatch} />
       )}
+      {grantee?.value && <NotGrantee dispatch={dispatch} />}
       {postBox.value && (
         <QuoteBox
           quote={postBox.quote!}
@@ -129,7 +138,9 @@ const Modals: FunctionComponent<{
           dispatch={dispatch}
         />
       )}
-
+      {grantCollected?.value && (
+        <GrantCollected dispatch={dispatch} details={grantCollected?.item!} />
+      )}
       {claimProfile?.value && <ClaimProfile dispatch={dispatch} />}
       {indexer?.open && <Index message={indexer?.message!} />}
     </>

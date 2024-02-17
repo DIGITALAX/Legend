@@ -45,6 +45,7 @@ export type DeployProps = {
   postInformation: PostInformation;
   setPostInformation: (e: SetStateAction<PostInformation>) => void;
   dispatch: Dispatch<AnyAction>;
+  isGrantee: boolean;
 };
 
 export type InformationProps = {

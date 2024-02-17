@@ -42,7 +42,7 @@ export type GrantProps = {
   changeCurrency: string;
   setChangeCurrency: (e: SetStateAction<string[]>) => void;
   showFundedHover: boolean;
-  setShowFundedHover: (e: SetStateAction<boolean[]>) => void;
+  setShowFundedHover: (e: SetStateAction<boolean[]>) => void
 };
 
 export type CollectItemProps = {
