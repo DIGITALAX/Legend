@@ -12,6 +12,8 @@ export const LEGEND_MILESTONE_ESCROW_CONTRACT: `0x${string}` =
 export const LEGEND_OPEN_ACTION_CONTRACT: `0x${string}` =
   "0x639b8178DCf393Fb37B2212a0C2431A262622f98";
 export const DIGITALAX_PROFILE_ID_LENS: string = "0x012d";
+export const LEGEND_ACCESS_CONTROL: `0x${string}` =
+  "0xC23150522E366DD884729754ebAD412A2EdF0c24";
 
 export const COVER_CONSTANTS: string[] = [
   "QmaQ22NGDVsvNefVvS368oTYidLRf3GggnasER9biVGSD1",
@@ -231,7 +233,6 @@ export const ACCEPTED_TOKENS_MUMBAI: string[][] = [
     "0x07b722856369f6b923e1f276abca58dd3d15243d",
   ],
 ];
-
 
 export const printTypeToNumber: { [key in PrintType]: string } = {
   [PrintType.Sticker]: "0",

@@ -12,6 +12,10 @@ import Account from "@/components/Grantee/modules/Account";
 import { useAccount } from "wagmi";
 import { createPublicClient, http } from "viem";
 import { polygonMumbai } from "viem/chains";
+import Orders from "@/components/Grantee/modules/Orders";
+import Edit from "@/components/Grantee/modules/Edit";
+import useClaim from "@/components/Grantee/hooks/useClaim";
+import useOrders from "@/components/Grantee/hooks/useOrders";
 
 export default function Grantee({ router }: { router: NextRouter }) {
   const { id } = router.query;
@@ -38,6 +42,10 @@ export default function Grantee({ router }: { router: NextRouter }) {
     showFundedHover,
     setShowFundedHover,
     setGrants,
+    edit,
+    setEdit,
+    setOrders,
+    orders,
   } = useGrantee(id as string, lensConnected, oracleData);
   const { followLoading, followProfile, unfollowProfile } = useFollow(
     grantee?.id,
@@ -46,6 +54,11 @@ export default function Grantee({ router }: { router: NextRouter }) {
     address as `0x${string}`,
     publicClient
   );
+  const { milestoneClaimLoading, handleClaimMilestone } = useClaim(
+    address,
+    publicClient
+  );
+  const { allOrders, ordersLoading } = useOrders(address, lensConnected);
   const {
     like,
     bookmark,
@@ -73,51 +86,74 @@ export default function Grantee({ router }: { router: NextRouter }) {
         followProfile={followProfile}
         unfollowProfile={unfollowProfile}
         granteeLoading={granteeLoading}
+        owner={grantee?.ownedBy?.address == lensConnected?.ownedBy?.address}
+        setOrders={setOrders}
+        edit={edit}
+        orders={orders}
+        setEdit={setEdit}
       />
-      <div
-        className="relative w-full h-full flex items-start justify-start overflow-y-scroll"
-        id="side"
-      >
-        <InfiniteScroll
-          dataLength={grants?.length}
-          loader={<></>}
-          hasMore={info?.hasMore}
-          next={handleMoreGrants}
-          className={`w-full h-fit grid grid-cols-5 gap-4`}
+      {orders ? (
+        <Orders allOrders={allOrders} ordersLoading={ordersLoading} />
+      ) : !edit ? (
+        <div
+          className="relative w-full h-full flex items-start justify-start overflow-y-scroll"
+          id="side"
         >
-          {granteeLoading
-            ? Array.from({ length: 10 })?.map((_, index: number) => {
-                return (
-                  <div
-                    className="relative h-80 w-full w-full border border-black flex flex-col items-center justify-start bg-offWhite animate-pulse"
-                    key={index}
-                  >
-                    <Bar title={"Loading..."} />
-                    <div className="relative w-full h-full flex flex-col bg-grant bg-repeat bg-contain"></div>
-                  </div>
-                );
-              })
-            : grants?.map((item: Grant, index: number) => {
-                return (
-                  <GrantItem
-                    setShowFundedHover={setShowFundedHover}
-                    showFundedHover={showFundedHover?.[index]}
-                    key={index}
-                    grant={item}
-                    index={index}
-                    like={like}
-                    bookmark={bookmark}
-                    mirror={mirror}
-                    dispatch={dispatch}
-                    router={router}
-                    mirrorChoiceOpen={mirrorChoiceOpen?.[index]}
-                    setMirrorChoiceOpen={setMirrorChoiceOpen}
-                    interactionsLoading={interactionsLoading?.[index]}
-                  />
-                );
-              })}
-        </InfiniteScroll>
-      </div>
+          <InfiniteScroll
+            dataLength={grants?.length}
+            loader={<></>}
+            hasMore={info?.hasMore}
+            next={handleMoreGrants}
+            className={`w-full h-fit grid grid-cols-5 gap-4`}
+          >
+            {granteeLoading
+              ? Array.from({ length: 10 })?.map((_, index: number) => {
+                  return (
+                    <div
+                      className="relative h-80 w-full w-full border border-black flex flex-col items-center justify-start bg-offWhite animate-pulse"
+                      key={index}
+                    >
+                      <Bar title={"Loading..."} />
+                      <div className="relative w-full h-full flex flex-col bg-grant bg-repeat bg-contain"></div>
+                    </div>
+                  );
+                })
+              : grants?.map((item: Grant & { type: string }, index: number) => {
+                  return (
+                    <GrantItem
+                      type={item?.type}
+                      edit={edit}
+                      setEdit={setEdit}
+                      setShowFundedHover={setShowFundedHover}
+                      showFundedHover={showFundedHover?.[index]}
+                      key={index}
+                      grant={item}
+                      index={index}
+                      like={like}
+                      owner={item?.grantees
+                        ?.map((i) => i?.ownedBy?.address?.toLowerCase())
+                        ?.includes(
+                          lensConnected?.ownedBy?.address?.toLowerCase()
+                        )}
+                      bookmark={bookmark}
+                      mirror={mirror}
+                      dispatch={dispatch}
+                      router={router}
+                      mirrorChoiceOpen={mirrorChoiceOpen?.[index]}
+                      setMirrorChoiceOpen={setMirrorChoiceOpen}
+                      interactionsLoading={interactionsLoading?.[index]}
+                    />
+                  );
+                })}
+          </InfiniteScroll>
+        </div>
+      ) : (
+        <Edit
+          handleClaimMilestone={handleClaimMilestone}
+          grant={edit}
+          milestoneClaimLoading={milestoneClaimLoading}
+        />
+      )}
     </div>
   );
 }

@@ -33,6 +33,9 @@ export default function Launch({ router }: { router: NextRouter }) {
   const allCollections = useSelector(
     (state: RootState) => state.app.availableCollectionsReducer.collections
   );
+  const isGrantee = useSelector(
+    (state: RootState) => state.app.isGranteeReducer.value
+  );
   const oracleData = useSelector(
     (state: RootState) => state.app.oracleDataReducer.data
   );
@@ -62,7 +65,9 @@ export default function Launch({ router }: { router: NextRouter }) {
   const { handleLensSignIn, signInLoading } = useSignIn(
     dispatch,
     profile,
-    oracleData
+    oracleData,
+    isGrantee,
+    publicClient
   );
   return (
     <div className="relative w-full h-full flex items-center justify-center p-5 overflow-y-hidden">
@@ -106,6 +111,7 @@ export default function Launch({ router }: { router: NextRouter }) {
         grantStage={grantStage}
         postInformation={postInformation}
         setPostInformation={setPostInformation}
+        isGrantee={isGrantee}
       />
     </div>
   );

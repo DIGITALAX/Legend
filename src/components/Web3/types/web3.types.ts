@@ -6,6 +6,7 @@ import { AnyAction, Dispatch } from "redux";
 export type GrantItemProps = {
   grant: Grant;
   index: number;
+  owner?: boolean;
   like: (id: string, hasReacted: boolean, main?: boolean) => Promise<void>;
   mirrorChoiceOpen: boolean;
   setMirrorChoiceOpen: (e: SetStateAction<boolean[]>) => void;
@@ -22,4 +23,7 @@ export type GrantItemProps = {
   };
   showFundedHover: boolean;
   setShowFundedHover: (e: SetStateAction<boolean[]>) => void;
+  type?: string;
+  setEdit?: (e: Grant | undefined) => void;
+  edit?: Grant | undefined;
 };

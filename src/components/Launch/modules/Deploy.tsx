@@ -3,6 +3,7 @@ import { DeployProps } from "../types/launch.types";
 import { setErrorModal } from "../../../../redux/reducers/errorModalSlice";
 import validateObject from "../../../../lib/lens/helpers/validatePostInfo";
 import getRandomElement from "../../../../lib/lens/helpers/getRandomElement";
+import { setGranteeModal } from "../../../../redux/reducers/granteeModalSlice";
 
 const Deploy: FunctionComponent<DeployProps> = ({
   grantStage,
@@ -10,6 +11,7 @@ const Deploy: FunctionComponent<DeployProps> = ({
   dispatch,
   postInformation,
   setPostInformation,
+  isGrantee,
 }): JSX.Element => {
   return (
     <div className="absolute w-fit h-fit flex flex-row items-center justify-end gap-2 p-2 text-xxs bottom-2 right-3">
@@ -29,7 +31,9 @@ const Deploy: FunctionComponent<DeployProps> = ({
         }`}
         onClick={() => {
           if (grantStage !== 5) {
-            if (!validateObject(postInformation) && grantStage === 4) {
+            if (!isGrantee && grantStage === 4) {
+              dispatch(setGranteeModal(true));
+            } else if (!validateObject(postInformation) && grantStage === 4) {
               dispatch(
                 setErrorModal({
                   actionValue: true,

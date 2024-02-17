@@ -16,6 +16,7 @@ import { polygonMumbai } from "viem/chains";
 import { LEGEND_OPEN_ACTION_CONTRACT } from "../../../../lib/constants";
 import { Profile } from "../../../../graphql/generated";
 import { NextRouter } from "next/router";
+import { setGrantCollected } from "../../../../redux/reducers/grantCollectedSlice";
 
 const useCheckout = (
   cartItems: CartItem[],
@@ -345,8 +346,12 @@ const useCheckout = (
         }
       );
 
-      // dispatch(setGrantCollected(item.grant));
-      // update the totalFundedUSD so the bar updates!
+      dispatch(
+        setGrantCollected({
+          actionValue: true,
+          actionItem: item,
+        })
+      );
     } catch (err: any) {
       console.error(err.message);
     }
