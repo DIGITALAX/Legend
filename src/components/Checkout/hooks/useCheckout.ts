@@ -7,6 +7,7 @@ import {
   Details,
   OracleData,
   PrintItem,
+  PrintType,
 } from "@/components/Launch/types/launch.types";
 import { Grant } from "@/components/Grants/types/grant.types";
 import { Dispatch } from "redux";
@@ -55,7 +56,7 @@ const useCheckout = (
     if (!address || !lensConnected?.id) return;
     let index: number = -1;
     try {
-      if (item.chosenLevel.level == 1) {
+      if (Number(item.chosenLevel.level) == 1) {
         index = allGrants?.findIndex(
           (pub) => pub.publication?.id == item?.grant?.publication?.id
         )!;
@@ -147,7 +148,7 @@ const useCheckout = (
           LEGEND_OPEN_ACTION_CONTRACT,
           BigInt(
             Math.ceil(
-              ((item.chosenLevel.level == 1
+              ((Number(item.chosenLevel.level) == 1
                 ? 10 ** 18
                 : Number(
                     item.chosenLevel.collectionIds?.map(
@@ -171,10 +172,9 @@ const useCheckout = (
       const res = await clientWallet.writeContract(request);
       await publicClient.waitForTransactionReceipt({ hash: res });
 
-      if (item.chosenLevel.level == 1) {
+      if (Number(item.chosenLevel.level) == 1) {
         setSpendApproved((prev) => {
           const arr = [...prev];
-
           arr[index] = true;
           return arr;
         });
@@ -185,7 +185,7 @@ const useCheckout = (
       console.error(err.message);
     }
 
-    if (item.chosenLevel.level == 1) {
+    if (Number(item.chosenLevel.level) == 1) {
       index = allGrants!?.findIndex(
         (pub) => pub.publication?.id == item?.grant?.publication?.id
       );
@@ -281,11 +281,11 @@ const useCheckout = (
 
     if (
       Object.entries(fulfillment).find((item) => item[0] == "") &&
-      item.chosenLevel.level !== 1
+      Number(item.chosenLevel.level) !== 1
     ) {
       return;
     }
-    if (item.chosenLevel.level == 1) {
+    if (Number(item.chosenLevel.level) == 1) {
       const index = allGrants?.findIndex(
         (pub) => pub.publication?.id == item?.grant?.publication?.id
       );
@@ -304,25 +304,34 @@ const useCheckout = (
       setCheckoutLoading(true);
     }
 
+    console.log(item);
+
     try {
       const encodedData = ethers.utils.defaultAbiCoder.encode(
         ["uint256[]", "string", "address", "uint8"],
         [
-          item.chosenLevel.level == 1 ? [] : item.sizes,
-          item.chosenLevel.level == 1
+          Number(item.chosenLevel.level) == 1
+            ? []
+            : item.chosenLevel.collectionIds?.map((col, index) =>
+                col?.printType !== PrintType.Hoodie &&
+                col?.printType !== PrintType.Sticker
+                  ? 0
+                  : item.sizes[index]
+              ),
+          Number(item.chosenLevel.level) == 1
             ? ""
             : await encryptFulfillment(
-                item.chosenLevel.collectionIds.map(
+                item.chosenLevel.collectionIds?.map(
                   (coll, index) =>
-                    coll.collectionMetadata.colors[item.colors[index]]
+                    coll.collectionMetadata.colors?.[item.colors?.[index]]
                 ),
-                item.chosenLevel.collectionIds.map(
+                item.chosenLevel.collectionIds?.map(
                   (coll, index) =>
-                    coll.collectionMetadata.sizes[item.sizes[index]]
+                    coll.collectionMetadata.sizes?.[item.sizes?.[index]]
                 )
               ),
           currency,
-          item.chosenLevel.level,
+          Number(item.chosenLevel.level),
         ]
       );
 
@@ -356,7 +365,7 @@ const useCheckout = (
       console.error(err.message);
     }
 
-    if (item.chosenLevel.level == 1) {
+    if (Number(item.chosenLevel.level) == 1) {
       const index = allGrants?.findIndex(
         (pub) => pub.publication?.id == item?.grant?.publication?.id
       );
@@ -408,10 +417,7 @@ const useCheckout = (
       });
 
       if (
-        Number((data as any)?.toString()) *
-          Number(
-            oracleData?.find((oracle) => oracle.currency === currency)?.wei
-          ) >=
+        Number((data as any)?.toString()) >=
         Number(10 ** 18) /
           Number(
             oracleData?.find((oracle) => oracle.currency === currency)?.rate
@@ -466,13 +472,7 @@ const useCheckout = (
             });
 
             if (
-              Number((data as any)?.toString()) *
-                Number(
-                  oracleData?.find(
-                    (oracle) =>
-                      oracle.currency === details?.[index]?.[0]?.currency
-                  )?.wei
-                ) >=
+              Number((data as any)?.toString()) >=
               Number(10 ** 18) /
                 Number(
                   oracleData?.find(
@@ -498,7 +498,7 @@ const useCheckout = (
     if (
       allGrants &&
       allGrants?.length > 0 &&
-      router.asPath == "/" &&
+      router.asPath !== "/checkout" &&
       details &&
       details?.length > 0 &&
       address

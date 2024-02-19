@@ -23,8 +23,8 @@ const Interactions: FunctionComponent<InteractionsProps> = ({
   grant,
 }): JSX.Element => {
   return (
-    <div className="relative rounded-sm w-full h-fit p-1 items-center justify-between flex bg-mar/75 border border-lima">
-      <div className="relative w-full h-fit rounded-md flex flex-row gap-2 p-2 items-center justify-between font-vcr text-lima text-sm">
+    <div className="relative rounded-sm w-full h-fit items-center justify-between flex bg-mar/75 border border-lima">
+      <div className="relative w-full h-fit rounded-md flex flex-row gap-2 p-2 items-center justify-between font-vcr text-lima text-sm flex-wrap">
         {[
           {
             image: "Qmc476o4FyTJV4e93xNaj9DhWWqC9uQAgExWf4SytZTcV2",

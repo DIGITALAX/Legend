@@ -6,14 +6,14 @@ export const IPFS_REGEX: RegExp = /\b(Qm[1-9A-Za-z]{44}|ba[A-Za-z2-7]{57})\b/;
 export const BASE_URL: string = "https://api-v2-mumbai-live.lens.dev/";
 
 export const LENS_HUB_PROXY: `0x${string}` =
-  "0xC1E77eE73403B8a7478884915aA599932A677870";
+  "0x4fbffF20302F3326B20052ab9C217C44F6480900";
 export const LEGEND_MILESTONE_ESCROW_CONTRACT: `0x${string}` =
-  "0x9421654DbA368a4e164ddBD3C4a83f1a83643D97";
+  "0x03462D3eD937767408442ce7f642DBEb3D699461";
 export const LEGEND_OPEN_ACTION_CONTRACT: `0x${string}` =
-  "0x699cb4DbeE7C7a3ceaf2201b8C4F21036A1442cC";
+  "0x3f0F5B7DE30e297cf70b1673c2d9bbF1a7D21426";
 export const DIGITALAX_PROFILE_ID_LENS: string = "0x012d";
 export const LEGEND_ACCESS_CONTROL: `0x${string}` =
-  "0x1592a6AdFFFDAB03E812F8F8ae63Af8EDE7C49c9";
+  "0x938cF2d1b08b313a27A486e025B4775ceDc3e4F3";
 
 export const COVER_CONSTANTS: string[] = [
   "QmaQ22NGDVsvNefVvS368oTYidLRf3GggnasER9biVGSD1",

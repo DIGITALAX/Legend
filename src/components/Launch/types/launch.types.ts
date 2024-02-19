@@ -131,7 +131,7 @@ export type LaunchSwitchProps = {
   handlePostGrant: () => Promise<void>;
   postLoading: boolean;
   router: NextRouter;
-  pubId: number | undefined;
+  pubId: string | undefined;
   profileId: string | undefined;
   openConnectModal: (() => void) | undefined;
   handleLensSignIn: () => Promise<void>;

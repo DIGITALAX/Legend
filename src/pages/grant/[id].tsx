@@ -87,7 +87,7 @@ export default function Grant({
     lensConnected,
     oracleData,
     router,
-    undefined,
+    [grant!],
     details
   );
   const {

@@ -104,7 +104,7 @@ export default function Home({
   );
 
   return (
-    <div className="relative w-full h-full flex flex-col items-center justify-start px-2 pt-2 overflow-auto flex-grow">
+    <div className="relative w-full h-full flex flex-col items-center justify-start px-1 sm:px-2 pt-2 overflow-auto flex-grow">
       {allGrantsLoading || allGrants?.length > 0 ? (
         <div className="relative w-full h-fit overflow-y-scroll flex items-start justify-center">
           <InfiniteScroll

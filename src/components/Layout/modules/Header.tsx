@@ -48,14 +48,15 @@ const Header: FunctionComponent<{ router: NextRouter }> = ({
     useSignIn(dispatch, profile, oracleData, isGrantee, publicClient);
 
   return (
-    <div className="relative bg-black h-12 p-2 justify-center items-center flex flex-row w-full h-fit">
+    <div className="relative bg-black p-2 justify-center tablet:justify-between lg:justify-center items-center flex flex-col tablet:flex-row w-full h-fit tablet:gap-0 gap-6 sm:gap-4">
+      <div className="relative w-full tablet:w-fit lg:w-full h-fit flex flex-col sm:flex-row gap-2 items-center justify-between tablet:justify-start gap-6 lg:justify-center">
       <Link
         href={"/"}
-        className="absolute ml-auto left-2 items-center justify-center flex font-vcr text-white uppercase text-xl cursor-pointer"
+        className="lg:absolute relative tablet:ml-auto lg:left-2 items-center justify-center flex font-vcr text-white uppercase text-xl cursor-pointer w-fit h-fit"
       >
         LEGEND
       </Link>
-      <div className="relative w-fit h-fit flex items-center justify-center flex-row gap-2">
+      <div className="relative w-fit h-fit flex items-center justify-center flex-row gap-2 sm:flex-nowrap flex-wrap">
         {[
           ["storefront", "store", "#F8F87F"],
           ["feed", "", "#7BF678"],
@@ -78,7 +79,8 @@ const Header: FunctionComponent<{ router: NextRouter }> = ({
           );
         })}
       </div>
-      <div className="absolute flex items-center justify-center flex-row gap-3 mr-auto right-2">
+      </div>
+      <div className="relative lg:absolute flex items-center justify-center sm:justify-end tablet:justify-center flex-row gap-3 mr-0 lg:mr-auto lg:right-2 w-full tablet:w-fit h-fit sm:flex-nowrap flex-wrap">
         <div className="relative flex flex-row gap-1.5 items-center justify-center w-fit h-fit">
           {Array.from(
             { length: 3 },
@@ -174,7 +176,7 @@ const Header: FunctionComponent<{ router: NextRouter }> = ({
       </div>
       {checkoutOpen && (
         <div
-          className="absolute z-20 w-60 right-3 top-12 h-72 rounded-md bg-black/80 overflow-y-scroll flex flex-col py-3 px-7"
+          className="absolute z-20 w-60 right-3 top-52 sm:top-12 h-72 rounded-md bg-black/80 overflow-y-scroll flex flex-col py-3 px-7"
           id="milestone"
         >
           {cartItems?.length > 0 ? (
@@ -191,7 +193,7 @@ const Header: FunctionComponent<{ router: NextRouter }> = ({
                         : item?.grant?.grantMetadata?.title +
                           " " +
                           "( Lvl. " +
-                          item.chosenLevel.level +
+                          Number(item.chosenLevel.level) +
                           ")"}
                     </div>
                     <div className="relative w-full h-56 flex items-center justify-center rounded-sm border border-mar bg-mar/75">
@@ -213,8 +215,8 @@ const Header: FunctionComponent<{ router: NextRouter }> = ({
                             .map((value) => {
                               if (
                                 value.grant.grantId == item.grant.grantId &&
-                                value.chosenLevel.level ==
-                                  item.chosenLevel.level
+                                Number(value.chosenLevel.level) ==
+                                  Number(item.chosenLevel.level)
                               ) {
                                 return undefined;
                               } else {
@@ -237,8 +239,8 @@ const Header: FunctionComponent<{ router: NextRouter }> = ({
                             const newItems = cartItems.map((value) => {
                               if (
                                 value.grant.grantId == item.grant.grantId &&
-                                value.chosenLevel.level ==
-                                  item.chosenLevel.level
+                                Number(value.chosenLevel.level) ==
+                                  Number(item.chosenLevel.level)
                               ) {
                                 return {
                                   ...value,
@@ -261,8 +263,8 @@ const Header: FunctionComponent<{ router: NextRouter }> = ({
                               .map((value) => {
                                 if (
                                   value.grant.grantId == item.grant.grantId &&
-                                  value.chosenLevel.level ==
-                                    item.chosenLevel.level
+                                  Number(value.chosenLevel.level) ==
+                                    Number(item.chosenLevel.level)
                                 ) {
                                   return value.amount - 1 != 0
                                     ? {

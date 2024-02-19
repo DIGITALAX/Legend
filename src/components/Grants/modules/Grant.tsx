@@ -37,7 +37,7 @@ const Grant: FunctionComponent<GrantProps> = ({
   setShowFundedHover,
 }) => {
   return (
-    <div className="relative h-fit w-full sm:w-3/4 xl:w-1/2 border border-black flex flex-col items-center justify-center bg-black">
+    <div className="relative h-fit w-full md:w-3/4 xl:w-1/2 border border-black flex flex-col items-center justify-center bg-black">
       <Bar
         title={
           (grant?.publication?.metadata as ImageMetadataV3)?.title! +
@@ -47,7 +47,7 @@ const Grant: FunctionComponent<GrantProps> = ({
         router={router}
         link={`/grant/${grant?.publication?.id}`}
       />
-      <div className="relative w-full h-full flex flex-col gap-8 px-4 py-3 bg-grant bg-repeat bg-contain">
+      <div className="relative w-full h-full flex flex-col gap-8 px-1 sm:px-4 py-3 bg-grant bg-repeat bg-contain">
         <Interactions
           like={like}
           router={router}
@@ -98,9 +98,8 @@ const Grant: FunctionComponent<GrantProps> = ({
             )}
           </div>
         )}
-
-        <div className="relative w-full h-60 flex flex-row gap-3 items-center justify-center text text-white">
-          <div className="relative w-full h-full flex items-center justify-center w-full h-fit bg-offBlack rounded-sm border border-lima px-3 py-1.5">
+        <div className="relative w-full h-fit sm:h-60 flex flex-col sm:flex-row gap-3 items-center justify-center text text-white">
+          <div className="relative w-full h-60 sm:h-full flex items-center justify-center w-full h-fit bg-offBlack rounded-sm border border-lima px-3 py-1.5">
             <div
               className="relative w-full h-full flex items-start justify-start break-words text-xxs whitespace-preline overflow-y-scroll font-dog"
               dangerouslySetInnerHTML={{
@@ -111,7 +110,7 @@ const Grant: FunctionComponent<GrantProps> = ({
               }}
             ></div>
           </div>
-          <div className="relative w-48 h-full flex items-start justify-center rounded-sm bg-offBlack border border-lima px-1.5">
+          <div className="relative w-full sm:w-48 h-20 sm:h-full flex items-start justify-center rounded-sm bg-offBlack border border-lima pb-2 px-1.5 overflow-y-scroll" id="side">
             <div className="relative w-full h-fit flex justify-start items-start flex-col ml-0 gap-2">
               <div className="relative font-gam text-xl justify-start items-start flex">
                 Grant Team
