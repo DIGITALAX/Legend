@@ -9,7 +9,7 @@ const Fulfillment: FunctionComponent<FulfillmentProps> = ({
   fulfillmentLoading,
 }): JSX.Element => {
   return (
-    <div className="relative w-fit h-fit flex flex-col items-center justify-start">
+    <div className="relative w-full tablet:w-fit h-fit flex flex-col items-center justify-start">
       <Bar title="Fulfillment Info" />
       <div className="relative bg-offWhite w-full h-fit flex flex-col items-center justify-start p-3 gap-3 border border-black rounded-b-sm">
         <div className="relative flex flex-row gap-6 items-center justify-start w-full h-fit">
@@ -31,13 +31,13 @@ const Fulfillment: FunctionComponent<FulfillmentProps> = ({
             />
           </div>
         </div>
-        <div className="relative flex flex-row gap-6 items-center justify-start w-full h-fit">
+        <div className="relative flex flex-col sm:flex-row gap-6 items-center justify-start w-full h-fit">
           <div className="relative w-full h-fit flex-col flex items-start justify-center text-center gap-2 font-dog  text-xxs">
             <div className="relative w-fit h-fit items-center justify-center text-black">
               Apt/House No.
             </div>
             <input
-              className="bg-arco text-left flex items-center justify-center w-14 h-9 p-1 text-lig border border-gris rounded-sm"
+              className="bg-arco text-left flex items-center justify-center w-full tablet:w-14 h-9 p-1 text-lig border border-gris rounded-sm"
               type="number"
               value={fulfillment?.number}
               onChange={(e) =>
@@ -54,7 +54,7 @@ const Fulfillment: FunctionComponent<FulfillmentProps> = ({
               Street Address
             </div>
             <input
-              className="bg-arco text-left flex items-center justify-center w-52 h-9 p-1 text-lig border border-gris rounded-sm"
+              className="bg-arco text-left flex items-center justify-center w-full tablet:w-52 h-9 p-1 text-lig border border-gris rounded-sm"
               value={fulfillment?.street}
               onChange={(e) =>
                 setFulfillment({
@@ -66,7 +66,7 @@ const Fulfillment: FunctionComponent<FulfillmentProps> = ({
             />
           </div>
         </div>
-        <div className="relative flex flex-row gap-6 items-center justify-start w-full h-fit">
+        <div className="relative flex flex-col sm:flex-row gap-6 items-center justify-start w-full h-fit">
           <div
             className="relative w-full h-fit flex-col flex items-start justify-center text-center gap-2 font-dog  text-xxs"
             id="countrySelect"
@@ -110,7 +110,7 @@ const Fulfillment: FunctionComponent<FulfillmentProps> = ({
               Zip
             </div>
             <input
-              className="bg-arco text-left flex items-center justify-center w-52 h-9 p-1 text-lig border border-gris rounded-sm"
+              className="bg-arco text-left flex items-center justify-center w-full tablet:w-52 h-9 p-1 text-lig border border-gris rounded-sm"
               type="number"
               value={fulfillment?.zip}
               onChange={(e) =>

@@ -39,8 +39,8 @@ const Account: FunctionComponent<AccountProps> = ({
         />
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent flex to-black"></div>
       </div>
-      <div className="absolute bottom-14 right-6 w-fit h-fit flex items-center justify-end mr-0">
-        <div className="rounded-full flex items-center relative w-24 h-24 border border-mar/75">
+      <div className="absolute top-10 sm:bottom-14 right-2 sm:right-6 w-fit h-fit flex items-center justify-end mr-0">
+        <div className="rounded-full flex items-center relative w-16 sm:w-24 h-16 sm:h-24 border border-mar/75">
           {pfp && (
             <Image
               src={pfp}
@@ -90,7 +90,7 @@ const Account: FunctionComponent<AccountProps> = ({
       <div className="absolute bottom-3 left-2 w-fit h-fit flex items-center justify-end ml-0 flex-row gap-5">
         <div className="relative w-fit h-fit flex flex-row items-center justify-center gap-1.5">
           <div
-            className="relative w-6 h-6 flex items-center justify-center"
+            className="relative h-4 w-4 sm:w-6 sm:h-6 flex items-center justify-center"
             title="Followers"
           >
             <Image
@@ -99,13 +99,13 @@ const Account: FunctionComponent<AccountProps> = ({
               draggable={false}
             />
           </div>
-          <div className="relative w-fit h-fit text-white font-dog text-xxs flex items-center justify-center">
+          <div className="relative w-fit h-fit text-white font-dog text-super sm:text-xxs flex items-center justify-center">
             {profile?.stats?.followers}
           </div>
         </div>
         <div className="relative w-fit h-fit flex flex-row items-center justify-center gap-1.5">
           <div
-            className="relative w-6 h-6 flex items-center justify-center"
+            className="relative h-4 w-4 sm:w-6 sm:h-6 flex items-center justify-center"
             title="Following"
           >
             <Image
@@ -114,7 +114,7 @@ const Account: FunctionComponent<AccountProps> = ({
               draggable={false}
             />
           </div>
-          <div className="relative w-fit h-fit text-white font-dog text-xxs flex items-center justify-center">
+          <div className="relative w-fit h-fit text-white font-dog text-super sm:text-xxs flex items-center justify-center">
             {profile?.stats?.following}
           </div>
         </div>

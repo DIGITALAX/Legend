@@ -63,78 +63,77 @@ export default function PublicGoods({ router }: { router: NextRouter }) {
   );
 
   return (
-    <div
-      className="relative w-full h-fit flex flex-col sm:flex-row items-start justify-center p-2 tablet:p-5 gap-4 tablet:gap-10  overflow-y-scroll"
-      id="side"
-    >
-      <Filter
-        searchFilters={searchFilters}
-        setSearchFilters={setSearchFilters}
-        lensConnected={lensConnected}
-        setCaretCoord={setCaretCoord}
-        setMentionProfiles={setMentionProfiles}
-        setProfilesOpen={setProfilesOpen}
-        profilesOpen={profilesOpen}
-        inputElement={inputElement}
-        mentionProfiles={mentionProfiles}
-        router={router}
-      />
-      <div
-        className="relative w-full h-full flex items-start justify-start overflow-y-scroll"
-        id="side"
-      >
-        <InfiniteScroll
-          dataLength={grants?.length}
-          loader={<></>}
-          hasMore={info?.hasMore}
-          next={
-            searchFilters?.printType?.length > 0 ||
-            searchFilters?.designer?.trim() !== "" ||
-            searchFilters?.grant?.trim() !== ""
-              ? handleMoreFilteredGrants
-              : handleMoreGrants
-          }
-          className={`w-full h-fit grid grid-cols-1 tablet:grid-cols-2 lg:grid-cols-3 gap-4`}
+    <div className="relative w-full h-fit flex items-start justify-center p-2 tablet:p-5 overflow-auto flex-grow">
+      <div className="relative w-full h-fit overflow-y-scroll flex-col sm:flex-row items-start justify-center gap-4 tablet:gap-10 flex">
+        <Filter
+          searchFilters={searchFilters}
+          setSearchFilters={setSearchFilters}
+          lensConnected={lensConnected}
+          setCaretCoord={setCaretCoord}
+          setMentionProfiles={setMentionProfiles}
+          setProfilesOpen={setProfilesOpen}
+          profilesOpen={profilesOpen}
+          inputElement={inputElement}
+          mentionProfiles={mentionProfiles}
+          router={router}
+        />
+        <div
+          className="relative w-full h-full flex items-start justify-start overflow-y-scroll"
+          id="side"
         >
-          {grantsLoading
-            ? Array.from({ length: 10 })?.map((_, index: number) => {
-                return (
-                  <div
-                    className="relative h-80 w-full w-full border border-black flex flex-col items-center justify-start bg-black animate-pulse"
-                    key={index}
-                  >
-                    <Bar title={"Loading..."} />
-                    <div className="relative w-full h-full flex flex-col bg-grant bg-repeat bg-contain"></div>
-                  </div>
-                );
-              })
-            : grants
-
-                ?.sort((a, b) =>
-                  searchFilters?.timestamp == "latest"
-                    ? Number(a.blockTimestamp) - Number(b.blockTimestamp)
-                    : Number(b.blockTimestamp) - Number(a.blockTimestamp)
-                )
-                ?.map((item: Grant, index: number) => {
+          <InfiniteScroll
+            dataLength={grants?.length}
+            loader={<></>}
+            hasMore={info?.hasMore}
+            next={
+              searchFilters?.printType?.length > 0 ||
+              searchFilters?.designer?.trim() !== "" ||
+              searchFilters?.grant?.trim() !== ""
+                ? handleMoreFilteredGrants
+                : handleMoreGrants
+            }
+            className={`w-full h-fit grid grid-cols-1 tablet:grid-cols-2 lg:grid-cols-3 gap-4`}
+          >
+            {grantsLoading
+              ? Array.from({ length: 10 })?.map((_, index: number) => {
                   return (
-                    <GrantItem
-                      setShowFundedHover={setShowFundedHover}
-                      showFundedHover={showFundedHover?.[index]}
+                    <div
+                      className="relative h-80 w-full w-full border border-black flex flex-col items-center justify-start bg-black animate-pulse"
                       key={index}
-                      grant={item}
-                      index={index}
-                      like={like}
-                      bookmark={bookmark}
-                      mirror={mirror}
-                      dispatch={dispatch}
-                      router={router}
-                      mirrorChoiceOpen={mirrorChoiceOpen?.[index]}
-                      setMirrorChoiceOpen={setMirrorChoiceOpen}
-                      interactionsLoading={interactionsLoading?.[index]}
-                    />
+                    >
+                      <Bar title={"Loading..."} />
+                      <div className="relative w-full h-full flex flex-col bg-grant bg-repeat bg-contain"></div>
+                    </div>
                   );
-                })}
-        </InfiniteScroll>
+                })
+              : grants
+
+                  ?.sort((a, b) =>
+                    searchFilters?.timestamp == "latest"
+                      ? Number(a.blockTimestamp) - Number(b.blockTimestamp)
+                      : Number(b.blockTimestamp) - Number(a.blockTimestamp)
+                  )
+                  ?.map((item: Grant, index: number) => {
+                    return (
+                      <GrantItem
+                        setShowFundedHover={setShowFundedHover}
+                        showFundedHover={showFundedHover?.[index]}
+                        key={index}
+                        grant={item}
+                        index={index}
+                        like={like}
+                        bookmark={bookmark}
+                        mirror={mirror}
+                        dispatch={dispatch}
+                        router={router}
+                        mirrorChoiceOpen={mirrorChoiceOpen?.[index]}
+                        setMirrorChoiceOpen={setMirrorChoiceOpen}
+                        interactionsLoading={interactionsLoading?.[index]}
+                      />
+                    );
+                  })}
+          </InfiniteScroll>
+        </div>
       </div>
     </div>
   );

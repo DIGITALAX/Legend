@@ -77,7 +77,7 @@ export default function Grantee({ router }: { router: NextRouter }) {
   );
   return (
     <div
-      className="relative w-full h-full overflow-y-scroll flex items-start justify-center bg-black pt-5 px-5 gap-10 flex-col"
+      className="relative w-full h-full overflow-y-scroll flex items-start justify-center bg-black pt-5 px-2 lg:px-5 gap-10 flex-col"
       id="side"
     >
       <Account
@@ -104,7 +104,7 @@ export default function Grantee({ router }: { router: NextRouter }) {
             loader={<></>}
             hasMore={info?.hasMore}
             next={handleMoreGrants}
-            className={`w-full h-fit grid grid-cols-5 gap-4`}
+            className={`w-full h-fit grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-5 gap-4`}
           >
             {granteeLoading
               ? Array.from({ length: 10 })?.map((_, index: number) => {

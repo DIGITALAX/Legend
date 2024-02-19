@@ -8,12 +8,12 @@ export const BASE_URL: string = "https://api-v2-mumbai-live.lens.dev/";
 export const LENS_HUB_PROXY: `0x${string}` =
   "0x4fbffF20302F3326B20052ab9C217C44F6480900";
 export const LEGEND_MILESTONE_ESCROW_CONTRACT: `0x${string}` =
-  "0x03462D3eD937767408442ce7f642DBEb3D699461";
+  "0x3Aa7e5402400A8e040B87B5BFd8d7361561a095a";
 export const LEGEND_OPEN_ACTION_CONTRACT: `0x${string}` =
-  "0x3f0F5B7DE30e297cf70b1673c2d9bbF1a7D21426";
+  "0xCD03bC8F7F03C75D229a18f7388Eb0355fe646CB";
 export const DIGITALAX_PROFILE_ID_LENS: string = "0x012d";
 export const LEGEND_ACCESS_CONTROL: `0x${string}` =
-  "0x938cF2d1b08b313a27A486e025B4775ceDc3e4F3";
+  "0xBaF0E255da704bcB3fC1ACFbA0094d60A37c099d";
 
 export const COVER_CONSTANTS: string[] = [
   "QmaQ22NGDVsvNefVvS368oTYidLRf3GggnasER9biVGSD1",

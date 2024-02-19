@@ -58,72 +58,74 @@ export default function Store({ router }: { router: NextRouter }) {
   );
 
   return (
-    <div className="relative w-full h-fit flex flex-row items-start justify-center p-5 gap-10">
-      <Filter
-        router={router}
-        searchFilters={searchFilters}
-        setSearchFilters={setSearchFilters}
-        lensConnected={lensConnected}
-        setCaretCoord={setCaretCoord}
-        setMentionProfiles={setMentionProfiles}
-        setProfilesOpen={setProfilesOpen}
-        profilesOpen={profilesOpen}
-        inputElement={inputElement}
-        mentionProfiles={mentionProfiles}
-      />
-      <div
-        className="relative w-full h-full flex items-start justify-start overflow-y-scroll"
-        id="side"
-      >
-        <InfiniteScroll
-          dataLength={collections?.length}
-          loader={<></>}
-          hasMore={info?.hasMore}
-          next={
-            searchFilters?.printType?.length > 0 ||
-            searchFilters?.designer?.trim() !== "" ||
-            searchFilters?.grant?.trim() !== ""
-              ? handleMoreFilteredCollections
-              : handleMoreCollections
-          }
-          className={`w-full h-fit grid grid-cols-3 gap-4`}
+    <div className="relative w-full h-fit flex items-start justify-center p-2 tablet:p-5 overflow-auto flex-grow">
+      <div className="relative w-full h-fit overflow-y-scroll flex-col sm:flex-row items-start justify-center gap-4 tablet:gap-10 flex">
+        <Filter
+          router={router}
+          searchFilters={searchFilters}
+          setSearchFilters={setSearchFilters}
+          lensConnected={lensConnected}
+          setCaretCoord={setCaretCoord}
+          setMentionProfiles={setMentionProfiles}
+          setProfilesOpen={setProfilesOpen}
+          profilesOpen={profilesOpen}
+          inputElement={inputElement}
+          mentionProfiles={mentionProfiles}
+        />
+        <div
+          className="relative w-full h-full flex items-start justify-start overflow-y-scroll"
+          id="side"
         >
-          {collectionsLoading
-            ? Array.from({ length: 10 })?.map((_, index: number) => {
-                return (
-                  <div
-                    className="relative h-80 w-full w-full border border-black flex flex-col items-center justify-start bg-black animate-pulse"
-                    key={index}
-                  >
-                    <Bar title={"Loading..."} />
-                    <div className="relative w-full h-full flex flex-col bg-grant bg-repeat bg-contain"></div>
-                  </div>
-                );
-              })
-            : collections
-                ?.sort((a, b) =>
-                  searchFilters?.timestamp == "latest"
-                    ? Number(a.blockTimestamp) - Number(b.blockTimestamp)
-                    : Number(b.blockTimestamp) - Number(a.blockTimestamp)
-                )
-                ?.map((item: PrintItem, index: number) => {
+          <InfiniteScroll
+            dataLength={collections?.length}
+            loader={<></>}
+            hasMore={info?.hasMore}
+            next={
+              searchFilters?.printType?.length > 0 ||
+              searchFilters?.designer?.trim() !== "" ||
+              searchFilters?.grant?.trim() !== ""
+                ? handleMoreFilteredCollections
+                : handleMoreCollections
+            }
+            className={`w-full h-fit grid grid-cols-1 tablet:grid-cols-2 lg:grid-cols-3 gap-4`}
+          >
+            {collectionsLoading
+              ? Array.from({ length: 10 })?.map((_, index: number) => {
                   return (
-                    <Item
+                    <div
+                      className="relative h-80 w-full w-full border border-black flex flex-col items-center justify-start bg-black animate-pulse"
                       key={index}
-                      collection={item}
-                      index={index}
-                      like={like}
-                      bookmark={bookmark}
-                      mirror={mirror}
-                      dispatch={dispatch}
-                      router={router}
-                      mirrorChoiceOpen={mirrorChoiceOpen?.[index]}
-                      setMirrorChoiceOpen={setMirrorChoiceOpen}
-                      interactionsLoading={interactionsLoading?.[index]}
-                    />
+                    >
+                      <Bar title={"Loading..."} />
+                      <div className="relative w-full h-full flex flex-col bg-grant bg-repeat bg-contain"></div>
+                    </div>
                   );
-                })}
-        </InfiniteScroll>
+                })
+              : collections
+                  ?.sort((a, b) =>
+                    searchFilters?.timestamp == "latest"
+                      ? Number(a.blockTimestamp) - Number(b.blockTimestamp)
+                      : Number(b.blockTimestamp) - Number(a.blockTimestamp)
+                  )
+                  ?.map((item: PrintItem, index: number) => {
+                    return (
+                      <Item
+                        key={index}
+                        collection={item}
+                        index={index}
+                        like={like}
+                        bookmark={bookmark}
+                        mirror={mirror}
+                        dispatch={dispatch}
+                        router={router}
+                        mirrorChoiceOpen={mirrorChoiceOpen?.[index]}
+                        setMirrorChoiceOpen={setMirrorChoiceOpen}
+                        interactionsLoading={interactionsLoading?.[index]}
+                      />
+                    );
+                  })}
+          </InfiniteScroll>
+        </div>
       </div>
     </div>
   );

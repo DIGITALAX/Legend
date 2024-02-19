@@ -28,10 +28,10 @@ const Success: FunctionComponent<SuccessProps> = ({
           </div>
           <div
             className={`relative w-40 h-8 bg-viol border border-white rounded-md items-center justify-center px-1.5 flex cursor-pointer active:scale-95`}
+            onClick={() => router.push(`/grant/${pubId}`)}
           >
             <div
               className={`relative w-fit h-fit text-center font-dog text-white`}
-              onClick={() => router.push(`/grant/${pubId}`)}
             >
               Go to Grant
             </div>
