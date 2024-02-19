@@ -13,7 +13,7 @@ const Bar: FunctionComponent<BarProps> = ({
       id={contain ? "barContain" : "bar"}
     >
       <div className="relative p-1 whitespace-nowrap bg-offWhite/70 text-black items-center justify-start flex text-xxs w-fit h-fit">
-        {title}
+        {title?.length > 16 ? title.slice(0,12) + "..." : title}
       </div>
       <div className="relative w-fit h-fit flex flex-row gap-1 items-center justify-end">
         <div className="relative w-5 h-5 rounded-sm bg-naran border border-black text-center items-center justify-center flex text-xxs">

@@ -28,7 +28,7 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
 }): JSX.Element => {
   return (
     <div className="relative w-72 h-full flex flex-col items-center justify-start">
-      <Bar title={`Collect Lvl.${levelInfo.level}`} />
+      <Bar title={`Collect Lvl.${Number(levelInfo.level)}`} />
       <div className="relative w-full h-110 flex flex-col gap-2 justify-between items-center p-2 border-b border-x rounded-b-sm border-black bg-white">
         {levelsLoading ? (
           <div className="relative w-48 h-48 rounded-sm border border-black flex items-center justify-center">
@@ -45,8 +45,8 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                   onClick={() =>
                     setDetails((prev) => {
                       const arr = [...prev];
-                      arr[mainIndex][levelInfo.level - 1] = {
-                        ...arr[mainIndex][levelInfo.level - 1],
+                      arr[mainIndex][Number(levelInfo.level) - 1] = {
+                        ...arr[mainIndex][Number(levelInfo.level) - 1],
                         collectionIndex:
                           arr[mainIndex][levelInfo?.level - 1]
                             ?.collectionIndex -
@@ -68,8 +68,8 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                   onClick={() =>
                     setDetails((prev) => {
                       const arr = [...prev];
-                      arr[mainIndex][levelInfo.level - 1] = {
-                        ...arr[mainIndex][levelInfo.level - 1],
+                      arr[mainIndex][Number(levelInfo.level) - 1] = {
+                        ...arr[mainIndex][Number(levelInfo.level) - 1],
                         collectionIndex:
                           arr[mainIndex][levelInfo?.level - 1]
                             ?.collectionIndex +
@@ -137,7 +137,7 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                           setDetails((prev) => {
                             const arr = [...prev];
                             const images = [
-                              ...arr[mainIndex][levelInfo.level - 1]
+                              ...arr[mainIndex][Number(levelInfo.level) - 1]
                                 ?.imageIndex,
                             ];
 
@@ -148,8 +148,8 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                                     details?.collectionIndex
                                   ]?.collectionMetadata?.images?.length;
 
-                            arr[mainIndex][levelInfo.level - 1] = {
-                              ...arr[mainIndex][levelInfo.level - 1],
+                            arr[mainIndex][Number(levelInfo.level) - 1] = {
+                              ...arr[mainIndex][Number(levelInfo.level) - 1],
                               imageIndex: images,
                             };
 
@@ -172,7 +172,7 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                           setDetails((prev) => {
                             const arr = [...prev];
                             const images = [
-                              ...arr[mainIndex][levelInfo.level - 1]
+                              ...arr[mainIndex][Number(levelInfo.level) - 1]
                                 ?.imageIndex,
                             ];
 
@@ -184,8 +184,8 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                                 ? images[details?.collectionIndex] + 1
                                 : 0;
 
-                            arr[mainIndex][levelInfo.level - 1] = {
-                              ...arr[mainIndex][levelInfo.level - 1],
+                            arr[mainIndex][Number(levelInfo.level) - 1] = {
+                              ...arr[mainIndex][Number(levelInfo.level) - 1],
                               imageIndex: images,
                             };
 
@@ -244,14 +244,14 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                         setDetails((prev) => {
                           let arr = [...prev];
                           let obj = {
-                            ...arr[mainIndex][levelInfo.level - 1],
+                            ...arr[mainIndex][Number(levelInfo.level) - 1],
                           };
 
                           const sizes = [...obj.sizeIndex];
                           sizes[details?.collectionIndex] = indexThree;
 
                           obj.sizeIndex = sizes;
-                          arr[mainIndex][levelInfo.level - 1] = obj;
+                          arr[mainIndex][Number(levelInfo.level) - 1] = obj;
                           return arr;
                         })
                       }
@@ -300,14 +300,14 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                             setDetails((prev) => {
                               let arr = [...prev];
                               let obj = {
-                                ...arr[mainIndex][levelInfo.level - 1],
+                                ...arr[mainIndex][Number(levelInfo.level) - 1],
                               };
 
                               const colors = [...obj.colorIndex];
                               colors[details?.collectionIndex] = indexThree;
 
                               obj.colorIndex = colors;
-                              arr[mainIndex][levelInfo.level - 1] = obj;
+                              arr[mainIndex][Number(levelInfo.level) - 1] = obj;
                               return arr;
                             })
                           }
@@ -367,7 +367,7 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                         details?.currency?.toLowerCase()
                     )?.rate
                   )
-                )?.toFixed(2)
+                )?.toFixed(4)
               )} ${
                 ACCEPTED_TOKENS_MUMBAI?.find(
                   (i) => i[2] == details?.currency
@@ -379,7 +379,7 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                 details={details}
                 setDetails={setDetails}
                 mainIndex={mainIndex}
-                levelIndex={levelInfo.level - 1}
+                levelIndex={Number(levelInfo.level) - 1}
                 tokens={
                   levelInfo.collectionIds?.[details?.collectionIndex]
                     ?.acceptedTokens
@@ -392,7 +392,8 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
               className={`w-40 h-8 cursor-pointer rounded-sm cursor-pointer active:scale-95 border border-lima flex flex-row gap-3 items-center justify-center text-center font-dog text-super ${
                 !cartItems?.some(
                   (item) =>
-                    item.chosenLevel.level === levelInfo.level &&
+                    Number(item.chosenLevel.level) ===
+                      Number(levelInfo.level) &&
                     grant?.publication?.id == item?.grant?.publication?.id &&
                     JSON.stringify(item?.colors?.flat()) ===
                       JSON.stringify(details?.colorIndex?.flat()) &&
@@ -406,7 +407,8 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                 if (
                   cartItems?.some(
                     (item) =>
-                      item.chosenLevel.level === levelInfo.level &&
+                      Number(item.chosenLevel.level) ===
+                        Number(levelInfo.level) &&
                       grant?.publication?.id == item?.grant?.publication?.id &&
                       JSON.stringify(item?.colors?.flat()) ===
                         JSON.stringify(details?.colorIndex?.flat()) &&
@@ -443,7 +445,8 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
               >
                 {cartItems?.some(
                   (item) =>
-                    item.chosenLevel.level === levelInfo.level &&
+                    Number(item.chosenLevel.level) ===
+                      Number(levelInfo.level) &&
                     grant?.publication?.id == item?.grant?.publication?.id &&
                     JSON.stringify(item?.colors?.flat()) ===
                       JSON.stringify(details?.colorIndex?.flat()) &&

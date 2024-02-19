@@ -70,7 +70,7 @@ export default function Launch({ router }: { router: NextRouter }) {
     publicClient
   );
   return (
-    <div className="relative w-full h-full flex items-center justify-center p-5 overflow-y-hidden">
+    <div className="relative w-full h-full flex items-center justify-center p-2 sm:p-5 overflow-y-hidden">
       <div
         className="relative w-full h-4/5 items-start justify-center gap-4 flex overflow-y-scroll"
         id="milestone"

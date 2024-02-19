@@ -97,7 +97,7 @@ export default function Checkout({
                         or?.currency?.toLowerCase() == currency?.toLowerCase()
                     )?.rate
                   )
-              )?.toFixed(2)} ${
+              )?.toFixed(4)} ${
                 ACCEPTED_TOKENS_MUMBAI?.find((i) => i[2] == currency)?.[1]
               }`}</div>
             </div>
@@ -133,7 +133,7 @@ export default function Checkout({
                           or?.currency?.toLowerCase() == currency?.toLowerCase()
                       )?.rate
                     )
-                  )?.toFixed(2)
+                  )?.toFixed(5)
                 )} ${
                   ACCEPTED_TOKENS_MUMBAI?.find((i) => i[2] == currency)?.[1]
                 }`}
@@ -194,7 +194,9 @@ export default function Checkout({
                     onClick={() => setChosenCartItem(item)}
                   >
                     <div className="relative w-fit h-fit flex items-center justify-center">
-                      {`(Lvl. ${item.chosenLevel.level})  ${item.grant.grantMetadata.title}`}
+                      {`(Lvl. ${Number(item.chosenLevel.level)})  ${
+                        item.grant.grantMetadata.title
+                      }`}
                     </div>
                     <div className="relative gap-2 w-fit h-fit  flex flex-row items-center justify-center">
                       <div className="relative w-fit h-fit flex items-center justify-center">
@@ -209,8 +211,8 @@ export default function Checkout({
                             const newItems = cartItems.map((value) => {
                               if (
                                 value.grant.grantId == item.grant.grantId &&
-                                value.chosenLevel.level ==
-                                  item.chosenLevel.level &&
+                                Number(value.chosenLevel.level) ==
+                                  Number(item.chosenLevel.level) &&
                                 JSON.stringify(value?.colors?.flat()) ===
                                   JSON.stringify(item?.colors?.flat()) &&
                                 JSON.stringify(value?.sizes?.flat()) ===
@@ -239,8 +241,8 @@ export default function Checkout({
                               .map((value) => {
                                 if (
                                   value.grant.grantId == item.grant.grantId &&
-                                  value.chosenLevel.level ==
-                                    item.chosenLevel.level &&
+                                  Number(value.chosenLevel.level) ==
+                                    Number(item.chosenLevel.level) &&
                                   JSON.stringify(value?.colors?.flat()) ===
                                     JSON.stringify(item?.colors?.flat()) &&
                                   JSON.stringify(value?.sizes?.flat()) ===
@@ -272,8 +274,8 @@ export default function Checkout({
                             .filter((value) => {
                               if (
                                 value.grant.grantId == item.grant.grantId &&
-                                value.chosenLevel.level ==
-                                  item.chosenLevel.level &&
+                                Number(value.chosenLevel.level) ==
+                                  Number(item.chosenLevel.level) &&
                                 JSON.stringify(value?.colors?.flat()) ===
                                   JSON.stringify(item?.colors?.flat()) &&
                                 JSON.stringify(value?.sizes?.flat()) ===

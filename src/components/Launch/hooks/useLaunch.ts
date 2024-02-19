@@ -9,9 +9,14 @@ import {
 } from "../../../../lib/constants";
 import { polygonMumbai } from "viem/chains";
 import { PublicClient, createWalletClient, custom } from "viem";
-import { Profile } from "../../../../graphql/generated";
 import { Dispatch } from "redux";
 import lensPost from "../../../../lib/lens/helpers/lensPost";
+import getPublications from "../../../../graphql/lens/queries/publications";
+import {
+  LimitType,
+  Profile,
+  PublicationType,
+} from "../../../../graphql/generated";
 
 const useLaunch = (
   publicClient: PublicClient,
@@ -21,7 +26,7 @@ const useLaunch = (
   dispatch: Dispatch
 ) => {
   const [grantStage, setGrantStage] = useState<number>(0);
-  const [grantId, setGrantId] = useState<number>();
+  const [grantId, setGrantId] = useState<string>();
   const [postLoading, setPostLoading] = useState<boolean>(false);
   const [activateMilestoneLoading, setActivateMilestoneLoading] = useState<
     boolean[]
@@ -135,8 +140,14 @@ const useLaunch = (
                     c?.toLowerCase() ==
                     ACCEPTED_TOKENS_MUMBAI[3][2]?.toLowerCase()
                 )
-                  ? (Number(cur?.goal) * 10 ** 6).toString()
-                  : (Number(cur?.goal) * 10 ** 18).toString()
+                  ? (Number(BigInt(cur?.goal)) * 10 ** 6).toLocaleString(
+                      "fullwide",
+                      { useGrouping: false }
+                    )
+                  : (Number(BigInt(cur?.goal)) * 10 ** 18).toLocaleString(
+                      "fullwide",
+                      { useGrouping: false }
+                    )
               )
             ),
             acceptedCurrencies: postInformation.currencies,
@@ -194,6 +205,23 @@ const useLaunch = (
         })),
       });
       setGrantStage(6);
+
+      const { data } = await getPublications(
+        {
+          limit: LimitType.Ten,
+          where: {
+            from: [profile?.id],
+            publicationTypes: [PublicationType.Post],
+            withOpenActions: [
+              {
+                address: LEGEND_OPEN_ACTION_CONTRACT,
+              },
+            ],
+          },
+        },
+        profile?.id
+      );
+      setGrantId(data?.publications?.items?.[0]?.id);
     } catch (err: any) {
       console.error(err.message);
     }

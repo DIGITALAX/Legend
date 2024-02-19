@@ -13,7 +13,6 @@ import {
   ACCEPTED_TOKENS_MUMBAI,
   INFURA_GATEWAY,
 } from "../../../../lib/constants";
-import toHexWithLeadingZero from "../../../../lib/lens/helpers/toHexWithLeadingZero";
 
 const LaunchSwitch: FunctionComponent<LaunchSwitchProps> = ({
   grantStage,
@@ -208,9 +207,7 @@ const LaunchSwitch: FunctionComponent<LaunchSwitchProps> = ({
       return (
         <Success
           router={router}
-          pubId={`${toHexWithLeadingZero(
-            Number(profileId)
-          )}-${toHexWithLeadingZero(Number(pubId))}`}
+          pubId={pubId}
         />
       );
 

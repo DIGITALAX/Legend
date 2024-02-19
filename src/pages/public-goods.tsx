@@ -63,7 +63,10 @@ export default function PublicGoods({ router }: { router: NextRouter }) {
   );
 
   return (
-    <div className="relative w-full h-fit flex flex-row items-start justify-center p-5 gap-10">
+    <div
+      className="relative w-full h-fit flex flex-col sm:flex-row items-start justify-center p-2 tablet:p-5 gap-4 tablet:gap-10  overflow-y-scroll"
+      id="side"
+    >
       <Filter
         searchFilters={searchFilters}
         setSearchFilters={setSearchFilters}
@@ -91,7 +94,7 @@ export default function PublicGoods({ router }: { router: NextRouter }) {
               ? handleMoreFilteredGrants
               : handleMoreGrants
           }
-          className={`w-full h-fit grid grid-cols-3 gap-4`}
+          className={`w-full h-fit grid grid-cols-1 tablet:grid-cols-2 lg:grid-cols-3 gap-4`}
         >
           {grantsLoading
             ? Array.from({ length: 10 })?.map((_, index: number) => {

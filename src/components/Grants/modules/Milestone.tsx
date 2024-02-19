@@ -29,13 +29,13 @@ const Milestone: FunctionComponent<MilestoneProps> = ({
           draggable={false}
         />
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b flex from-transparent to-offBlack"></div>
-        <div className="absolute bottom-2 left-2 w-fit h-fit flex items-center justify-start text-xs text-white">
+        <div className="absolute bottom-2 left-2 w-fit h-fit flex items-center justify-start text-xs text-white break-all">
           {`Milestone ${index + 1}`}
         </div>
       </div>
-      <div className="relative w-full h-fit flex flex-col items-start justify-center">
-        <div className="relative w-full h-fit flex flex-row gap-2 justify-between items-start">
-          <div className="relative w-fit h-fit flex flex-row gap-2 justify-start items-center text-white ml-0">
+      <div className="relative w-full h-fit flex flex-col items-start justify-center sm:gap-0 gap-4">
+        <div className="relative w-full h-fit flex sm:flex-nowrap flex-wrap flex-row gap-2 justify-between sm:items-center items-start">
+          <div className="relative w-fit h-fit flex flex-col sm:flex-row sm:gap-2 justify-start items-center text-white ml-0">
             <div className="relative w-fit h-fit flex items-center justify-center font-gam text-lg">
               Contribution Goal:
             </div>
@@ -85,7 +85,7 @@ const Milestone: FunctionComponent<MilestoneProps> = ({
           </div>
         </div>
         <div
-          className={`relative w-fit h-fit flex flex-row gap-2 justify-start items-center text-white ml-0 ${moment(Number(milestone.submitBy) * 1000).isBefore(moment()) ? "text-marron": "text-white" }`}
+          className={`relative w-fit h-fit flex flex-col sm:flex-row sm:gap-2 justify-start sm:items-center items-start text-white ml-0 ${moment(Number(milestone.submitBy) * 1000).isBefore(moment()) ? "text-marron": "text-white" }`}
         >
           <div className="relative w-fit h-fit flex items-center justify-center font-gam text-lg">
             Submit By:
