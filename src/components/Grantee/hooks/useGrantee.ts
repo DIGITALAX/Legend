@@ -248,15 +248,29 @@ const useGrantee = (
         )
       )) as (Grant & { type: string })[];
 
-      setShowFundedHover(
-        Array.from({ length: [...created, ...contributed].length }, () => false)
+      const filteredContributed = contributed.filter(
+        (contributedItem) =>
+          !created.some(
+            (createdItem) => createdItem.grantId === contributedItem.grantId
+          )
       );
-      setGrants([...created, ...contributed]?.sort(() => Math.random() - 0.5));
+
+      setShowFundedHover(
+        Array.from(
+          { length: [...created, ...filteredContributed].length },
+          () => false
+        )
+      );
+      setGrants(
+        [...created, ...filteredContributed]?.sort(() => Math.random() - 0.5)
+      );
       setGrantee(data?.profile as Profile);
       setInfo({
         hasMore:
-          created?.length == 10 || contributed?.length == 10 ? true : false,
-        cursorContributed: contributed?.length == 10 ? 10 : 0,
+          created?.length == 10 || filteredContributed?.length == 10
+            ? true
+            : false,
+        cursorContributed: filteredContributed?.length == 10 ? 10 : 0,
         cursorCreated: created?.length == 10 ? 10 : 0,
       });
     } catch (err: any) {
@@ -484,20 +498,31 @@ const useGrantee = (
         )) as (Grant & { type: string })[];
       }
 
+      const filteredContributed = contributed.filter(
+        (contributedItem) =>
+          !created.some(
+            (createdItem) => createdItem.grantId === contributedItem.grantId
+          )
+      );
+
       setShowFundedHover([
         ...showFundedHover,
         ...Array.from(
-          { length: [...created, ...contributed].length },
+          { length: [...created, ...filteredContributed].length },
           () => false
         ),
       ]);
       setGrants(
-        [...grants, ...created, ...contributed]?.sort(() => Math.random() - 0.5)
+        [...grants, ...created, ...filteredContributed]?.sort(
+          () => Math.random() - 0.5
+        )
       );
       setInfo({
         hasMore:
-          created?.length == 10 || contributed?.length == 10 ? true : false,
-        cursorContributed: contributed?.length == 10 ? 10 : 0,
+          created?.length == 10 || filteredContributed?.length == 10
+            ? true
+            : false,
+        cursorContributed: filteredContributed?.length == 10 ? 10 : 0,
         cursorCreated: created?.length == 10 ? 10 : 0,
       });
     } catch (err: any) {

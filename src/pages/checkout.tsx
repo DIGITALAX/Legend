@@ -62,9 +62,15 @@ export default function Checkout({
     router
   );
   return (
-    <div className="relative w-full h-full flex p-5 items-start justify-center">
-      <div className="relative flex flex-row items-start justify-center gap-10 w-4/5 h-full">
-        <div className="relative w-fit h-fit flex flex-col items-start justify-start gap-3">
+    <div
+      className="relative w-full h-full flex px-2 py-5 lg:px-5 items-start justify-center overflow-y-scroll"
+      id="side"
+    >
+      <div
+        className="relative flex flex-col tablet:flex-row items-center justify-start tablet:items-start tablet:justify-center gap-7 lg:gap-10 w-full xl:w-4/5 h-fit overflow-y-scroll"
+        id="side"
+      >
+        <div className="relative w-full tablet:w-fit h-fit flex flex-col items-start justify-start gap-3">
           <Fulfillment
             fulfillment={fulfillment}
             setFulfillment={setFulfillment}
@@ -84,7 +90,12 @@ export default function Checkout({
                         (collectionAcc, collection, index) =>
                           collectionAcc +
                           Number(
-                            collection?.prices[item?.sizes?.[index] || 0] || 0
+                            collection?.prices[
+                              collection?.printType !== PrintType.Sticker &&
+                              collection?.printType !== PrintType.Poster
+                                ? 0
+                                : item?.sizes?.[index]
+                            ] || 0
                           ),
                         0
                       ),
@@ -122,7 +133,12 @@ export default function Checkout({
                         (acc, val, index) =>
                           acc +
                           Number(
-                            val.prices?.[chosenCartItem?.sizes[index]] || 0
+                            val.prices?.[
+                              val?.printType !== PrintType.Sticker &&
+                              val?.printType !== PrintType.Poster
+                                ? 0
+                                : chosenCartItem?.sizes?.[index]
+                            ] || 0
                           ),
                         0
                       )
@@ -170,7 +186,7 @@ export default function Checkout({
           </div>
         </div>
         <div
-          className="relative flex overflow-y-scroll items-start justify-start w-full h-full"
+          className="relative flex overflow-y-scroll items-start justify-start w-full h-[80rem] tablet:h-full"
           id="side"
         >
           <div className="relative w-full h-fit flex flex-col items-center justify-start gap-8">
@@ -296,7 +312,7 @@ export default function Checkout({
                     </div>
                   </div>
                   <div
-                    className={`relative w-full h-fit flex items-start justify-start bg-mar/75 border font-dog text-xxs text-lima flex-col p-2 gap-4 max-h-[20rem] overflow-y-scroll ${
+                    className={`relative w-full h-fit flex items-start justify-start bg-mar/75 border font-dog text-super sm:text-xxs text-lima flex-col p-2 gap-4 max-h-[20rem] overflow-y-scroll ${
                       chosenCartItem?.chosenLevel == item?.chosenLevel &&
                       chosenCartItem?.grant?.grantId == item?.grant?.grantId &&
                       JSON.stringify(item?.colors?.flat()) ===
@@ -312,21 +328,23 @@ export default function Checkout({
                       (coll: PrintItem, indexTwo: number) => {
                         return (
                           <div
-                            className="relative w-full h-fit flex items-center justify-between flex-row gap-2"
+                            className="relative w-full h-fit flex items-center justify-between sm:flex-nowrap flex-wrap flex-row gap-6 sm:gap-2"
                             key={indexTwo}
                           >
-                            <div className="relative w-20 h-20 flex items-center justify-center rounded-sm border border-lima">
-                              <Image
-                                layout="fill"
-                                objectFit="cover"
-                                className="rounded-sm"
-                                draggable={false}
-                                src={`${INFURA_GATEWAY}/ipfs/${
-                                  coll?.collectionMetadata?.images?.[0]?.split(
-                                    "ipfs://"
-                                  )?.[1]
-                                }`}
-                              />
+                            <div className="relative w-fit h-fit flex items-center justify-center">
+                              <div className="relative w-20 h-20 flex items-center justify-center rounded-sm border border-lima">
+                                <Image
+                                  layout="fill"
+                                  objectFit="cover"
+                                  className="rounded-sm"
+                                  draggable={false}
+                                  src={`${INFURA_GATEWAY}/ipfs/${
+                                    coll?.collectionMetadata?.images?.[0]?.split(
+                                      "ipfs://"
+                                    )?.[1]
+                                  }`}
+                                />
+                              </div>
                             </div>
                             <div className="relative flex items-center justify-center w-fit h-fit">
                               {coll?.collectionMetadata?.title}
@@ -363,7 +381,12 @@ export default function Checkout({
                               }{" "}
                               {(
                                 Number(
-                                  coll?.prices?.[item?.sizes?.[indexTwo]]
+                                  coll?.prices?.[
+                                    coll?.printType !== PrintType.Sticker &&
+                                    coll?.printType !== PrintType.Poster
+                                      ? 0
+                                      : item?.sizes?.[indexTwo]
+                                  ]
                                 ) /
                                 Number(
                                   oracleData?.find(

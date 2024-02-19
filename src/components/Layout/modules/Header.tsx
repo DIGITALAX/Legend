@@ -14,6 +14,7 @@ import { ImCross } from "react-icons/im";
 import { CartItem } from "@/components/Checkout/types/checkout.types";
 import { polygonMumbai } from "viem/chains";
 import { createPublicClient, http } from "viem";
+import { PrintType } from "@/components/Launch/types/launch.types";
 
 const Header: FunctionComponent<{ router: NextRouter }> = ({
   router,
@@ -50,35 +51,35 @@ const Header: FunctionComponent<{ router: NextRouter }> = ({
   return (
     <div className="relative bg-black p-2 justify-center tablet:justify-between lg:justify-center items-center flex flex-col tablet:flex-row w-full h-fit tablet:gap-0 gap-6 sm:gap-4">
       <div className="relative w-full tablet:w-fit lg:w-full h-fit flex flex-col sm:flex-row gap-2 items-center justify-between tablet:justify-start gap-6 lg:justify-center">
-      <Link
-        href={"/"}
-        className="lg:absolute relative tablet:ml-auto lg:left-2 items-center justify-center flex font-vcr text-white uppercase text-xl cursor-pointer w-fit h-fit"
-      >
-        LEGEND
-      </Link>
-      <div className="relative w-fit h-fit flex items-center justify-center flex-row gap-2 sm:flex-nowrap flex-wrap">
-        {[
-          ["storefront", "store", "#F8F87F"],
-          ["feed", "", "#7BF678"],
-          ["launch", "launch", "#D07BF7"],
-          ["public goods", "public-goods", "#59ABF7"],
-        ].map((item: string[], index: number) => {
-          return (
-            <Link
-              key={index}
-              href={`/${item[1]}`}
-              className="relative w-28 h-fit flex px-2 py-1.5 items-center justify-center rounded-sm border font-vcr text-white text-xs active:scale-95 hover:opacity-70"
-              style={{
-                borderColor: item[2],
-              }}
-            >
-              <div className="relative w-fit h-fit flex items-center justify-center">
-                {item[0]}
-              </div>
-            </Link>
-          );
-        })}
-      </div>
+        <Link
+          href={"/"}
+          className="lg:absolute relative tablet:ml-auto lg:left-2 items-center justify-center flex font-vcr text-white uppercase text-xl cursor-pointer w-fit h-fit"
+        >
+          LEGEND
+        </Link>
+        <div className="relative w-fit h-fit flex items-center justify-center flex-row gap-2 sm:flex-nowrap flex-wrap">
+          {[
+            ["storefront", "store", "#F8F87F"],
+            ["feed", "", "#7BF678"],
+            ["launch", "launch", "#D07BF7"],
+            ["public goods", "public-goods", "#59ABF7"],
+          ].map((item: string[], index: number) => {
+            return (
+              <Link
+                key={index}
+                href={`/${item[1]}`}
+                className="relative w-28 h-fit flex px-2 py-1.5 items-center justify-center rounded-sm border font-vcr text-white text-xs active:scale-95 hover:opacity-70"
+                style={{
+                  borderColor: item[2],
+                }}
+              >
+                <div className="relative w-fit h-fit flex items-center justify-center">
+                  {item[0]}
+                </div>
+              </Link>
+            );
+          })}
+        </div>
       </div>
       <div className="relative lg:absolute flex items-center justify-center sm:justify-end tablet:justify-center flex-row gap-3 mr-0 lg:mr-auto lg:right-2 w-full tablet:w-fit h-fit sm:flex-nowrap flex-wrap">
         <div className="relative flex flex-row gap-1.5 items-center justify-center w-fit h-fit">
@@ -216,7 +217,11 @@ const Header: FunctionComponent<{ router: NextRouter }> = ({
                               if (
                                 value.grant.grantId == item.grant.grantId &&
                                 Number(value.chosenLevel.level) ==
-                                  Number(item.chosenLevel.level)
+                                  Number(item.chosenLevel.level) &&
+                                JSON.stringify(item?.colors?.flat()) ===
+                                  JSON.stringify(value?.colors?.flat()) &&
+                                JSON.stringify(item?.sizes?.flat()) ===
+                                  JSON.stringify(value?.sizes?.flat())
                               ) {
                                 return undefined;
                               } else {
@@ -240,7 +245,11 @@ const Header: FunctionComponent<{ router: NextRouter }> = ({
                               if (
                                 value.grant.grantId == item.grant.grantId &&
                                 Number(value.chosenLevel.level) ==
-                                  Number(item.chosenLevel.level)
+                                  Number(item.chosenLevel.level) &&
+                                JSON.stringify(item?.colors?.flat()) ===
+                                  JSON.stringify(value?.colors?.flat()) &&
+                                JSON.stringify(item?.sizes?.flat()) ===
+                                  JSON.stringify(value?.sizes?.flat())
                               ) {
                                 return {
                                   ...value,
@@ -264,7 +273,11 @@ const Header: FunctionComponent<{ router: NextRouter }> = ({
                                 if (
                                   value.grant.grantId == item.grant.grantId &&
                                   Number(value.chosenLevel.level) ==
-                                    Number(item.chosenLevel.level)
+                                    Number(item.chosenLevel.level) &&
+                                  JSON.stringify(item?.colors?.flat()) ===
+                                    JSON.stringify(value?.colors?.flat()) &&
+                                  JSON.stringify(item?.sizes?.flat()) ===
+                                    JSON.stringify(value?.sizes?.flat())
                                 ) {
                                   return value.amount - 1 != 0
                                     ? {
@@ -291,7 +304,14 @@ const Header: FunctionComponent<{ router: NextRouter }> = ({
                         {item.chosenLevel.collectionIds?.reduce(
                           (acc, val, index) =>
                             acc +
-                            Number(val.prices?.[item?.sizes?.[index] || 0]) /
+                            Number(
+                              val.prices?.[
+                                val.printType !== PrintType.Sticker &&
+                                val.printType !== PrintType.Poster
+                                  ? 0
+                                  : item?.sizes?.[index]
+                              ]
+                            ) /
                               10 ** 18,
                           0
                         )}
