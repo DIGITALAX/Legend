@@ -2,8 +2,9 @@ import { gql } from "@apollo/client";
 import { graphLegendClient } from "../../../lib/graph/client";
 
 const GRANT_ORDERS = `
-  query($funded: String) {
-    grantOrders(where: {funded: $funded}) {
+  query($funder: String) {
+    grantOrders(where: {funder: $funder}, orderBy: blockTimestamp, orderDirection: desc) {
+      currency
       grantId
       orderId
       encryptedFulfillment
@@ -18,9 +19,8 @@ const GRANT_ORDERS = `
             images
             title
           }
-          isFulfilled
-          status
-          orderPrice
+          prices
+          printType
       }
       grant {
         grantMetadata {
@@ -65,11 +65,11 @@ const GRANT_ORDERS = `
   }
 `;
 
-export const getGrantOrders = async (funded: string): Promise<any> => {
+export const getGrantOrders = async (funder: string): Promise<any> => {
   const queryPromise = graphLegendClient.query({
     query: gql(GRANT_ORDERS),
     variables: {
-      funded,
+      funder,
     },
     fetchPolicy: "no-cache",
     errorPolicy: "all",

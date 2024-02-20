@@ -85,7 +85,7 @@ const GrantItem: FunctionComponent<GrantItemProps> = ({
               </div>
             </div>
           )}
-          <div className="absolute bottom-2 left-2 w-full h-fit flex flex-row justify-start items-center overflow-x-scroll">
+          <div className="absolute bottom-2 w-5/6 h-fit flex flex-row justify-start items-center overflow-x-scroll">
             <div className="relative w-fit h-fit flex justify-start items-center flex-row gap-2">
               {grant?.grantees?.map((item: Profile, index: number) => {
                 const pfp = createProfilePicture(item?.metadata?.picture);
@@ -124,10 +124,24 @@ const GrantItem: FunctionComponent<GrantItemProps> = ({
       </div>
 
       <div
-        className={`relative w-full h-8 bg-lima/75 border border-lima flex rounded-lg`}
+        className={`relative w-full h-8 bg-lima/75 border border-lima flex rounded-lg cursor-pointer`}
+        onMouseOver={() =>
+          setShowFundedHover((prev) => {
+            const arr = [...prev];
+            arr[index] = true;
+            return arr;
+          })
+        }
+        onMouseLeave={() =>
+          setShowFundedHover((prev) => {
+            const arr = [...prev];
+            arr[index] = false;
+            return arr;
+          })
+        }
       >
         <div
-          className={`relative h-full cursor-pointer bg-mar/75 flex ${
+          className={`relative h-full bg-mar/75 flex ${
             grant?.totalFundedUSD / grant?.totalGoalUSD >= 100
               ? "rounded-lg"
               : "rounded-l-lg"
@@ -135,25 +149,11 @@ const GrantItem: FunctionComponent<GrantItemProps> = ({
           style={{
             width: `${grant?.totalFundedUSD / grant?.totalGoalUSD}%`,
           }}
-          onMouseOver={() =>
-            setShowFundedHover((prev) => {
-              const arr = [...prev];
-              arr[index] = true;
-              return arr;
-            })
-          }
-          onMouseLeave={() =>
-            setShowFundedHover((prev) => {
-              const arr = [...prev];
-              arr[index] = false;
-              return arr;
-            })
-          }
         ></div>
         {showFundedHover && (
           <div className="absolute flex items-center justify-center -top-6 right-auto bg-mar/80 border text-super px-1 py-1.5 border-lima text-white font-dog rounded-md z-10">
             {`${(grant?.totalFundedUSD / grant?.totalGoalUSD).toFixed(
-              2
+              5
             )}% Funded`}
           </div>
         )}

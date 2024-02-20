@@ -6,7 +6,7 @@ const RouterChange: FunctionComponent = (): JSX.Element => {
 
   return (
     <div
-    className="relative w-screen h-screen flex bg-[#7b00ff80]/40 justify-center items-center"
+    className="relative w-screen h-screen flex bg-black/40 justify-center items-center"
     id="router"
   >
     <div className="relative flex justify-center items-center flex-col gap-4">

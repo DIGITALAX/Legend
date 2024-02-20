@@ -30,7 +30,6 @@ const { chains, publicClient } = configureChains(
   [polygonMumbai],
   [alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY! })]
 );
-const client = new LitNodeClient({ litNetwork: "cayenne", debug: false });
 
 const { connectors } = getDefaultWallets({
   appName: "Cypher Search",
@@ -46,6 +45,7 @@ const wagmiConfig = createConfig({
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
+  const client = new LitNodeClient({ litNetwork: "cayenne", debug: false });
 
   const [routerChangeLoading, setRouterChangeLoading] =
     useState<boolean>(false);

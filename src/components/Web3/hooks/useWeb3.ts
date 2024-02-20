@@ -90,7 +90,7 @@ const useWeb3 = (
               item?.fundedAmount?.map((item) => {
                 totalFundedUSD =
                   totalFundedUSD +
-                  (Number(item.funded) *
+                  ((Number(item.funded) / 10 ** 18) *
                     Number(
                       oracleData.find((or) => or.currency == item.currency)
                         ?.rate
@@ -107,13 +107,13 @@ const useWeb3 = (
               mil.currencyGoal.map((goal) => {
                 totalGoalUSD =
                   totalGoalUSD +
-                  (Number(goal.amount) *
-                    Number(
-                      oracleData.find((or) => or.currency == goal.currency)?.wei
-                    )) /
+                  ((Number(goal.amount) / 10 ** 18) *
                     Number(
                       oracleData.find((or) => or.currency == goal.currency)
                         ?.rate
+                    )) /
+                    Number(
+                      oracleData.find((or) => or.currency == goal.currency)?.wei
                     );
               });
             });
@@ -247,7 +247,7 @@ const useWeb3 = (
                 item?.fundedAmount?.map((item) => {
                   totalFundedUSD =
                     totalFundedUSD +
-                    (Number(item.funded) *
+                    ((Number(item.funded) / 10 ** 18) *
                       Number(
                         oracleData.find((or) => or.currency == item.currency)
                           ?.rate
@@ -265,14 +265,14 @@ const useWeb3 = (
                 mil.currencyGoal.map((goal) => {
                   totalGoalUSD =
                     totalGoalUSD +
-                    (Number(goal.amount) *
-                      Number(
-                        oracleData.find((or) => or.currency == goal.currency)
-                          ?.wei
-                      )) /
+                    ((Number(goal.amount) / 10 ** 18) *
                       Number(
                         oracleData.find((or) => or.currency == goal.currency)
                           ?.rate
+                      )) /
+                      Number(
+                        oracleData.find((or) => or.currency == goal.currency)
+                          ?.wei
                       );
                 });
               });
@@ -402,7 +402,7 @@ const useWeb3 = (
                 item?.fundedAmount?.map((item) => {
                   totalFundedUSD =
                     totalFundedUSD +
-                    (Number(item.funded) *
+                    ((Number(item.funded) / 10 ** 18) *
                       Number(
                         oracleData.find((or) => or.currency == item.currency)
                           ?.rate
@@ -420,14 +420,14 @@ const useWeb3 = (
                 mil.currencyGoal.map((goal) => {
                   totalGoalUSD =
                     totalGoalUSD +
-                    (Number(goal.amount) *
-                      Number(
-                        oracleData.find((or) => or.currency == goal.currency)
-                          ?.wei
-                      )) /
+                    ((Number(goal.amount) / 10 ** 18) *
                       Number(
                         oracleData.find((or) => or.currency == goal.currency)
                           ?.rate
+                      )) /
+                      Number(
+                        oracleData.find((or) => or.currency == goal.currency)
+                          ?.wei
                       );
                 });
               });
@@ -518,7 +518,7 @@ const useWeb3 = (
               item?.fundedAmount?.map((item) => {
                 totalFundedUSD =
                   totalFundedUSD +
-                  (Number(item.funded) *
+                  ((Number(item.funded) / 10 ** 18) *
                     Number(
                       oracleData.find((or) => or.currency == item.currency)
                         ?.rate
@@ -535,13 +535,13 @@ const useWeb3 = (
               mil.currencyGoal.map((goal) => {
                 totalGoalUSD =
                   totalGoalUSD +
-                  (Number(goal.amount) *
-                    Number(
-                      oracleData.find((or) => or.currency == goal.currency)?.wei
-                    )) /
+                  ((Number(goal.amount) / 10 ** 18) *
                     Number(
                       oracleData.find((or) => or.currency == goal.currency)
                         ?.rate
+                    )) /
+                    Number(
+                      oracleData.find((or) => or.currency == goal.currency)?.wei
                     );
               });
             });

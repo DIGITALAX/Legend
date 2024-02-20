@@ -4,7 +4,7 @@ import serializeQuery from "../../../lib/lens/helpers/serializeQuery";
 
 const LEVELS = `
   query($first: Int, $skip: Int) {
-    grantCreateds(first: $first, skip: $skip) {
+    grantCreateds(first: $first, skip: $skip, orderBy: blockTimestamp, orderDirection: desc) {
       grantId
       creator
       pubId
@@ -50,7 +50,7 @@ const LEVELS = `
 
 const GRANT = `
   query($pubId: Int, $profileId: Int) {
-    grantCreateds(first: 1, where: {pubId: $pubId, profileId: $profileId}) {
+    grantCreateds(first: 1, where: {pubId: $pubId, profileId: $profileId}, orderBy: blockTimestamp, orderDirection: desc) {
       grantId
       creator
       pubId
@@ -96,7 +96,7 @@ const GRANT = `
 
 const GRANTS_BY_PROFILE = `
   query($first: Int, $skip: Int, $profileId: Int) {
-    grantCreateds(first: $first, skip: $skip, where: {profileId: $profileId}) {
+    grantCreateds(first: $first, skip: $skip, where: {profileId: $profileId}, orderBy: blockTimestamp, orderDirection: desc) {
       grantId
       creator
       pubId
@@ -142,7 +142,7 @@ const GRANTS_BY_PROFILE = `
 
 const GRANTS_BY_COLLECTION = `
   query($collectionId: Int) {
-    collectionGrantIds(where: {collectionId: $collectionId}) {
+    collectionGrantIds(where: {collectionId: $collectionId}, orderBy: blockTimestamp, orderDirection: desc) {
       grants {
         pubId
         profileId
@@ -158,7 +158,7 @@ const GRANTS_BY_COLLECTION = `
 
 const GRANTS_FUNDED = `
   query($funder: String, $first: Int, $skip: Int) {
-    grantFundeds(where: {funder: $funder}, first: $first, skip: $skip) {
+    grantFundeds(where: {funder: $funder}, first: $first, skip: $skip, orderBy: blockTimestamp, orderDirection: desc) {
       grant {
         grantId
       creator

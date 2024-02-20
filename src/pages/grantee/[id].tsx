@@ -16,8 +16,15 @@ import Orders from "@/components/Grantee/modules/Orders";
 import Edit from "@/components/Grantee/modules/Edit";
 import useClaim from "@/components/Grantee/hooks/useClaim";
 import useOrders from "@/components/Grantee/hooks/useOrders";
+import { LitNodeClient } from "@lit-protocol/lit-node-client";
 
-export default function Grantee({ router }: { router: NextRouter }) {
+export default function Grantee({
+  router,
+  client,
+}: {
+  router: NextRouter;
+  client: LitNodeClient;
+}) {
   const { id } = router.query;
   const { address } = useAccount();
   const publicClient = createPublicClient({
@@ -58,7 +65,14 @@ export default function Grantee({ router }: { router: NextRouter }) {
     address,
     publicClient
   );
-  const { allOrders, ordersLoading } = useOrders(address, lensConnected);
+  const {
+    allOrders,
+    ordersLoading,
+    orderOpen,
+    setOrderOpen,
+    decryptOrder,
+    orderDecrypting,
+  } = useOrders(address, lensConnected, client, orders);
   const {
     like,
     bookmark,
@@ -93,7 +107,14 @@ export default function Grantee({ router }: { router: NextRouter }) {
         setEdit={setEdit}
       />
       {orders ? (
-        <Orders allOrders={allOrders} ordersLoading={ordersLoading} />
+        <Orders
+          allOrders={allOrders}
+          ordersLoading={ordersLoading}
+          orderOpen={orderOpen}
+          setOrderOpen={setOrderOpen}
+          decryptOrder={decryptOrder}
+          orderDecrypting={orderDecrypting}
+        />
       ) : !edit ? (
         <div
           className="relative w-full h-full flex items-start justify-start overflow-y-scroll"

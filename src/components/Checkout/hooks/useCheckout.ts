@@ -18,6 +18,7 @@ import { LEGEND_OPEN_ACTION_CONTRACT } from "../../../../lib/constants";
 import { Profile } from "../../../../graphql/generated";
 import { NextRouter } from "next/router";
 import { setGrantCollected } from "../../../../redux/reducers/grantCollectedSlice";
+import { setCartItems } from "../../../../redux/reducers/cartItemsSlice";
 
 const useCheckout = (
   cartItems: CartItem[],
@@ -40,7 +41,7 @@ const useCheckout = (
   const [simpleCheckoutLoading, setSimpleCheckoutLoading] = useState<boolean[]>(
     []
   );
-  const [chosenCartItem, setChosenCartItem] = useState<CartItem>(
+  const [chosenCartItem, setChosenCartItem] = useState<CartItem | undefined>(
     cartItems?.[0]
   );
   const [fulfillment, setFulfillment] = useState<Fulfillment>({
@@ -152,16 +153,22 @@ const useCheckout = (
                 ? 10 ** 18
                 : Number(
                     item.chosenLevel.collectionIds?.map(
-                      (coll, index) => coll.prices[item.sizes[index]]
+                      (coll, index) =>
+                        coll.prices[
+                          coll?.printType !== PrintType.Sticker &&
+                          coll?.printType !== PrintType.Poster
+                            ? 0
+                            : item?.sizes?.[index]
+                        ]
                     )
-                  )) /
-                Number(
-                  oracleData?.find((oracle) => oracle.currency === currency)
-                    ?.rate
-                )) *
+                  )) *
                 Number(
                   oracleData?.find((oracle) => oracle.currency === currency)
                     ?.wei
+                )) /
+                Number(
+                  oracleData?.find((oracle) => oracle.currency === currency)
+                    ?.rate
                 )
             )
           ),
@@ -304,8 +311,6 @@ const useCheckout = (
       setCheckoutLoading(true);
     }
 
-    console.log(item);
-
     try {
       const encodedData = ethers.utils.defaultAbiCoder.encode(
         ["uint256[]", "string", "address", "uint8"],
@@ -313,7 +318,7 @@ const useCheckout = (
           Number(item.chosenLevel.level) == 1
             ? []
             : item.chosenLevel.collectionIds?.map((col, index) =>
-                col?.printType !== PrintType.Hoodie &&
+                col?.printType !== PrintType.Poster &&
                 col?.printType !== PrintType.Sticker
                   ? 0
                   : item.sizes[index]
@@ -354,6 +359,30 @@ const useCheckout = (
           },
         }
       );
+
+      dispatch(
+        setCartItems(
+          cartItems
+            ?.map((value) => {
+              if (
+                value.grant.grantId == item.grant.grantId &&
+                Number(value.chosenLevel.level) ==
+                  Number(item.chosenLevel.level) &&
+                JSON.stringify(item?.colors?.flat()) ===
+                  JSON.stringify(value?.colors?.flat()) &&
+                JSON.stringify(item?.sizes?.flat()) ===
+                  JSON.stringify(value?.sizes?.flat())
+              ) {
+                return undefined;
+              } else {
+                return value;
+              }
+            })
+            .filter(Boolean) as CartItem[]
+        )
+      );
+
+      setChosenCartItem(cartItems?.length > 1 ? cartItems[1] : undefined);
 
       dispatch(
         setGrantCollected({
@@ -418,10 +447,29 @@ const useCheckout = (
 
       if (
         Number((data as any)?.toString()) >=
-        Number(10 ** 18) /
-          Number(
-            oracleData?.find((oracle) => oracle.currency === currency)?.rate
-          )
+        Math.ceil(
+          (Number(
+            chosenCartItem?.chosenLevel?.collectionIds?.reduce(
+              (acc, val, index) =>
+                acc +
+                Number(
+                  val.prices?.[
+                    val?.printType !== PrintType.Sticker &&
+                    val?.printType !== PrintType.Poster
+                      ? 0
+                      : chosenCartItem?.sizes?.[index]
+                  ] || 0
+                ),
+              0
+            )
+          ) *
+            Number(
+              oracleData?.find((oracle) => oracle.currency === currency)?.wei
+            )) /
+            Number(
+              oracleData?.find((oracle) => oracle.currency === currency)?.rate
+            )
+        )
       ) {
         setCheckoutApproved(true);
       } else {
@@ -511,7 +559,7 @@ const useCheckout = (
     if (currency && router.asPath == "/checkout") {
       checkCheckoutApproved();
     }
-  }, [address, currency]);
+  }, [address, currency, chosenCartItem]);
 
   useEffect(() => {
     setCurrency(cartItems?.[0]?.grant?.acceptedCurrencies?.[0]);

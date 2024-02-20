@@ -140,14 +140,12 @@ const useLaunch = (
                     c?.toLowerCase() ==
                     ACCEPTED_TOKENS_MUMBAI[3][2]?.toLowerCase()
                 )
-                  ? (Number(BigInt(cur?.goal)) * 10 ** 6).toLocaleString(
-                      "fullwide",
-                      { useGrouping: false }
-                    )
-                  : (Number(BigInt(cur?.goal)) * 10 ** 18).toLocaleString(
-                      "fullwide",
-                      { useGrouping: false }
-                    )
+                  ? (Number(cur?.goal) * 10 ** 6).toLocaleString("fullwide", {
+                      useGrouping: false,
+                    })
+                  : (Number(cur?.goal) * 10 ** 18).toLocaleString("fullwide", {
+                      useGrouping: false,
+                    })
               )
             ),
             acceptedCurrencies: postInformation.currencies,

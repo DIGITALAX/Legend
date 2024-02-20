@@ -349,12 +349,14 @@ export default function Grant({
             </div>
           </div>
           <div className="relative flex flex-col items-center justify-center w-full h-fit gap-2 pb-5">
-            {grant?.totalFundedUSD > 0 && (
+            {grant?.totalFundedUSD >  0.0005 && (
               <div
-                className={`relative w-full h-8 bg-lima/75 border border-lima flex rounded-lg`}
+                className={`relative cursor-pointer w-full h-8 bg-lima/75 border border-lima flex rounded-lg`}
+                onMouseOver={() => setShowFundedHover(true)}
+                onMouseLeave={() => setShowFundedHover(false)}
               >
                 <div
-                  className={`relative h-full cursor-pointer ${
+                  className={`relative h-full ${
                     grant?.totalFundedUSD / grant?.totalGoalUSD >= 100
                       ? "rounded-lg"
                       : "rounded-l-lg"
@@ -362,13 +364,11 @@ export default function Grant({
                   style={{
                     width: `${grant?.totalFundedUSD / grant?.totalGoalUSD}%`,
                   }}
-                  onMouseOver={() => setShowFundedHover(true)}
-                  onMouseLeave={() => setShowFundedHover(false)}
                 ></div>
                 {showFundedHover && (
                   <div className="absolute flex items-center justify-center -top-6 right-auto bg-mar/80 border text-super px-1 py-1.5 border-lima text-white font-dog rounded-md z-10">
                     {`${(grant?.totalFundedUSD / grant?.totalGoalUSD).toFixed(
-                      2
+                      5
                     )}% Funded`}
                   </div>
                 )}

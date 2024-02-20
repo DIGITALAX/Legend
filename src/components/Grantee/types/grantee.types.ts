@@ -2,7 +2,7 @@ import { Grant } from "@/components/Grants/types/grant.types";
 import { Profile } from "../../../../graphql/generated";
 import { SetStateAction } from "react";
 import { AccessControlConditions } from "@lit-protocol/types";
-import { PrintItem } from "@/components/Launch/types/launch.types";
+import { OracleData, PrintItem } from "@/components/Launch/types/launch.types";
 
 export type AccountProps = {
   profile: Profile | undefined;
@@ -26,6 +26,10 @@ export type EditProps = {
 export type OrdersProps = {
   allOrders: Order[];
   ordersLoading: boolean;
+  orderOpen: boolean[];
+  setOrderOpen: (e: SetStateAction<boolean[]>) => void;
+  orderDecrypting: boolean[];
+  decryptOrder: (order: Order) => Promise<void>;
 };
 
 export interface Order {
@@ -49,13 +53,15 @@ export interface EncryptedDetails {
 }
 
 export interface Details {
-  name: string;
-  contact: string;
-  address: string;
-  zip: string;
-  city: string;
-  state: string;
-  country: string;
+  fulfillment: {
+    name: string;
+    contact: string;
+    address: string;
+    zip: string;
+    city: string;
+    state: string;
+    country: string;
+  };
   colors: string[];
   sizes: string[];
 }

@@ -64,7 +64,7 @@ const useGrants = (
               item?.fundedAmount?.map((item) => {
                 totalFundedUSD =
                   totalFundedUSD +
-                  (Number(item.funded) *
+                  ((Number(item.funded) / 10 ** 18) *
                     Number(
                       oracleData.find((or) => or.currency == item.currency)
                         ?.rate
@@ -80,15 +80,15 @@ const useGrants = (
             item.milestones.map((mil) => {
               mil.currencyGoal.map((goal) => {
                 totalGoalUSD =
-                  totalGoalUSD +
-                  (Number(goal.amount) *
-                    Number(
-                      oracleData.find((or) => or.currency == goal.currency)?.wei
-                    )) /
-                    Number(
-                      oracleData.find((or) => or.currency == goal.currency)
-                        ?.rate
-                    );
+                totalGoalUSD +
+                ((Number(goal.amount) / 10 ** 18) *
+                  Number(
+                    oracleData.find((or) => or.currency == goal.currency)
+                      ?.rate
+                  )) /
+                  Number(
+                    oracleData.find((or) => or.currency == goal.currency)?.wei
+                  );
               });
             });
 
@@ -194,7 +194,13 @@ const useGrants = (
       );
       setShowFundedHover(Array.from({ length: grants.length }, () => false));
 
-      dispatch(setAllGrants(grants));
+      dispatch(
+        setAllGrants(
+          grants?.sort(
+            (a, b) => Number(b.blockTimestamp) - Number(a.blockTimestamp)
+          )
+        )
+      );
     } catch (err: any) {
       console.error(err.message);
     }
@@ -271,7 +277,7 @@ const useGrants = (
               item?.fundedAmount?.map((item) => {
                 totalFundedUSD =
                   totalFundedUSD +
-                  (Number(item.funded) *
+                  ((Number(item.funded) / 10 ** 18) *
                     Number(
                       oracleData.find((or) => or.currency == item.currency)
                         ?.rate
@@ -287,15 +293,15 @@ const useGrants = (
             item.milestones.map((mil) => {
               mil.currencyGoal.map((goal) => {
                 totalGoalUSD =
-                  totalGoalUSD +
-                  (Number(goal.amount) *
-                    Number(
-                      oracleData.find((or) => or.currency == goal.currency)?.wei
-                    )) /
-                    Number(
-                      oracleData.find((or) => or.currency == goal.currency)
-                        ?.rate
-                    );
+                totalGoalUSD +
+                ((Number(goal.amount) / 10 ** 18) *
+                  Number(
+                    oracleData.find((or) => or.currency == goal.currency)
+                      ?.rate
+                  )) /
+                  Number(
+                    oracleData.find((or) => or.currency == goal.currency)?.wei
+                  );
               });
             });
 
@@ -383,7 +389,14 @@ const useGrants = (
         ...Array.from({ length: grants.length }, () => false),
       ]);
 
-      dispatch(setAllGrants([...allGrants, ...grants]));
+      dispatch(
+        setAllGrants([
+          ...allGrants,
+          ...grants?.sort(
+            (a, b) => Number(b.blockTimestamp) - Number(a.blockTimestamp)
+          ),
+        ])
+      );
     } catch (err: any) {
       console.error(err.message);
     }
