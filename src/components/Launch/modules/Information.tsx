@@ -13,12 +13,12 @@ const Information: FunctionComponent<InformationProps> = ({
   setPostInformation,
 }): JSX.Element => {
   return (
-    <div className="relative w-3/5 min-w-fit h-fit flex flex-col items-center justify-start">
+    <div className="relative w-full md:w-3/5 min-w-fit h-fit flex flex-col items-center justify-start">
       <Bar title="Grant Info" />
-      <div className="relative bg-offWhite w-full min-w-fit h-fit flex flex-col items-center justify-start p-3 gap-6 border border-black rounded-b-sm">
-        <div className="relative flex flex-row items-center justify-center gap-5 w-full h-fit">
-          <div className="relative w-fit h-fit flex items-center justify-center">
-            <label className="relative w-60 h-60 rounded-sm border border-black flex items-center justify-center cursor-pointer">
+      <div className="relative bg-offWhite w-full min-w-fit h-fit flex flex-col items-center justify-start px-1 sm:px-3 py-3 gap-6 border border-black rounded-b-sm">
+        <div className="relative flex flex-col sm:flex-row items-center justify-center gap-5 w-full h-fit">
+          <div className="relative w-full sm:w-fit h-fit flex items-center justify-center">
+            <label className="relative w-full sm:w-60 h-60 rounded-sm border border-black flex items-center justify-center cursor-pointer">
               <Image
                 layout="fill"
                 src={`${INFURA_GATEWAY}/ipfs/${
@@ -66,7 +66,7 @@ const Information: FunctionComponent<InformationProps> = ({
           <div className="relative w-full h-fit flex flex-col justify-start items-center gap-4">
             <div className="relative w-full h-fit flex items-center justify-center text-center">
               <input
-                className="bg-offWhite text-center flex items-center justify-center font-dog text-black text-sm"
+                className="bg-offWhite text-center flex items-center justify-center w-full h-fit break-all font-dog text-black text-sm"
                 placeholder="Grant Title"
                 value={postInformation?.title}
                 onChange={(e) =>
@@ -79,7 +79,7 @@ const Information: FunctionComponent<InformationProps> = ({
             </div>
             <div className="relative w-full h-48 flex">
               <textarea
-                className="bg-offWhite w-full h-full border border-black p-2 rounded-sm font-dog text-black text-xs"
+                className="bg-offWhite w-full h-full border border-black p-2 break-all rounded-sm font-dog text-black text-xs"
                 placeholder="Grant description..."
                 style={{
                   resize: "none",
@@ -95,14 +95,14 @@ const Information: FunctionComponent<InformationProps> = ({
             </div>
           </div>
         </div>
-        <div className="relative w-full h-fit flex flex-row items-start justify-start gap-4">
+        <div className="relative w-full h-fit flex flex-col sm:flex-row items-start justify-start gap-4">
           <div className="relative flex flex-col justify-start items-start w-full h-full font-dog text-black text-xs gap-2">
-            <div className="relative w-fit h-fit flex justify-start items-start">
+            <div className="relative w-fit h-fit flex justify-start items-start break-all">
               Maintenance Strategy
             </div>
             <div className="relative w-full h-44">
               <textarea
-                className="bg-offWhite w-full h-full border border-black p-2 rounded-sm"
+                className="bg-offWhite w-full h-full border border-black p-2 break-all rounded-sm"
                 placeholder="Into the future..."
                 style={{
                   resize: "none",
@@ -118,12 +118,12 @@ const Information: FunctionComponent<InformationProps> = ({
             </div>
           </div>
           <div className="relative flex flex-col justify-start items-start w-full h-full font-dog text-black text-xs gap-2">
-            <div className="relative w-fit h-fit flex justify-start items-start">
+            <div className="relative w-fit h-fit flex justify-start items-start break-all">
               Tech Stack
             </div>
             <div className="relative w-full h-44">
               <textarea
-                className="bg-offWhite w-full h-full border border-black p-2 rounded-sm"
+                className="bg-offWhite w-full h-full border border-black p-2 break-all rounded-sm"
                 placeholder="Solidity, NextJS..."
                 style={{
                   resize: "none",
@@ -141,12 +141,12 @@ const Information: FunctionComponent<InformationProps> = ({
         </div>
         <div className="relative w-full h-fit flex flex-row items-start justify-start gap-4">
           <div className="relative flex flex-col justify-start items-start w-full h-full font-dog text-black text-xs gap-2">
-            <div className="relative w-fit h-fit flex justify-start items-start">
+            <div className="relative w-fit h-fit flex justify-start items-start break-all">
               Team Experience
             </div>
             <div className="relative w-full h-44">
               <textarea
-                className="bg-offWhite w-full h-full border border-black p-2 rounded-sm"
+                className="bg-offWhite w-full h-full border border-black p-2 break-all rounded-sm"
                 placeholder="Hackathons, projects..."
                 style={{
                   resize: "none",

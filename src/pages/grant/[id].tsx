@@ -150,11 +150,11 @@ export default function Grant({
   if (!grantLoading && grant) {
     return (
       <div
-        className="relative w-full h-fit overflow-y-scroll flex items-start justify-center pt-5 px-5"
+        className="relative w-full h-fit overflow-y-scroll flex items-start justify-center pt-5 px-2 md:px-5"
         id="side"
       >
-        <div className="relative w-5/6 flex-col gap-10 flex items-center justify-start h-fit">
-          <div className="relative w-full h-[47rem] flex items-start justify-between flex-row gap-10">
+        <div className="relative w-full xl:w-5/6 flex-col gap-10 flex items-center justify-start h-fit">
+          <div className="relative w-full h-fit tablet:h-[47rem] flex items-start justify-between flex-col tablet:flex-row gap-10">
             <div className="relative w-full h-full flex flex-col gap-3 justify-center items-center ml-0">
               <div
                 className="relative w-full h-fit max-h-[13rem] flex items-start justify-center rounded-sm bg-offBlack border border-lima pb-3 px-1.5"
@@ -217,7 +217,7 @@ export default function Grant({
               />
 
               <div
-                className="relative rounded-sm w-full h-full py-3 px-6 items-start justify-between flex bg-mar/75 border border-lima overflow-y-scroll"
+                className="relative rounded-sm w-full h-full py-3 px-2 sm:px-6 items-start justify-between flex bg-mar/75 border border-lima overflow-y-scroll"
                 id="side"
               >
                 <WhoSwitch

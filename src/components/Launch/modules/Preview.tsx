@@ -19,7 +19,7 @@ const Preview: FunctionComponent<PreviewProps> = ({
 }): JSX.Element => {
   return (
     <div
-      className="relative flex flex-col w-3/5 h-full overflow-y-scroll justify-start items-start"
+      className="relative flex flex-col w-full xl:w-3/5 h-full overflow-y-scroll justify-start items-start"
       id="milestone"
     >
       <div className="relative w-full h-fit flex flex-col gap-4 items-start justify-start">
@@ -27,13 +27,13 @@ const Preview: FunctionComponent<PreviewProps> = ({
           <Bar title="Grant Preview" />
           <div className="relative bg-offWhite w-full h-fit flex flex-col items-center justify-start p-3 gap-6 border border-black rounded-b-sm min-w-fit">
             <div className="relative w-full h-fit flex items-center justify-center text-center">
-              <div className="bg-offWhite text-center flex items-center justify-center font-dog text-black text-sm">
+              <div className="bg-offWhite text-center flex items-center justify-center font-dog break-all text-black text-sm">
                 {postInformation?.title}
               </div>
             </div>
-            <div className="relative flex flex-row items-center justify-center gap-5 w-full h-48">
-              <div className="relative w-fit h-full flex items-center justify-center">
-                <div className="relative w-48 h-full flex items-center justify-center border border-black rounded-sm">
+            <div className="relative flex flex-col md:flex-row items-center justify-center gap-5 w-full h-48">
+              <div className="relative w-full md:w-fit h-full flex items-center justify-center">
+                <div className="relative w-full md:w-48 h-full flex items-center justify-center border border-black rounded-sm">
                   <Image
                     layout="fill"
                     src={`${INFURA_GATEWAY}/ipfs/${postInformation?.coverImage}`}
@@ -48,62 +48,62 @@ const Preview: FunctionComponent<PreviewProps> = ({
                 </div>
               </div>
             </div>
-            <div className="relative w-full h-fit flex flex-row items-start justify-start gap-4">
+            <div className="relative w-full h-fit flex flex-col tablet:flex-row items-start justify-start gap-4">
               <div className="relative flex flex-col justify-start items-start w-full h-full font-dog text-black text-xs gap-2">
-                <div className="relative w-fit h-fit flex justify-start items-start">
+                <div className="relative w-fit  break-all h-fit flex justify-start items-start">
                   Maintenance Strategy
                 </div>
-                <div className="relative w-full h-44">
-                  <div className="bg-offWhite w-full h-full border border-black p-2 rounded-sm overflow-y-scroll">
+                <div className="relative w-full h-44 flex">
+                  <div className="bg-offWhite w-full h-full break-all border border-black p-2 rounded-sm overflow-y-scroll">
                     {postInformation?.strategy}
                   </div>
                 </div>
               </div>
               <div className="relative flex flex-col justify-start items-start w-full h-full font-dog text-black text-xs gap-2">
-                <div className="relative w-fit h-fit flex justify-start items-start">
+                <div className="relative w-fit h-fit  break-all flex justify-start items-start">
                   Tech Stack
                 </div>
-                <div className="relative w-full h-44 ">
-                  <div className="bg-offWhite w-full h-full border border-black p-2 rounded-sm overflow-y-scroll">
+                <div className="relative w-full h-44 flex">
+                  <div className="bg-offWhite  break-all w-full h-full border border-black p-2 rounded-sm overflow-y-scroll">
                     {postInformation?.tech}
                   </div>
                 </div>
               </div>
             </div>
-            <div className="relative w-full h-fit flex flex-row items-start justify-start gap-4">
+            <div className="relative w-full h-fit flex flex-col tablet:flex-row items-start justify-start gap-4">
               <div className="relative flex flex-col justify-start items-start w-full h-full font-dog text-black text-xs gap-2">
-                <div className="relative w-fit h-fit flex justify-start items-start">
+                <div className="relative break-all w-fit h-fit flex justify-start items-start">
                   Team Experience
                 </div>
                 <div className="relative w-full h-48">
-                  <div className="bg-offWhite w-full h-full border border-black p-2 rounded-sm overflow-y-scroll">
+                  <div className="bg-offWhite break-all w-full h-full border border-black p-2 rounded-sm overflow-y-scroll">
                     {postInformation?.experience}
                   </div>
                 </div>
               </div>
               <div className="relative flex flex-col justify-start items-start w-full h-full font-dog text-black text-xs gap-2">
-                <div className="relative w-fit h-fit flex justify-start items-start">
+                <div className="relative break-all w-fit h-fit flex justify-start items-start">
                   Who&apos;s Involved
                 </div>
                 <div className="relative w-full h-48">
-                  <div className="bg-offWhite w-full h-full border border-black p-2 rounded-sm overflow-y-scroll">
+                  <div className="bg-offWhite break-all w-full h-full border border-black p-2 rounded-sm overflow-y-scroll">
                     {postInformation?.team}
                   </div>
                 </div>
               </div>
               <div className="relative flex flex-col justify-start items-start w-full h-fit font-dog text-black text-xs gap-2">
-                <div className="relative w-fit h-fit flex justify-start items-start">
+                <div className="relative w-fit break-all h-fit flex justify-start items-start">
                   Grantees
                 </div>
                 <div className="relative w-full h-fit flex flex-row items-center justify-start gap-1.5">
-                  <div className="relative w-56 flex flex-col gap-2 items-center justify-center overflow-y-scroll">
+                  <div className="relative w-full sm:w-56 flex flex-col gap-2 items-center justify-center overflow-y-scroll">
                     {postInformation.grantees?.map(
                       (address: string, index: number) => {
                         return (
                           <div
                             id="side"
                             key={index}
-                            className="bg-offWhite text-black font-dog flex items-center justify-start px-1.5 py-1 text-center border border-black overflow-x-scroll rounded-sm h-7 w-full"
+                            className="bg-offWhite text-black font-dog flex items-center justify-start px-1.5 py-1 text-center border border-black overflow-x-scroll break-all rounded-sm h-7 w-full"
                           >
                             {address}
                           </div>
@@ -132,7 +132,7 @@ const Preview: FunctionComponent<PreviewProps> = ({
           </div>
         </div>
         <div className="relative flex w-full h-fit">
-          <div className="relative w-full h-fit flex flex-row gap-3">
+          <div className="relative w-full h-fit flex flex-col md:flex-row gap-3">
             {postInformation.milestones?.map(
               (milestone: Milestone, index: number) => {
                 return (
@@ -181,7 +181,7 @@ const Preview: FunctionComponent<PreviewProps> = ({
                                   </div>
                                   <input
                                     type="number"
-                                    className="w-full h-8 bg-offWhite border border-black text-xxs text-black font-dog p-1 flex items-center justify-center rounded-sm"
+                                    className="w-full h-8 bg-offWhite border border-black text-xxs text-black font-dog p-1 flex items-center break-all justify-center rounded-sm"
                                     disabled
                                     value={
                                       postInformation?.milestones[index]
