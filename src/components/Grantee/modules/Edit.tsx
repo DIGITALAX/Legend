@@ -95,7 +95,7 @@ const Edit: FunctionComponent<EditProps> = ({
               key={index}
               className="relative w-full h-fit flex sm:flex-nowrap flex-wrap flex-col gap-4 justify-start items-start"
             >
-              <div className="relative w-full h-fit flex items-start justify-between gap-4 flex-row">
+              <div className="relative w-full h-fit flex items-start justify-between gap-4 flex-col preG:flex-row">
                 <div className="relative w-fit h-fit flex items-start justify-center gap-2 flex-row ml-0">
                   <div className="relative w-fit h-fit flex items-start justify-start font-dog text-xxs text-white">{`Milestone ${
                     index + 1
@@ -150,7 +150,7 @@ const Edit: FunctionComponent<EditProps> = ({
                 ) => {
                   return (
                     <div
-                      className="relative flex flex-row gap-3 items-start justify-start w-full h-fit"
+                      className="relative flex flex-col sm:flex-row gap-3 items-start justify-start w-full h-fit"
                       key={indexTwo}
                     >
                       <div className="relative w-fit flex items-start justify-start flex-row gap-1.5 h-fit">
@@ -170,11 +170,11 @@ const Edit: FunctionComponent<EditProps> = ({
                             />
                           </div>
                         </div>
-                        <div className="relative w-fit h-fit flex flex-row justify-start items-center text-white gap-1.5">
-                          <div className="relative w-fit h-fit flex items-center justify-center whitespace-nowrap font-gam text-lg">
+                        <div className="relative w-fit h-fit flex flex-row justify-start items-center text-white gap-1.5 flex-wrap">
+                          <div className="relative w-fit h-fit flex items-center justify-center whitespace-nowrap font-gam text-lg break-all">
                             Contribution Goal:
                           </div>
-                          <div className="relative w-fit h-fit flex items-center justify-center font-dog text-super top-px whitespace-nowrap">
+                          <div className="relative w-fit h-fit flex items-center justify-center font-dog text-super top-px whitespace-nowrap break-all">
                             {(Number(currency.amount) / 10 ** 18).toFixed(2)}{" "}
                             {
                               ACCEPTED_TOKENS_MUMBAI.find(

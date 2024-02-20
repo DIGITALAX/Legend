@@ -55,7 +55,7 @@ const LaunchSwitch: FunctionComponent<LaunchSwitchProps> = ({
       );
     case 1:
       return (
-        <div className="relative w-3/5 h-full flex flex-col items-center justify-center gap-6">
+        <div className="relative w-full lg:w-3/5 h-full flex flex-col items-center justify-center gap-6">
           <div className="relative w-full min-w-fit h-fit flex flex-col items-center justify-start">
             <Bar title="Accepted Currencies" />
             <div className="relative bg-offWhite w-full h-fit flex flex-col items-center justify-start p-3 gap-4 border border-black rounded-b-sm">
@@ -136,7 +136,7 @@ const LaunchSwitch: FunctionComponent<LaunchSwitchProps> = ({
             </div>
           </div>
           <div
-            className="relative flex flex-row w-full h-full gap-3 overflow-x-scroll"
+            className="relative flex flex-col tablet:flex-row w-full h-full gap-3 overflow-x-scroll"
             id="milestone"
           >
             {Array.from({ length: 3 }).map((_, index: number) => {

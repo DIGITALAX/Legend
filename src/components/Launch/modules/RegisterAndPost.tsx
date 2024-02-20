@@ -15,10 +15,10 @@ const RegisterAndPost: FunctionComponent<RegisterAndPostProps> = ({
   signInLoading,
 }): JSX.Element => {
   return (
-    <div className="relative w-3/5 min-w-fit h-fit bg-offWhite flex flex-col rounded-b-sm items-center justify-center">
+    <div className="relative w-full md:w-3/5 min-w-fit h-fit bg-offWhite flex flex-col rounded-b-sm items-center justify-center">
       <Bar title={`Post Grant`} />
       <div className="relative p-2 flex w-full flex-col items-center justify-center gap-10 border border-black rounded-b-sm h-full font-dog">
-        <div className="relative w-3/5 h-60 rounded-sm border border-black">
+        <div className="relative w-full sm:w-3/5 h-60 rounded-sm border border-black">
           <Image
             layout="fill"
             draggable={false}
