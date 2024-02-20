@@ -19,6 +19,7 @@ import collectionsCacheReducer from "./reducers/collectionsCacheSlice";
 import postCollectGifReducer from "./reducers/postCollectGifSlice";
 import availableCurrenciesReducer from "./reducers/availableCurrenciesSlice";
 import granteeModalReducer from "./reducers/granteeModalSlice";
+import milestoneClaimReducer from "./reducers/milestoneClaimSlice";
 
 const reducer = combineReducers({
   walletConnectedReducer,
@@ -40,6 +41,7 @@ const reducer = combineReducers({
   availableCurrenciesReducer,
   granteeModalReducer,
   grantCollectedReducer,
+  milestoneClaimReducer,
 });
 
 export const store = configureStore({

@@ -3,6 +3,7 @@ import { Profile } from "../../../../graphql/generated";
 import { SetStateAction } from "react";
 import { AccessControlConditions } from "@lit-protocol/types";
 import { OracleData, PrintItem } from "@/components/Launch/types/launch.types";
+import { NextRouter } from "next/router";
 
 export type AccountProps = {
   profile: Profile | undefined;
@@ -19,8 +20,11 @@ export type AccountProps = {
 
 export type EditProps = {
   grant: Grant;
-  handleClaimMilestone: () => Promise<void>;
+  handleClaimMilestone: (milestone: number) => Promise<void>;
   milestoneClaimLoading: boolean;
+  router: NextRouter;
+  showFundedHover: boolean[][];
+  setShowFundedHover: (e: SetStateAction<boolean[][]>) => void;
 };
 
 export type OrdersProps = {

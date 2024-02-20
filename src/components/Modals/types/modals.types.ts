@@ -163,3 +163,9 @@ export type PostBoxProps = {
   makeComment: MakePostComment[];
   comment: (id: string, main?: boolean) => Promise<void>;
 };
+
+export type MilestoneClaimProps = {
+  dispatch: Dispatch<AnyAction>;
+  cover: string;
+  milestone: number;
+};

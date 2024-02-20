@@ -349,30 +349,75 @@ export default function Grant({
             </div>
           </div>
           <div className="relative flex flex-col items-center justify-center w-full h-fit gap-2 pb-5">
-            {grant?.totalFundedUSD >  0.0005 && (
-              <div
-                className={`relative cursor-pointer w-full h-8 bg-lima/75 border border-lima flex rounded-lg`}
-                onMouseOver={() => setShowFundedHover(true)}
-                onMouseLeave={() => setShowFundedHover(false)}
-              >
+            {grant?.totalFundedUSD > 0.0005 && (
+              <>
                 <div
-                  className={`relative h-full ${
-                    grant?.totalFundedUSD / grant?.totalGoalUSD >= 100
-                      ? "rounded-lg"
-                      : "rounded-l-lg"
-                  } bg-mar/75 flex`}
-                  style={{
-                    width: `${grant?.totalFundedUSD / grant?.totalGoalUSD}%`,
-                  }}
-                ></div>
-                {showFundedHover && (
-                  <div className="absolute flex items-center justify-center -top-6 right-auto bg-mar/80 border text-super px-1 py-1.5 border-lima text-white font-dog rounded-md z-10">
-                    {`${(grant?.totalFundedUSD / grant?.totalGoalUSD).toFixed(
-                      5
-                    )}% Funded`}
-                  </div>
-                )}
-              </div>
+                  className={`relative cursor-pointer w-full h-8 bg-lima/75 border border-lima flex rounded-lg`}
+                  onMouseOver={() => setShowFundedHover(true)}
+                  onMouseLeave={() => setShowFundedHover(false)}
+                >
+                  <div
+                    className={`relative h-full ${
+                      grant?.totalFundedUSD / grant?.totalGoalUSD >= 100
+                        ? "rounded-lg"
+                        : "rounded-l-lg"
+                    } bg-mar/75 flex`}
+                    style={{
+                      width: `${grant?.totalFundedUSD / grant?.totalGoalUSD}%`,
+                    }}
+                  ></div>
+                  {showFundedHover && (
+                    <div className="absolute flex items-center justify-center -top-6 right-auto bg-mar/80 border text-super px-1 py-1.5 border-lima text-white font-dog rounded-md z-10">
+                      {`${(grant?.totalFundedUSD / grant?.totalGoalUSD).toFixed(
+                        5
+                      )}% Funded`}
+                    </div>
+                  )}
+                </div>
+                <div
+                  className="relative w-full h-fit flex p-2 flex-row flex-wrap gap-2 bg-offBlack border border-lima rounded-ms max-h-[10rem] min-h-[4rem] overflow-y-scroll items-start justify-start"
+                  id="side"
+                >
+                  {grant?.funders?.map((funder, index: number) => {
+                    const pfp = createProfilePicture(
+                      funder?.profile?.metadata?.picture
+                    );
+                    return (
+                      <div
+                        key={index}
+                        className="relative w-fit h-fit flex items-center justify-center"
+                      >
+                        <div
+                          className="relative w-8 h-8 border border-lima rounded-full flex items-center justify-center bg-mar/75 cursor-pointer"
+                          onClick={() =>
+                            router.push(
+                              `/grantee/${
+                                funder?.profile?.handle?.suggestedFormatted?.localName?.split(
+                                  "@"
+                                )?.[1]
+                              }`
+                            )
+                          }
+                          title={`$${(
+                            Number(funder.usdAmount) /
+                            10 ** 36
+                          )?.toFixed(4)} Contributed`}
+                        >
+                          {pfp && (
+                            <Image
+                              draggable={false}
+                              objectFit="cover"
+                              className="rounded-full"
+                              src={pfp}
+                              layout="fill"
+                            />
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
             )}
             <div className="relative px-2 py-1 text-center flex items-center justify-center bg-mar/70 border border-lima font-gam uppercase rounded-sm text-4xl text-lima w-full h-fit">
               collect grant

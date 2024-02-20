@@ -42,7 +42,7 @@ export type GrantProps = {
   changeCurrency: string;
   setChangeCurrency: (e: SetStateAction<string[]>) => void;
   showFundedHover: boolean;
-  setShowFundedHover: (e: SetStateAction<boolean[]>) => void
+  setShowFundedHover: (e: SetStateAction<boolean[]>) => void;
 };
 
 export type CollectItemProps = {
@@ -116,6 +116,11 @@ export interface Grant {
   blockTimestamp: string;
   blockNumber: string;
   publication?: Post;
+  funders: {
+    profile: Profile;
+    address: string;
+    usdAmount: string;
+  }[];
 }
 
 export type InteractionsProps = {
@@ -140,4 +145,3 @@ export type InteractionsProps = {
   router: NextRouter;
   index: number;
 };
-

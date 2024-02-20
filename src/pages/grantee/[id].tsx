@@ -61,10 +61,12 @@ export default function Grantee({
     address as `0x${string}`,
     publicClient
   );
-  const { milestoneClaimLoading, handleClaimMilestone } = useClaim(
-    address,
-    publicClient
-  );
+  const {
+    milestoneClaimLoading,
+    handleClaimMilestone,
+    showFundedHover: showFundedHoverEdit,
+    setShowFundedHover: setShowFundedHoverEdit,
+  } = useClaim(address, publicClient, edit, dispatch, setEdit, setGrants);
   const {
     allOrders,
     ordersLoading,
@@ -169,6 +171,9 @@ export default function Grantee({
         </div>
       ) : (
         <Edit
+          router={router}
+          setShowFundedHover={setShowFundedHoverEdit}
+          showFundedHover={showFundedHoverEdit}
           handleClaimMilestone={handleClaimMilestone}
           grant={edit}
           milestoneClaimLoading={milestoneClaimLoading}
