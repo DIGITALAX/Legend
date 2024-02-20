@@ -54,6 +54,10 @@ const GRANT = `
       grantId
       creator
       pubId
+      funders {
+        address
+        usdAmount
+      }
       grantMetadata {
         cover
         description
@@ -133,6 +137,10 @@ const GRANTS_BY_PROFILE = `
         collectionIds
         level
       }
+      funders {
+        address
+        usdAmount
+      }
       acceptedCurrencies
       blockTimestamp
       blockNumber
@@ -176,6 +184,10 @@ const GRANTS_FUNDED = `
       fundedAmount {
         currency
         funded
+      }
+      funders {
+        address
+        usdAmount
       }
       granteeAddresses
       splits

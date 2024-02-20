@@ -15,6 +15,7 @@ import { NextRouter } from "next/router";
 import useInteractions from "../Grants/hooks/useInteractions";
 import NotGrantee from "./modules/NotGrantee";
 import GrantCollected from "./modules/GrantCollected";
+import MilestoneClaim from "./modules/MilestoneClaim";
 
 const Modals: FunctionComponent<{
   router: NextRouter;
@@ -42,6 +43,9 @@ const Modals: FunctionComponent<{
   const postBox = useSelector((state: RootState) => state.app.postReducer);
   const lensConnected = useSelector(
     (state: RootState) => state.app.lensProfileReducer?.profile
+  );
+  const milestoneClaim = useSelector(
+    (state: RootState) => state.app.milestoneClaimReducer
   );
   const grantCollected = useSelector(
     (state: RootState) => state.app.grantCollectedReducer
@@ -136,6 +140,13 @@ const Modals: FunctionComponent<{
           type={imageExpandModal.type}
           image={imageExpandModal.media}
           dispatch={dispatch}
+        />
+      )}
+      {milestoneClaim?.open && (
+        <MilestoneClaim
+          dispatch={dispatch}
+          milestone={milestoneClaim?.milestone!}
+          cover={milestoneClaim?.cover!}
         />
       )}
       {grantCollected?.value && (

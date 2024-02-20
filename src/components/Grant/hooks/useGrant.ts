@@ -41,6 +41,10 @@ const useGrant = (
               currency: string;
               funded: string;
             }[];
+            funders: {
+              address: string;
+              usdAmount: string;
+            }[];
             milestones: {
               currencyGoal: {
                 currency: string;
@@ -55,6 +59,22 @@ const useGrant = (
                 grantMetadata: data,
               };
             }
+
+            const funders = await Promise.all(
+              item?.funders?.map(async (funder) => {
+                const data = await getDefaultProfile(
+                  {
+                    for: funder?.address,
+                  },
+                  lensConnected?.id
+                );
+
+                return {
+                  ...funder,
+                  profile: data?.data?.defaultProfile,
+                };
+              })
+            );
 
             let totalFundedUSD: number = 0;
             if (item.fundedAmount?.length > 0) {
@@ -166,6 +186,7 @@ const useGrant = (
               totalGoalUSD,
               grantees: granteePromises?.filter((item) => item !== undefined),
               publication: data?.publication,
+              funders,
             };
           }
         )
