@@ -380,10 +380,11 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                 setDetails={setDetails}
                 mainIndex={mainIndex}
                 levelIndex={Number(levelInfo.level) - 1}
-                tokens={
-                  levelInfo.collectionIds?.[details?.collectionIndex]
-                    ?.acceptedTokens
-                }
+                tokens={levelInfo.collectionIds?.[
+                  details?.collectionIndex
+                ]?.acceptedTokens?.filter((token) =>
+                  grant?.acceptedCurrencies?.includes(token)
+                )}
               />
             </div>
           </div>

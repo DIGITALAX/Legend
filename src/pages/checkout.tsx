@@ -120,7 +120,7 @@ export default function Checkout({
                   details={currency}
                   main
                   mainIndex={0}
-                  tokens={chosenCartItem?.grant?.acceptedCurrencies}
+                  tokens={chosenCartItem?.grant?.acceptedCurrencies!}
                   levelIndex={0}
                   setDetails={setCurrency}
                 />
@@ -163,9 +163,10 @@ export default function Checkout({
             onClick={() =>
               !checkoutLoading &&
               cartItems?.length > 0 &&
+              chosenCartItem &&
               (!checkoutApproved
-                ? approvePurchase(chosenCartItem, currency)
-                : handleCheckout(chosenCartItem, currency))
+                ? approvePurchase(chosenCartItem!, currency)
+                : handleCheckout(chosenCartItem!, currency))
             }
           >
             <div

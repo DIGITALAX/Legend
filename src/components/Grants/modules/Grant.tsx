@@ -61,12 +61,26 @@ const Grant: FunctionComponent<GrantProps> = ({
           setMirrorChoiceOpen={setMirrorChoiceOpen}
         />
 
-        {grant?.totalFundedUSD > 0 && (
+        {grant?.totalFundedUSD > 0.0005 && (
           <div
-            className={`relative w-full h-8 bg-lima/75 border border-lima flex rounded-lg`}
+            className={`relative w-full h-8 bg-lima/75 border border-lima flex cursor-pointer rounded-lg`}
+            onMouseOver={() =>
+              setShowFundedHover((prev) => {
+                const arr = [...prev];
+                arr[mainIndex] = true;
+                return arr;
+              })
+            }
+            onMouseLeave={() =>
+              setShowFundedHover((prev) => {
+                const arr = [...prev];
+                arr[mainIndex] = false;
+                return arr;
+              })
+            }
           >
             <div
-              className={`relative h-full cursor-pointer bg-mar/75 flex ${
+              className={`relative h-full bg-mar/75 flex ${
                 grant?.totalFundedUSD / grant?.totalGoalUSD >= 100
                   ? "rounded-lg"
                   : "rounded-l-lg"
@@ -74,25 +88,11 @@ const Grant: FunctionComponent<GrantProps> = ({
               style={{
                 width: `${grant?.totalFundedUSD / grant?.totalGoalUSD}%`,
               }}
-              onMouseOver={() =>
-                setShowFundedHover((prev) => {
-                  const arr = [...prev];
-                  arr[mainIndex] = true;
-                  return arr;
-                })
-              }
-              onMouseLeave={() =>
-                setShowFundedHover((prev) => {
-                  const arr = [...prev];
-                  arr[mainIndex] = false;
-                  return arr;
-                })
-              }
             ></div>
             {showFundedHover && (
               <div className="absolute flex items-center justify-center -top-6 right-auto bg-mar/80 border text-super px-1 py-1.5 border-lima text-white font-dog rounded-md z-10">
                 {`${(grant?.totalFundedUSD / grant?.totalGoalUSD).toFixed(
-                  2
+                  5
                 )}% Funded`}
               </div>
             )}
@@ -110,7 +110,10 @@ const Grant: FunctionComponent<GrantProps> = ({
               }}
             ></div>
           </div>
-          <div className="relative w-full sm:w-48 h-20 sm:h-full flex items-start justify-center rounded-sm bg-offBlack border border-lima pb-2 px-1.5 overflow-y-scroll" id="side">
+          <div
+            className="relative w-full sm:w-48 h-20 sm:h-full flex items-start justify-center rounded-sm bg-offBlack border border-lima pb-2 px-1.5 overflow-y-scroll"
+            id="side"
+          >
             <div className="relative w-full h-fit flex justify-start items-start flex-col ml-0 gap-2">
               <div className="relative font-gam text-xl justify-start items-start flex">
                 Grant Team

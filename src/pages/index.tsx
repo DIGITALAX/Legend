@@ -114,7 +114,7 @@ export default function Home({
             next={handleFetchMoreGrants}
             className={`w-full h-full items-start justify-center flex`}
           >
-            <div className="relative w-full h-fit flex flex-col items-center justify-start gap-8">
+            <div className="relative w-full h-fit flex flex-col items-center justify-start gap-14">
               {allGrantsLoading
                 ? Array.from({ length: 10 })?.map((_, index: number) => {
                     return (

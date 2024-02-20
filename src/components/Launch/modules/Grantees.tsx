@@ -84,7 +84,7 @@ const Grantees: FunctionComponent<GranteesProps> = ({
                   team: e.target.value,
                 })
               }
-              value={postInformation?.team}
+              value={postInformation?.team || ""}
             ></textarea>
           </div>
         </div>

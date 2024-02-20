@@ -69,7 +69,7 @@ const StoreItem: FunctionComponent<StoreItemProps> = ({
             )}
             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-transparent to-offBlack flex"></div>
           </div>
-          <div className="absolute bottom-2 left-2 w-full h-fit flex flex-row justify-start items-center overflow-x-scroll">
+          <div className="absolute bottom-2 w-5/6 h-fit flex flex-row justify-start items-center overflow-x-scroll">
             <div className="relative w-fit h-fit flex justify-start items-center flex-row gap-2">
               {collection?.grants?.map((item: Grant, index: number) => {
                 return (

@@ -192,7 +192,7 @@ const useLevelItems = (
       setDetails(
         Array.from({ length: allGrants.length }, (_, index: number) =>
           Array.from({ length: 7 }, (_, indexTwo: number) => ({
-            currency: ACCEPTED_TOKENS_MUMBAI[2][2],
+            currency: allGrants?.[index]?.acceptedCurrencies?.[0],
             sizeIndex: Array.from(
               {
                 length:
@@ -230,7 +230,7 @@ const useLevelItems = (
     } else if (grant) {
       setDetails([
         Array.from({ length: 7 }, (_, indexTwo: number) => ({
-          currency: ACCEPTED_TOKENS_MUMBAI[2][2],
+          currency: grant?.acceptedCurrencies?.[0],
           sizeIndex: Array.from(
             {
               length:

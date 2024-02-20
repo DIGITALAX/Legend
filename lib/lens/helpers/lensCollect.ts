@@ -33,7 +33,8 @@ const lensCollect = async (
     type === "SimpleCollectOpenActionSettings" ||
     type === "MultirecipientFeeCollectOpenActionSettings" ||
     type === "SimpleCollectOpenActionModule" ||
-    type === "MultirecipientFeeCollectOpenActionModule" || act
+    type === "MultirecipientFeeCollectOpenActionModule" ||
+    act
   ) {
     const { data } = await actOn({
       for: id,
@@ -68,9 +69,12 @@ const lensCollect = async (
     functionName = "act";
     args = [
       {
-        publicationActedProfileId: typedData?.value.publicationActedProfileId,
-        publicationActedId: typedData?.value.publicationActedId,
-        actorProfileId: typedData?.value.actorProfileId,
+        publicationActedProfileId: parseInt(
+          typedData?.value.publicationActedProfileId,
+          16
+        ),
+        publicationActedId: parseInt(typedData?.value.publicationActedId, 16),
+        actorProfileId: parseInt(typedData?.value.actorProfileId, 16),
         referrerProfileIds: typedData?.value.referrerProfileIds,
         referrerPubIds: typedData?.value.referrerPubIds,
         actionModuleAddress: typedData?.value.actionModuleAddress,

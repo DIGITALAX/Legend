@@ -40,7 +40,7 @@ const Account: FunctionComponent<AccountProps> = ({
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent flex to-black"></div>
       </div>
       <div className="absolute top-10 sm:bottom-14 right-2 sm:right-6 w-fit h-fit flex items-center justify-end mr-0">
-        <div className="rounded-full flex items-center relative w-16 sm:w-24 h-16 sm:h-24 border border-mar/75">
+        <div className="rounded-full flex items-center relative w-16 sm:w-24 h-16 sm:h-24 border border-mar/75 bg-mar/75">
           {pfp && (
             <Image
               src={pfp}
