@@ -403,7 +403,7 @@ export default function Grant({
                           }
                           title={`$${(
                             Number(funder.usdAmount) /
-                            10 ** 36
+                            10 ** 18
                           )?.toFixed(4)} Contributed`}
                         >
                           {pfp && (

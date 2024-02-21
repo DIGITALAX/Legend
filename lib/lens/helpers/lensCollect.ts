@@ -66,6 +66,7 @@ const lensCollect = async (
       id: data?.createActOnOpenActionTypedData?.id,
       signature,
     });
+
     functionName = "act";
     args = [
       {
