@@ -68,6 +68,10 @@ export interface Milestone {
     currency: string;
     amount: string;
   }[];
+  goalPercents: {
+    currency: string;
+    percent: string;
+  }[];
 }
 
 export type MilestoneProps = {

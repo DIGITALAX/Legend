@@ -177,7 +177,7 @@ const Header: FunctionComponent<{ router: NextRouter }> = ({
       </div>
       {checkoutOpen && (
         <div
-          className="absolute z-20 w-60 right-3 top-52 sm:top-12 h-72 rounded-md bg-black/80 overflow-y-scroll flex flex-col py-3 px-7"
+          className="absolute z-20 w-60 right-3 top-52 sm:top-24 tablet:top-12 h-72 rounded-md bg-black/80 overflow-y-scroll flex flex-col py-3 px-7"
           id="milestone"
         >
           {cartItems?.length > 0 ? (

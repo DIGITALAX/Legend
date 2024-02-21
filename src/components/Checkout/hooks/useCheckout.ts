@@ -360,29 +360,37 @@ const useCheckout = (
         }
       );
 
-      dispatch(
-        setCartItems(
-          cartItems
-            ?.map((value) => {
-              if (
-                value.grant.grantId == item.grant.grantId &&
-                Number(value.chosenLevel.level) ==
-                  Number(item.chosenLevel.level) &&
-                JSON.stringify(item?.colors?.flat()) ===
-                  JSON.stringify(value?.colors?.flat()) &&
-                JSON.stringify(item?.sizes?.flat()) ===
-                  JSON.stringify(value?.sizes?.flat())
-              ) {
-                return undefined;
-              } else {
-                return value;
-              }
-            })
-            .filter(Boolean) as CartItem[]
-        )
-      );
+      const newItems = cartItems
+        ?.map((value) => {
+          if (
+            value.grant.grantId == item.grant.grantId &&
+            Number(value.chosenLevel.level) == Number(item.chosenLevel.level) &&
+            JSON.stringify(item?.colors?.flat()) ===
+              JSON.stringify(value?.colors?.flat()) &&
+            JSON.stringify(item?.sizes?.flat()) ===
+              JSON.stringify(value?.sizes?.flat())
+          ) {
+            return undefined;
+          } else {
+            return value;
+          }
+        })
+        .filter(Boolean) as CartItem[];
 
-      setChosenCartItem(cartItems?.length > 1 ? cartItems[1] : undefined);
+      dispatch(setCartItems(newItems));
+
+      if (newItems?.length < 1) {
+        setFulfillment({
+          number: "",
+          street: "",
+          state: "",
+          country: "",
+          zip: "",
+          name: "",
+        });
+      }
+
+      setChosenCartItem(newItems?.length < 1 ? undefined : cartItems[1]);
 
       dispatch(
         setGrantCollected({

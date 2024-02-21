@@ -90,7 +90,7 @@ const useWeb3 = (
               item?.fundedAmount?.map((item) => {
                 totalFundedUSD =
                   totalFundedUSD +
-                  ((Number(item.funded) / 10 ** 18) *
+                  (Number(item.funded) *
                     Number(
                       oracleData.find((or) => or.currency == item.currency)
                         ?.rate
@@ -107,7 +107,7 @@ const useWeb3 = (
               mil.currencyGoal.map((goal) => {
                 totalGoalUSD =
                   totalGoalUSD +
-                  ((Number(goal.amount) / 10 ** 18) *
+                  (Number(goal.amount) *
                     Number(
                       oracleData.find((or) => or.currency == goal.currency)
                         ?.rate
@@ -142,8 +142,8 @@ const useWeb3 = (
 
             return {
               ...item,
-              totalFundedUSD,
-              totalGoalUSD,
+              totalFundedUSD: totalFundedUSD / 10 ** 18,
+              totalGoalUSD: totalGoalUSD / 10 ** 18,
               grantees: granteePromises?.filter((item) => item !== undefined),
               publication: data?.publication,
             };
@@ -247,7 +247,7 @@ const useWeb3 = (
                 item?.fundedAmount?.map((item) => {
                   totalFundedUSD =
                     totalFundedUSD +
-                    ((Number(item.funded) / 10 ** 18) *
+                    (Number(item.funded) *
                       Number(
                         oracleData.find((or) => or.currency == item.currency)
                           ?.rate
@@ -265,7 +265,7 @@ const useWeb3 = (
                 mil.currencyGoal.map((goal) => {
                   totalGoalUSD =
                     totalGoalUSD +
-                    ((Number(goal.amount) / 10 ** 18) *
+                    (Number(goal.amount) *
                       Number(
                         oracleData.find((or) => or.currency == goal.currency)
                           ?.rate
@@ -301,8 +301,8 @@ const useWeb3 = (
 
               return {
                 ...item,
-                totalFundedUSD,
-                totalGoalUSD,
+                totalFundedUSD: totalFundedUSD / 10 ** 18,
+                totalGoalUSD: totalGoalUSD / 10 ** 18,
                 grantees: granteePromises?.filter((item) => item !== undefined),
                 publication: data?.publication,
               };
@@ -402,7 +402,7 @@ const useWeb3 = (
                 item?.fundedAmount?.map((item) => {
                   totalFundedUSD =
                     totalFundedUSD +
-                    ((Number(item.funded) / 10 ** 18) *
+                    (Number(item.funded) *
                       Number(
                         oracleData.find((or) => or.currency == item.currency)
                           ?.rate
@@ -420,7 +420,7 @@ const useWeb3 = (
                 mil.currencyGoal.map((goal) => {
                   totalGoalUSD =
                     totalGoalUSD +
-                    ((Number(goal.amount) / 10 ** 18) *
+                    (Number(goal.amount) *
                       Number(
                         oracleData.find((or) => or.currency == goal.currency)
                           ?.rate
@@ -456,8 +456,8 @@ const useWeb3 = (
 
               return {
                 ...item,
-                totalFundedUSD,
-                totalGoalUSD,
+                totalFundedUSD: totalFundedUSD / 10 ** 18,
+                totalGoalUSD: totalGoalUSD / 10 ** 18,
                 grantees: granteePromises?.filter((item) => item !== undefined),
                 publication: data?.publication,
               };
@@ -518,7 +518,7 @@ const useWeb3 = (
               item?.fundedAmount?.map((item) => {
                 totalFundedUSD =
                   totalFundedUSD +
-                  ((Number(item.funded) / 10 ** 18) *
+                  (Number(item.funded) *
                     Number(
                       oracleData.find((or) => or.currency == item.currency)
                         ?.rate
@@ -535,7 +535,7 @@ const useWeb3 = (
               mil.currencyGoal.map((goal) => {
                 totalGoalUSD =
                   totalGoalUSD +
-                  ((Number(goal.amount) / 10 ** 18) *
+                  (Number(goal.amount) *
                     Number(
                       oracleData.find((or) => or.currency == goal.currency)
                         ?.rate
@@ -570,8 +570,8 @@ const useWeb3 = (
 
             return {
               ...item,
-              totalFundedUSD,
-              totalGoalUSD,
+              totalFundedUSD: totalFundedUSD / 10 ** 18,
+              totalGoalUSD: totalGoalUSD / 10 ** 18,
               grantees: granteePromises?.filter((item) => item !== undefined),
               publication: data?.publication,
             };
@@ -601,10 +601,10 @@ const useWeb3 = (
   };
 
   useEffect(() => {
-    if (grants?.length < 1) {
+    if (grants?.length < 1 && oracleData?.length > 0) {
       handleGrants();
     }
-  }, []);
+  }, [oracleData]);
 
   useEffect(() => {
     if (grants?.length > 0) {

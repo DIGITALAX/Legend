@@ -81,7 +81,7 @@ const useGrant = (
               item?.fundedAmount?.map((item) => {
                 totalFundedUSD =
                   totalFundedUSD +
-                  ((Number(item.funded) / 10 ** 18) *
+                  (Number(item.funded) *
                     Number(
                       oracleData.find((or) => or.currency == item.currency)
                         ?.rate
@@ -98,7 +98,7 @@ const useGrant = (
               mil.currencyGoal.map((goal) => {
                 totalGoalUSD =
                   totalGoalUSD +
-                  ((Number(goal.amount) / 10 ** 18) *
+                  (Number(goal.amount) *
                     Number(
                       oracleData.find((or) => or.currency == goal.currency)
                         ?.rate
@@ -182,8 +182,8 @@ const useGrant = (
             return {
               ...item,
               levelInfo,
-              totalFundedUSD,
-              totalGoalUSD,
+              totalFundedUSD: totalFundedUSD / 10 ** 18,
+              totalGoalUSD: totalGoalUSD / 10 ** 18,
               grantees: granteePromises?.filter((item) => item !== undefined),
               publication: data?.publication,
               funders,
@@ -200,10 +200,10 @@ const useGrant = (
   };
 
   useEffect(() => {
-    if (id) {
+    if (id && oracleData?.length > 0) {
       handleGrant();
     }
-  }, [id, lensConnected?.id]);
+  }, [id, lensConnected?.id, oracleData]);
 
   return {
     grant,

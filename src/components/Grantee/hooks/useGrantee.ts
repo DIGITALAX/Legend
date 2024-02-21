@@ -89,7 +89,7 @@ const useGrantee = (
                 item?.fundedAmount?.map((item) => {
                   totalFundedUSD =
                     totalFundedUSD +
-                    ((Number(item.funded) / 10 ** 18) *
+                    (Number(item.funded) *
                       Number(
                         oracleData.find((or) => or.currency == item.currency)
                           ?.rate
@@ -107,7 +107,7 @@ const useGrantee = (
                 mil.currencyGoal.map((goal) => {
                   totalGoalUSD =
                     totalGoalUSD +
-                    ((Number(goal.amount) / 10 ** 18) *
+                    (Number(goal.amount) *
                       Number(
                         oracleData.find((or) => or.currency == goal.currency)
                           ?.rate
@@ -143,8 +143,8 @@ const useGrantee = (
 
               return {
                 ...item,
-                totalFundedUSD,
-                totalGoalUSD,
+                totalFundedUSD: totalFundedUSD / 10 ** 18,
+                totalGoalUSD: totalGoalUSD / 10 ** 18,
                 grantees: granteePromises?.filter((item) => item !== undefined),
                 publication: data?.publication,
                 type: "contributed",
@@ -206,7 +206,7 @@ const useGrantee = (
               item?.fundedAmount?.map((item) => {
                 totalFundedUSD =
                   totalFundedUSD +
-                  ((Number(item.funded) / 10 ** 18) *
+                  (Number(item.funded) *
                     Number(
                       oracleData.find((or) => or.currency == item.currency)
                         ?.rate
@@ -219,11 +219,16 @@ const useGrantee = (
 
             let totalGoalUSD: number = 0;
 
-            item.milestones.map((mil) => {
+            const mills = item.milestones.map((mil, index) => {
+              let goalPercents: {
+                currency: string;
+                percent: number;
+              }[] = [];
+
               mil.currencyGoal.map((goal) => {
                 totalGoalUSD =
                   totalGoalUSD +
-                  ((Number(goal.amount) / 10 ** 18) *
+                  (Number(goal.amount) *
                     Number(
                       oracleData.find((or) => or.currency == goal.currency)
                         ?.rate
@@ -231,7 +236,89 @@ const useGrantee = (
                     Number(
                       oracleData.find((or) => or.currency == goal.currency)?.wei
                     );
+
+                const fundedAmount = Number(
+                  item?.fundedAmount?.find(
+                    (item) => item.currency === goal.currency
+                  )?.funded || 0
+                );
+
+                let percent = 0;
+
+                if (index == 0) {
+                  if (
+                    fundedAmount >=
+                    Number(
+                      item.milestones?.[0]?.currencyGoal?.find(
+                        (item) => item.currency === goal.currency
+                      )?.amount
+                    )
+                  ) {
+                    percent = 100;
+                  } else {
+                    percent =
+                      (fundedAmount /
+                        Number(
+                          item.milestones?.[0]?.currencyGoal?.find(
+                            (item) => item.currency === goal.currency
+                          )?.amount
+                        )) *
+                      100;
+                  }
+                } else {
+                  if (
+                    fundedAmount -
+                      Number(
+                        item.milestones?.reduce(
+                          (acc, val, internalIndex) =>
+                            acc +
+                            (internalIndex < index
+                              ? Number(
+                                  val?.currencyGoal?.find(
+                                    (item) => item.currency === goal.currency
+                                  )?.amount
+                                )
+                              : 0),
+                          0
+                        )
+                      ) >
+                    0
+                  ) {
+                    percent =
+                      ((fundedAmount -
+                        Number(
+                          item.milestones?.reduce(
+                            (acc, val, internalIndex) =>
+                              acc +
+                              (internalIndex < index
+                                ? Number(
+                                    val?.currencyGoal?.find(
+                                      (item) => item.currency === goal.currency
+                                    )?.amount
+                                  )
+                                : 0),
+                            0
+                          )
+                        )) /
+                        Number(
+                          item.milestones?.[index]?.currencyGoal?.find(
+                            (item) => item.currency === goal.currency
+                          )?.amount
+                        )) *
+                      100;
+                  }
+                }
+
+                goalPercents.push({
+                  currency: goal.currency,
+                  percent,
+                });
               });
+
+              return {
+                ...mil,
+                goalPercents,
+              };
             });
 
             let granteePromises = await Promise.all(
@@ -258,8 +345,9 @@ const useGrantee = (
 
             return {
               ...item,
-              totalFundedUSD,
-              totalGoalUSD,
+              milestones: mills,
+              totalFundedUSD: totalFundedUSD / 10 ** 18,
+              totalGoalUSD: totalGoalUSD / 10 ** 18,
               grantees: granteePromises?.filter((item) => item !== undefined),
               publication: data?.publication,
               type: "created",
@@ -283,7 +371,9 @@ const useGrantee = (
         )
       );
       setGrants(
-        [...created, ...filteredContributed]?.sort(() => Math.random() - 0.5)
+        [...created, ...filteredContributed]?.sort(
+          (a, b) => Number(b.blockTimestamp) - Number(a.blockTimestamp)
+        )
       );
       setGrantee(data?.profile as Profile);
       setInfo({
@@ -305,7 +395,7 @@ const useGrantee = (
     try {
       let contributed: (Grant & { type: string })[] = [],
         created: (Grant & { type: string })[] = [];
-      if (info?.cursorCreated !== 10) {
+      if (info?.cursorCreated !== 0) {
         const createdData = await getGrantsByProfile(
           10,
           info?.cursorCreated,
@@ -365,7 +455,7 @@ const useGrantee = (
                 item?.fundedAmount?.map((item) => {
                   totalFundedUSD =
                     totalFundedUSD +
-                    ((Number(item.funded) / 10 ** 18) *
+                    (Number(item.funded) *
                       Number(
                         oracleData.find((or) => or.currency == item.currency)
                           ?.rate
@@ -379,11 +469,16 @@ const useGrantee = (
 
               let totalGoalUSD: number = 0;
 
-              item.milestones.map((mil) => {
+              const mills = item.milestones.map((mil, index) => {
+                let goalPercents: {
+                  currency: string;
+                  percent: number;
+                }[] = [];
+
                 mil.currencyGoal.map((goal) => {
                   totalGoalUSD =
                     totalGoalUSD +
-                    ((Number(goal.amount) / 10 ** 18) *
+                    (Number(goal.amount) *
                       Number(
                         oracleData.find((or) => or.currency == goal.currency)
                           ?.rate
@@ -392,7 +487,89 @@ const useGrantee = (
                         oracleData.find((or) => or.currency == goal.currency)
                           ?.wei
                       );
+                  const fundedAmount = Number(
+                    item?.fundedAmount?.find(
+                      (item) => item.currency === goal.currency
+                    )?.funded || 0
+                  );
+
+                  let percent = 0;
+
+                  if (index == 0) {
+                    if (
+                      fundedAmount >=
+                      Number(
+                        item.milestones?.[0]?.currencyGoal?.find(
+                          (item) => item.currency === goal.currency
+                        )?.amount
+                      )
+                    ) {
+                      percent = 100;
+                    } else {
+                      percent =
+                        (fundedAmount /
+                          Number(
+                            item.milestones?.[0]?.currencyGoal?.find(
+                              (item) => item.currency === goal.currency
+                            )?.amount
+                          )) *
+                        100;
+                    }
+                  } else {
+                    if (
+                      fundedAmount -
+                        Number(
+                          item.milestones?.reduce(
+                            (acc, val, internalIndex) =>
+                              acc +
+                              (internalIndex < index
+                                ? Number(
+                                    val?.currencyGoal?.find(
+                                      (item) => item.currency === goal.currency
+                                    )?.amount
+                                  )
+                                : 0),
+                            0
+                          )
+                        ) >
+                      0
+                    ) {
+                      percent =
+                        ((fundedAmount -
+                          Number(
+                            item.milestones?.reduce(
+                              (acc, val, internalIndex) =>
+                                acc +
+                                (internalIndex < index
+                                  ? Number(
+                                      val?.currencyGoal?.find(
+                                        (item) =>
+                                          item.currency === goal.currency
+                                      )?.amount
+                                    )
+                                  : 0),
+                              0
+                            )
+                          )) /
+                          Number(
+                            item.milestones?.[index]?.currencyGoal?.find(
+                              (item) => item.currency === goal.currency
+                            )?.amount
+                          )) *
+                        100;
+                    }
+                  }
+
+                  goalPercents.push({
+                    currency: goal.currency,
+                    percent,
+                  });
                 });
+
+                return {
+                  ...mil,
+                  goalPercents,
+                };
               });
 
               let granteePromises = await Promise.all(
@@ -419,8 +596,9 @@ const useGrantee = (
 
               return {
                 ...item,
-                totalFundedUSD,
-                totalGoalUSD,
+                milestones: mills,
+                totalFundedUSD: totalFundedUSD / 10 ** 18,
+                totalGoalUSD: totalGoalUSD / 10 ** 18,
                 grantees: granteePromises?.filter((item) => item !== undefined),
                 publication: data?.publication,
                 type: "created",
@@ -431,7 +609,7 @@ const useGrantee = (
         )) as (Grant & { type: string })[];
       }
 
-      if (info?.cursorContributed !== 10) {
+      if (info?.cursorContributed !== 0) {
         const contributedData = await getGrantsFunded(
           10,
           info?.cursorContributed,
@@ -473,7 +651,7 @@ const useGrantee = (
                   item?.fundedAmount?.map((item) => {
                     totalFundedUSD =
                       totalFundedUSD +
-                      ((Number(item.funded) / 10 ** 18) *
+                      (Number(item.funded) *
                         Number(
                           oracleData.find((or) => or.currency == item.currency)
                             ?.rate
@@ -491,7 +669,7 @@ const useGrantee = (
                   mil.currencyGoal.map((goal) => {
                     totalGoalUSD =
                       totalGoalUSD +
-                      ((Number(goal.amount) / 10 ** 18) *
+                      (Number(goal.amount) *
                         Number(
                           oracleData.find((or) => or.currency == goal.currency)
                             ?.rate
@@ -527,8 +705,8 @@ const useGrantee = (
 
                 return {
                   ...item,
-                  totalFundedUSD,
-                  totalGoalUSD,
+                  totalFundedUSD: totalFundedUSD / 10 ** 18,
+                  totalGoalUSD: totalGoalUSD / 10 ** 18,
                   grantees: granteePromises?.filter(
                     (item) => item !== undefined
                   ),
@@ -554,11 +732,12 @@ const useGrantee = (
           () => false
         ),
       ]);
-      setGrants(
-        [...grants, ...created, ...filteredContributed]?.sort(
-          () => Math.random() - 0.5
-        )
-      );
+      setGrants([
+        ...grants,
+        ...[...created, ...filteredContributed]?.sort(
+          (a, b) => Number(b.blockTimestamp) - Number(a.blockTimestamp)
+        ),
+      ]);
       setInfo({
         hasMore:
           created?.length == 10 || filteredContributed?.length == 10
@@ -573,10 +752,10 @@ const useGrantee = (
   };
 
   useEffect(() => {
-    if (id && !grantee) {
+    if (id && !grantee && oracleData?.length > 0) {
       getGrantProfile();
     }
-  }, [id]);
+  }, [id, oracleData]);
 
   return {
     granteeLoading,

@@ -86,14 +86,17 @@ const Grant: FunctionComponent<GrantProps> = ({
                   : "rounded-l-lg"
               }`}
               style={{
-                width: `${grant?.totalFundedUSD / grant?.totalGoalUSD}%`,
+                width: `${
+                  (grant?.totalFundedUSD / grant?.totalGoalUSD) * 100
+                }%`,
               }}
             ></div>
             {showFundedHover && (
               <div className="absolute flex items-center justify-center -top-6 right-auto bg-mar/80 border text-super px-1 py-1.5 border-lima text-white font-dog rounded-md z-10">
-                {`${(grant?.totalFundedUSD / grant?.totalGoalUSD).toFixed(
-                  5
-                )}% Funded`}
+                {`${(
+                  (grant?.totalFundedUSD / grant?.totalGoalUSD) *
+                  100
+                ).toFixed(5)}% Funded`}
               </div>
             )}
           </div>

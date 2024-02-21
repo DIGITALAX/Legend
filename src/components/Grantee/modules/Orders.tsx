@@ -17,6 +17,7 @@ const Orders: FunctionComponent<OrdersProps> = ({
   setOrderOpen,
   orderDecrypting,
   decryptOrder,
+  oracleData,
 }): JSX.Element => {
   return (
     <div
@@ -84,7 +85,21 @@ const Orders: FunctionComponent<OrdersProps> = ({
                     </div>
                     <div className="relative w-fit h-fit flex flex-row gap-2 items-center justify-center">
                       <div className="relative w-fit h-fit flex items-center justify-center">
-                        {Number((Number(order?.amount) / 10 ** 18)?.toFixed(5))}
+                        {Number(
+                          (
+                            (Number(order?.amount) +
+                              (order?.level == "1"
+                                ? 0
+                                : (1 / 3) * Number(order?.amount))) /
+                            Number(
+                              oracleData?.find(
+                                (item) =>
+                                  item.currency?.toLowerCase() ==
+                                  order?.currency?.toLowerCase()
+                              )?.wei
+                            )
+                          )?.toFixed(5)
+                        )}
                       </div>
                       <div className="relative w-fit h-fit flex items-center justify-center">
                         <div
@@ -134,10 +149,9 @@ const Orders: FunctionComponent<OrdersProps> = ({
                             <div className="relative w-fit h-fit flex items-start justify-start flex-row flex-wrap gap-4">
                               {[
                                 "Name",
-                                "Contact",
-                                "Address",
+                                "Number",
+                                "Street",
                                 "Zip",
-                                "City",
                                 "State",
                                 "Country",
                               ].map((item: string, indexTwo: number) => {

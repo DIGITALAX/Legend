@@ -25,6 +25,7 @@ export type EditProps = {
   router: NextRouter;
   showFundedHover: boolean[][];
   setShowFundedHover: (e: SetStateAction<boolean[][]>) => void;
+  oracleData: OracleData[];
 };
 
 export type OrdersProps = {
@@ -34,6 +35,7 @@ export type OrdersProps = {
   setOrderOpen: (e: SetStateAction<boolean[]>) => void;
   orderDecrypting: boolean[];
   decryptOrder: (order: Order) => Promise<void>;
+  oracleData: OracleData[];
 };
 
 export interface Order {

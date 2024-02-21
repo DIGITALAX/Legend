@@ -93,7 +93,7 @@ export default function Grantee({
   );
   return (
     <div
-      className="relative w-full h-full overflow-y-scroll flex items-start justify-center bg-black pt-5 px-2 lg:px-5 gap-10 flex-col"
+      className="relative w-full h-fit overflow-y-scroll flex items-start justify-start bg-black pt-5 px-2 lg:px-5 gap-10 flex-col"
       id="side"
     >
       <Account
@@ -116,6 +116,7 @@ export default function Grantee({
           setOrderOpen={setOrderOpen}
           decryptOrder={decryptOrder}
           orderDecrypting={orderDecrypting}
+          oracleData={oracleData}
         />
       ) : !edit ? (
         <div
@@ -127,6 +128,7 @@ export default function Grantee({
             loader={<></>}
             hasMore={info?.hasMore}
             next={handleMoreGrants}
+            height={"50rem"}
             className={`w-full h-fit grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-5 gap-4`}
           >
             {granteeLoading
@@ -172,6 +174,7 @@ export default function Grantee({
       ) : (
         <Edit
           router={router}
+          oracleData={oracleData}
           setShowFundedHover={setShowFundedHoverEdit}
           showFundedHover={showFundedHoverEdit}
           handleClaimMilestone={handleClaimMilestone}

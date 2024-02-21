@@ -17,30 +17,37 @@ const Edit: FunctionComponent<EditProps> = ({
   router,
   showFundedHover,
   setShowFundedHover,
+  oracleData,
 }): JSX.Element => {
   return (
-    <div className="relative w-full h-full flex items-start justify-start flex-col gap-6">
+    <div
+      className="relative w-full h-full flex items-start justify-start flex-col gap-6 overflow-y-scroll"
+      id="side"
+    >
       <div className="relative w-full h-fit flex items-center justify-center text-xs font-dog text-white">
         {grant?.grantMetadata?.title}
       </div>
       <div className="relative flex flex-col items-center justify-center w-full h-fit gap-2 pb-5">
         <div className="relative w-full h-fit flex items-center justify-center flex-col">
           <div className="relative flex items-center justify-center bg-mar/80 rounded- border text-super px-1 py-1.5 border-lima text-white font-dog rounded-x-md rounded-t-md z-10 w-full h-fit">
-            {`${(grant?.totalFundedUSD / grant?.totalGoalUSD).toFixed(
-              5
-            )}% Funded`}
+            {`${(
+              ((grant?.totalFundedUSD || 0) / grant?.totalGoalUSD) *
+              100
+            ).toFixed(5)}% Funded`}
           </div>
           <div
             className={`relative w-full h-8 bg-lima/75 border border-lima flex rounded-x-md rounded-b-md`}
           >
             <div
               className={`relative h-full ${
-                grant?.totalFundedUSD / grant?.totalGoalUSD >= 100
+                (grant?.totalFundedUSD || 0) / grant?.totalGoalUSD >= 100
                   ? "rounded-md"
                   : "rounded-l-md"
               } bg-mar/75 flex`}
               style={{
-                width: `${grant?.totalFundedUSD / grant?.totalGoalUSD}%`,
+                width: `${
+                  ((grant?.totalFundedUSD || 0) / grant?.totalGoalUSD) * 100
+                }%`,
               }}
             ></div>
           </div>
@@ -95,7 +102,7 @@ const Edit: FunctionComponent<EditProps> = ({
               key={index}
               className="relative w-full h-fit flex sm:flex-nowrap flex-wrap flex-col gap-4 justify-start items-start"
             >
-              <div className="relative w-full h-fit flex items-start justify-between gap-4 flex-col preG:flex-row">
+              <div className="relative w-full h-fit flex items-start justify-between gap-4 flex-col pre:flex-row">
                 <div className="relative w-fit h-fit flex items-start justify-center gap-2 flex-row ml-0">
                   <div className="relative w-fit h-fit flex items-start justify-start font-dog text-xxs text-white">{`Milestone ${
                     index + 1
@@ -110,14 +117,12 @@ const Edit: FunctionComponent<EditProps> = ({
                 <div className="relative w-fit h-fit flex items-center justify-center mr-0">
                   <div
                     className={`relative w-24 h-7 flex items-center justify-center rounded-sm border border-white px-1.5 py-1 font-dog text-super text-white ${
-                      milestoneClaimLoading
-                        ? "animate-spin"
-                        : milestone.allClaimed ||
-                          milestone.granteeClaimed ||
-                          Math.floor(Date.now() / 1000) <
-                            Number(milestone.submitBy) - 2 * 7 * 24 * 60 * 60 ||
-                          Math.floor(Date.now() / 1000) >
-                            Number(milestone.submitBy) + 2 * 7 * 24 * 60 * 60
+                      milestone.allClaimed ||
+                      milestone.granteeClaimed ||
+                      Math.floor(Date.now() / 1000) <
+                        Number(milestone.submitBy) - 2 * 7 * 24 * 60 * 60 ||
+                      Math.floor(Date.now() / 1000) >
+                        Number(milestone.submitBy) + 2 * 7 * 24 * 60 * 60
                         ? "opacity-70"
                         : "cursor-pointer active:scale-95"
                     }`}
@@ -128,15 +133,21 @@ const Edit: FunctionComponent<EditProps> = ({
                       handleClaimMilestone(index + 1)
                     }
                   >
-                    {milestoneClaimLoading ? (
-                      <AiOutlineLoading color={"white"} size={12} />
-                    ) : milestone?.allClaimed ? (
-                      "All Claimed"
-                    ) : milestone?.granteeClaimed ? (
-                      "Claimed"
-                    ) : (
-                      "Claim"
-                    )}
+                    <div
+                      className={`relative w-fit h-fit flex items-center justify-center ${
+                        milestoneClaimLoading && "animate-spin"
+                      }`}
+                    >
+                      {milestoneClaimLoading ? (
+                        <AiOutlineLoading color={"white"} size={12} />
+                      ) : milestone?.allClaimed ? (
+                        "All Claimed"
+                      ) : milestone?.granteeClaimed ? (
+                        "Claimed"
+                      ) : (
+                        "Claim"
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -175,7 +186,16 @@ const Edit: FunctionComponent<EditProps> = ({
                             Contribution Goal:
                           </div>
                           <div className="relative w-fit h-fit flex items-center justify-center font-dog text-super top-px whitespace-nowrap break-all">
-                            {(Number(currency.amount) / 10 ** 18).toFixed(2)}{" "}
+                            {(
+                              Number(currency.amount) /
+                              Number(
+                                oracleData?.find(
+                                  (item) =>
+                                    item.currency?.toLowerCase() ==
+                                    currency?.currency?.toLowerCase()
+                                )?.wei
+                              )
+                            ).toFixed(2)}{" "}
                             {
                               ACCEPTED_TOKENS_MUMBAI.find(
                                 (token) => token[2] == currency.currency
@@ -208,33 +228,27 @@ const Edit: FunctionComponent<EditProps> = ({
                         <div
                           className={`relative h-full ${
                             Number(
-                              grant?.fundedAmount?.find(
+                              milestone.goalPercents?.find(
                                 (item) => item.currency == currency.currency
-                              )?.funded
-                            ) /
-                              Number(currency.amount) >=
-                            100
+                              )?.percent
+                            ) >= 100
                               ? "rounded-md"
                               : "rounded-l-md"
                           } bg-mar/75 flex`}
                           style={{
-                            width: `${
-                              Number(
-                                grant?.fundedAmount?.find(
-                                  (item) => item.currency == currency.currency
-                                )?.funded
-                              ) / Number(currency.amount)
-                            }%`,
+                            width: `${Number(
+                              milestone.goalPercents?.find(
+                                (item) => item.currency == currency.currency
+                              )?.percent
+                            )}%`,
                           }}
                         ></div>
                         {showFundedHover?.[index]?.[indexTwo] && (
                           <div className="absolute flex items-center justify-center -top-6 right-auto bg-mar/80 border text-super px-1 py-1.5 border-lima text-white font-dog rounded-md z-10">
-                            {`${(
-                              Number(
-                                grant?.fundedAmount?.find(
-                                  (item) => item.currency == currency.currency
-                                )?.funded
-                              ) / Number(currency.amount)
+                            {`${Number(
+                              milestone.goalPercents?.find(
+                                (item) => item.currency == currency.currency
+                              )?.percent
                             ).toFixed(5)}% Funded`}
                           </div>
                         )}
