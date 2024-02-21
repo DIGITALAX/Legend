@@ -76,7 +76,7 @@ const Edit: FunctionComponent<EditProps> = ({
                       }`
                     )
                   }
-                  title={`$${(Number(funder.usdAmount) / 10 ** 36)?.toFixed(
+                  title={`$${(Number(funder.usdAmount) / 10 ** 18)?.toFixed(
                     4
                   )} Contributed`}
                 >

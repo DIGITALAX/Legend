@@ -284,8 +284,8 @@ const useGrantee = (
                       ) >
                     0
                   ) {
-                    percent =
-                      ((fundedAmount -
+                    if (
+                      fundedAmount -
                         Number(
                           item.milestones?.reduce(
                             (acc, val, internalIndex) =>
@@ -299,13 +299,39 @@ const useGrantee = (
                                 : 0),
                             0
                           )
-                        )) /
-                        Number(
-                          item.milestones?.[index]?.currencyGoal?.find(
-                            (item) => item.currency === goal.currency
-                          )?.amount
-                        )) *
-                      100;
+                        ) >=
+                      Number(
+                        item.milestones?.[index]?.currencyGoal?.find(
+                          (item) => item.currency === goal.currency
+                        )?.amount
+                      )
+                    ) {
+                      percent = 100;
+                    } else {
+                      percent =
+                        ((fundedAmount -
+                          Number(
+                            item.milestones?.reduce(
+                              (acc, val, internalIndex) =>
+                                acc +
+                                (internalIndex < index
+                                  ? Number(
+                                      val?.currencyGoal?.find(
+                                        (item) =>
+                                          item.currency === goal.currency
+                                      )?.amount
+                                    )
+                                  : 0),
+                              0
+                            )
+                          )) /
+                          Number(
+                            item.milestones?.[index]?.currencyGoal?.find(
+                              (item) => item.currency === goal.currency
+                            )?.amount
+                          )) *
+                        100;
+                    }
                   }
                 }
 
@@ -534,8 +560,8 @@ const useGrantee = (
                         ) >
                       0
                     ) {
-                      percent =
-                        ((fundedAmount -
+                      if (
+                        fundedAmount -
                           Number(
                             item.milestones?.reduce(
                               (acc, val, internalIndex) =>
@@ -550,13 +576,39 @@ const useGrantee = (
                                   : 0),
                               0
                             )
-                          )) /
-                          Number(
-                            item.milestones?.[index]?.currencyGoal?.find(
-                              (item) => item.currency === goal.currency
-                            )?.amount
-                          )) *
-                        100;
+                          ) >=
+                        Number(
+                          item.milestones?.[index]?.currencyGoal?.find(
+                            (item) => item.currency === goal.currency
+                          )?.amount
+                        )
+                      ) {
+                        percent = 100;
+                      } else {
+                        percent =
+                          ((fundedAmount -
+                            Number(
+                              item.milestones?.reduce(
+                                (acc, val, internalIndex) =>
+                                  acc +
+                                  (internalIndex < index
+                                    ? Number(
+                                        val?.currencyGoal?.find(
+                                          (item) =>
+                                            item.currency === goal.currency
+                                        )?.amount
+                                      )
+                                    : 0),
+                                0
+                              )
+                            )) /
+                            Number(
+                              item.milestones?.[index]?.currencyGoal?.find(
+                                (item) => item.currency === goal.currency
+                              )?.amount
+                            )) *
+                          100;
+                      }
                     }
                   }
 
