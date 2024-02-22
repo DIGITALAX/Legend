@@ -2,7 +2,7 @@
 
 const allowedOrigins = [
   "https://player.vimeo.com/video/",
-  "https://api-v2-mumbai.lens.dev/",
+  "https://api-v2-mumbai-live.lens.dev/",
   "https://api-v2.lens.dev/",
   "https://thedial.infura-ipfs.io",
   "https://api.thegraph.com",
