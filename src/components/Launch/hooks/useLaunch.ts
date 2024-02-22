@@ -4,10 +4,11 @@ import uploadPostContentGrant from "../../../../lib/lens/helpers/uploadPostConte
 import { LevelInfo, PostInformation } from "../types/launch.types";
 import { ethers } from "ethers";
 import {
+  ACCEPTED_TOKENS,
   ACCEPTED_TOKENS_MUMBAI,
   LEGEND_OPEN_ACTION_CONTRACT,
 } from "../../../../lib/constants";
-import { polygonMumbai } from "viem/chains";
+import { polygon, polygonMumbai } from "viem/chains";
 import { PublicClient, createWalletClient, custom } from "viem";
 import { Dispatch } from "redux";
 import lensPost from "../../../../lib/lens/helpers/lensPost";
@@ -138,7 +139,7 @@ const useLaunch = (
                 postInformation.currencies.findIndex(
                   (c) =>
                     c?.toLowerCase() ==
-                    ACCEPTED_TOKENS_MUMBAI[3][2]?.toLowerCase()
+                    ACCEPTED_TOKENS[3][2]?.toLowerCase()
                 )
                   ? (Number(cur?.goal) * 10 ** 6).toLocaleString("fullwide", {
                       useGrouping: false,
@@ -162,7 +163,7 @@ const useLaunch = (
       );
 
       const clientWallet = createWalletClient({
-        chain: polygonMumbai,
+        chain: polygon,
         transport: custom((window as any).ethereum),
       });
 

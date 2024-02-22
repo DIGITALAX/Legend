@@ -13,7 +13,7 @@ import { Grant } from "@/components/Grants/types/grant.types";
 import { Dispatch } from "redux";
 import lensCollect from "../../../../lib/lens/helpers/lensCollect";
 import { PublicClient, createWalletClient, custom } from "viem";
-import { polygonMumbai } from "viem/chains";
+import { polygon, polygonMumbai } from "viem/chains";
 import { LEGEND_OPEN_ACTION_CONTRACT } from "../../../../lib/constants";
 import { Profile } from "../../../../graphql/generated";
 import { NextRouter } from "next/router";
@@ -77,7 +77,7 @@ const useCheckout = (
       }
 
       const clientWallet = createWalletClient({
-        chain: polygonMumbai,
+        chain: polygon,
         transport: custom((window as any).ethereum),
       });
 
@@ -144,7 +144,7 @@ const useCheckout = (
               },
         ],
         functionName: "approve",
-        chain: polygonMumbai,
+        chain: polygon,
         args: [
           LEGEND_OPEN_ACTION_CONTRACT,
           BigInt(
@@ -341,7 +341,7 @@ const useCheckout = (
       );
 
       const clientWallet = createWalletClient({
-        chain: polygonMumbai,
+        chain: polygon,
         transport: custom((window as any).ethereum),
       });
 
@@ -370,12 +370,17 @@ const useCheckout = (
             JSON.stringify(item?.sizes?.flat()) ===
               JSON.stringify(value?.sizes?.flat())
           ) {
-            return undefined;
+            return value.amount > 1
+              ? {
+                  ...value,
+                  amount: value.amount - 1,
+                }
+              : undefined;
           } else {
             return value;
           }
         })
-        .filter(Boolean) as CartItem[];
+        .filter((item) => item !== undefined) as CartItem[];
 
       dispatch(setCartItems(newItems));
 
@@ -390,7 +395,7 @@ const useCheckout = (
         });
       }
 
-      setChosenCartItem(newItems?.length < 1 ? undefined : cartItems[1]);
+      setChosenCartItem(newItems?.length < 1 ? undefined : newItems[0]);
 
       dispatch(
         setGrantCollected({

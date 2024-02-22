@@ -11,7 +11,7 @@ import {
 import { LitNodeClient } from "@lit-protocol/lit-node-client";
 import { Provider } from "react-redux";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import { polygonMumbai } from "wagmi/chains";
+import { polygon, polygonMumbai } from "wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import merge from "lodash.merge";
 import Header from "@/components/Layout/modules/Header";
@@ -27,7 +27,7 @@ const walletTheme = merge(darkTheme(), {
 } as Theme);
 
 const { chains, publicClient } = configureChains(
-  [polygonMumbai],
+  [polygon],
   [alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY! })]
 );
 

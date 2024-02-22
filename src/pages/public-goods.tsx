@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import useInteractions from "@/components/Grants/hooks/useInteractions";
 import { createPublicClient, http } from "viem";
-import { polygonMumbai } from "viem/chains";
+import { polygon, polygonMumbai } from "viem/chains";
 import { useAccount } from "wagmi";
 import { NextRouter } from "next/router";
 import Bar from "@/components/Common/modules/Bar";
@@ -15,9 +15,9 @@ import GrantItem from "@/components/Web3/modules/Item";
 export default function PublicGoods({ router }: { router: NextRouter }) {
   const dispatch = useDispatch();
   const publicClient = createPublicClient({
-    chain: polygonMumbai,
+    chain: polygon,
     transport: http(
-      `https://polygon-mumbai.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_MUMBAI}`
+      `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`
     ),
   });
   const { address } = useAccount();
