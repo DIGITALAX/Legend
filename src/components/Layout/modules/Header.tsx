@@ -12,7 +12,7 @@ import { setCartItems } from "../../../../redux/reducers/cartItemsSlice";
 import { ImageSet, NftImage } from "../../../../graphql/generated";
 import { ImCross } from "react-icons/im";
 import { CartItem } from "@/components/Checkout/types/checkout.types";
-import { polygonMumbai } from "viem/chains";
+import { polygon, polygonMumbai } from "viem/chains";
 import { createPublicClient, http } from "viem";
 import { PrintType } from "@/components/Launch/types/launch.types";
 
@@ -20,9 +20,9 @@ const Header: FunctionComponent<{ router: NextRouter }> = ({
   router,
 }): JSX.Element => {
   const publicClient = createPublicClient({
-    chain: polygonMumbai,
+    chain: polygon,
     transport: http(
-      `https://polygon-mumbai.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_MUMBAI}`
+      `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`
     ),
   });
   const dispatch = useDispatch();

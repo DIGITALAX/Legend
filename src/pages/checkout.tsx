@@ -6,10 +6,14 @@ import { useAccount } from "wagmi";
 import { NextRouter } from "next/router";
 import { createPublicClient, http } from "viem";
 import { LitNodeClient } from "@lit-protocol/lit-node-client";
-import { polygonMumbai } from "viem/chains";
+import { polygon, polygonMumbai } from "viem/chains";
 import { CartItem } from "@/components/Checkout/types/checkout.types";
 import PurchaseTokens from "@/components/Common/modules/PurchaseTokens";
-import { ACCEPTED_TOKENS_MUMBAI, INFURA_GATEWAY } from "../../lib/constants";
+import {
+  ACCEPTED_TOKENS,
+  ACCEPTED_TOKENS_MUMBAI,
+  INFURA_GATEWAY,
+} from "../../lib/constants";
 import { AiOutlineLoading } from "react-icons/ai";
 import { ImCross } from "react-icons/im";
 import { setCartItems } from "../../redux/reducers/cartItemsSlice";
@@ -25,9 +29,9 @@ export default function Checkout({
 }) {
   const { address } = useAccount();
   const publicClient = createPublicClient({
-    chain: polygonMumbai,
+    chain: polygon,
     transport: http(
-      `https://polygon-mumbai.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_MUMBAI}`
+      `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`
     ),
   });
   const dispatch = useDispatch();
@@ -109,7 +113,7 @@ export default function Checkout({
                     )?.rate
                   )
               )?.toFixed(4)} ${
-                ACCEPTED_TOKENS_MUMBAI?.find((i) => i[2] == currency)?.[1]
+                ACCEPTED_TOKENS?.find((i) => i[2] == currency)?.[1]
               }`}</div>
             </div>
           )}
@@ -151,7 +155,7 @@ export default function Checkout({
                     )
                   )?.toFixed(5)
                 )} ${
-                  ACCEPTED_TOKENS_MUMBAI?.find((i) => i[2] == currency)?.[1]
+                  ACCEPTED_TOKENS?.find((i) => i[2] == currency)?.[1]
                 }`}
               </div>
             </div>
@@ -376,7 +380,7 @@ export default function Checkout({
                             </div>
                             <div>
                               {
-                                ACCEPTED_TOKENS_MUMBAI?.find(
+                                ACCEPTED_TOKENS?.find(
                                   (i) => i[2] == currency
                                 )?.[1]
                               }{" "}

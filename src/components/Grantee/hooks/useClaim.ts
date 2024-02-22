@@ -1,7 +1,7 @@
 import { Grant } from "@/components/Grants/types/grant.types";
 import { SetStateAction, useEffect, useState } from "react";
 import { PublicClient, createWalletClient, custom } from "viem";
-import { polygonMumbai } from "viem/chains";
+import { polygon, polygonMumbai } from "viem/chains";
 import { LEGEND_MILESTONE_ESCROW_CONTRACT } from "../../../../lib/constants";
 import LegendMilestoneEscrow from "./../../../../abi/GrantMilestoneClaimAbi.json";
 import { Dispatch } from "redux";
@@ -31,7 +31,7 @@ const useClaim = (
     setMilestoneClaimLoading(true);
     try {
       const clientWallet = createWalletClient({
-        chain: polygonMumbai,
+        chain: polygon,
         transport: custom((window as any).ethereum),
       });
 
@@ -39,7 +39,7 @@ const useClaim = (
         address: LEGEND_MILESTONE_ESCROW_CONTRACT,
         abi: LegendMilestoneEscrow,
         functionName: "initiateMilestoneClaim",
-        chain: polygonMumbai,
+        chain: polygon,
         args: [Number(edit?.grantId), milestone],
         account: address,
       });

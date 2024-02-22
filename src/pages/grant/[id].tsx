@@ -13,7 +13,7 @@ import useCheckout from "@/components/Checkout/hooks/useCheckout";
 import { LitNodeClient } from "@lit-protocol/lit-node-client";
 import { useAccount } from "wagmi";
 import { createPublicClient, http } from "viem";
-import { polygonMumbai } from "viem/chains";
+import { polygon, polygonMumbai } from "viem/chains";
 import useInteractions from "@/components/Grants/hooks/useInteractions";
 import moment from "moment";
 import { ImageMetadataV3, Post, Profile } from "../../../graphql/generated";
@@ -35,9 +35,9 @@ export default function Grant({
   const { id } = router.query;
   const { address } = useAccount();
   const publicClient = createPublicClient({
-    chain: polygonMumbai,
+    chain: polygon,
     transport: http(
-      `https://polygon-mumbai.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_MUMBAI}`
+      `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`
     ),
   });
   const dispatch = useDispatch();

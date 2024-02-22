@@ -7,7 +7,7 @@ import { NextRouter } from "next/router";
 import { Grant as GrantType } from "@/components/Grants/types/grant.types";
 import useInteractions from "@/components/Grants/hooks/useInteractions";
 import { useAccount } from "wagmi";
-import { polygonMumbai } from "viem/chains";
+import { polygon, polygonMumbai } from "viem/chains";
 import { createPublicClient, http } from "viem";
 import useLevelItems from "@/components/Launch/hooks/useLevelItems";
 import Bar from "@/components/Common/modules/Bar";
@@ -27,9 +27,9 @@ export default function Home({
   const dispatch = useDispatch();
   const { address } = useAccount();
   const publicClient = createPublicClient({
-    chain: polygonMumbai,
+    chain: polygon,
     transport: http(
-      `https://polygon-mumbai.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_MUMBAI}`
+      `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`
     ),
   });
   const collectionsCache = useSelector(

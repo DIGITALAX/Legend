@@ -1,6 +1,7 @@
 import Image from "next/legacy/image";
 import { FunctionComponent } from "react";
 import {
+  ACCEPTED_TOKENS,
   ACCEPTED_TOKENS_MUMBAI,
   INFURA_GATEWAY,
 } from "../../../../lib/constants";
@@ -49,14 +50,14 @@ const Milestone: FunctionComponent<MilestoneProps> = ({
                 10 ** 18
               ).toFixed(2)}{" "}
               {
-                ACCEPTED_TOKENS_MUMBAI.find(
+                ACCEPTED_TOKENS.find(
                   (token) => token[2] == changeCurrency
                 )?.[1]
               }
             </div>
           </div>
           <div className="w-fit h-fit relative flex items-center justify-center ml-0 gap-2">
-            {ACCEPTED_TOKENS_MUMBAI?.filter((token) =>
+            {ACCEPTED_TOKENS?.filter((token) =>
               acceptedTokens?.includes(token[2])
             ).map((token: string[], indexTwo: number) => {
               return (

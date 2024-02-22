@@ -3,6 +3,7 @@ import { Details, Order, OrdersProps } from "../types/grantee.types";
 import Bar from "@/components/Common/modules/Bar";
 import Image from "next/legacy/image";
 import {
+  ACCEPTED_TOKENS,
   ACCEPTED_TOKENS_MUMBAI,
   INFURA_GATEWAY,
 } from "../../../../lib/constants";
@@ -107,7 +108,7 @@ const Orders: FunctionComponent<OrdersProps> = ({
                         >
                           <Image
                             src={`${INFURA_GATEWAY}/ipfs/${
-                              ACCEPTED_TOKENS_MUMBAI?.find(
+                              ACCEPTED_TOKENS?.find(
                                 (item) =>
                                   item[2]?.toLowerCase() ==
                                   order?.currency?.toLowerCase()

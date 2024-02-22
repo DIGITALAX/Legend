@@ -12,7 +12,10 @@ import {
 import pickRandomItem from "../../../../lib/graph/helpers/pickRandomItem";
 import { Dispatch } from "redux";
 import fetchIpfsJson from "../../../../lib/graph/helpers/fetchIPFSJson";
-import { ACCEPTED_TOKENS_MUMBAI } from "../../../../lib/constants";
+import {
+  ACCEPTED_TOKENS,
+  ACCEPTED_TOKENS_MUMBAI,
+} from "../../../../lib/constants";
 import { Grant } from "@/components/Grants/types/grant.types";
 import { NextRouter } from "next/router";
 
@@ -42,7 +45,7 @@ const useLevelItems = (
           (postInformation?.currencies &&
           postInformation?.currencies?.length > 0
             ? postInformation?.currencies
-            : ACCEPTED_TOKENS_MUMBAI?.map((item) => item[2])
+            : ACCEPTED_TOKENS?.map((item) => item[2])
           ).filter((curr) => item.acceptedTokens.includes(curr))
       );
 
@@ -143,7 +146,7 @@ const useLevelItems = (
 
     setDetails([
       Array.from({ length: 7 }, (_, index: number) => ({
-        currency: ACCEPTED_TOKENS_MUMBAI[2][2],
+        currency: ACCEPTED_TOKENS[2][2],
         sizeIndex: Array.from(
           {
             length:

@@ -103,7 +103,7 @@ const useOrders = (
       let nonce = client.getLatestBlockhash();
 
       const authSig = await checkAndSignAuthMessage({
-        chain: "mumbai",
+        chain: "polygon",
         nonce: nonce!,
       });
       await client.connect();
@@ -117,7 +117,7 @@ const useOrders = (
             .accessControlConditions,
           ciphertext: (data as EncryptedDetails).ciphertext,
           dataToEncryptHash: (data as EncryptedDetails).dataToEncryptHash,
-          chain: "mumbai",
+          chain: "polygon",
         },
         client! as any
       );

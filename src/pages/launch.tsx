@@ -8,16 +8,16 @@ import useSignIn from "@/components/Layout/hooks/useSignIn";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import useLevelItems from "@/components/Launch/hooks/useLevelItems";
 import { createPublicClient, http } from "viem";
-import { polygonMumbai } from "viem/chains";
+import { polygon, polygonMumbai } from "viem/chains";
 import { useAccount } from "wagmi";
 
 export default function Launch({ router }: { router: NextRouter }) {
   const { openConnectModal } = useConnectModal();
   const dispatch = useDispatch();
   const publicClient = createPublicClient({
-    chain: polygonMumbai,
+    chain: polygon,
     transport: http(
-      `https://polygon-mumbai.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_MUMBAI}`
+      `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`
     ),
   });
   const { address } = useAccount();

@@ -10,6 +10,7 @@ import Success from "./Success";
 import Bar from "@/components/Common/modules/Bar";
 import Image from "next/legacy/image";
 import {
+  ACCEPTED_TOKENS,
   ACCEPTED_TOKENS_MUMBAI,
   INFURA_GATEWAY,
 } from "../../../../lib/constants";
@@ -64,7 +65,7 @@ const LaunchSwitch: FunctionComponent<LaunchSwitchProps> = ({
                 contributions.
               </div>
               <div className="relative w-3/4 justify-center items-center flex flex-row gap-5">
-                {ACCEPTED_TOKENS_MUMBAI?.map(
+                {ACCEPTED_TOKENS?.map(
                   (item: string[], index: number) => {
                     return (
                       <div

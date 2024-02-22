@@ -3,6 +3,7 @@ import { EditProps } from "../types/grantee.types";
 import Image from "next/legacy/image";
 import createProfilePicture from "../../../../lib/lens/helpers/createProfilePicture";
 import {
+  ACCEPTED_TOKENS,
   ACCEPTED_TOKENS_MUMBAI,
   INFURA_GATEWAY,
 } from "../../../../lib/constants";
@@ -41,8 +42,8 @@ const Edit: FunctionComponent<EditProps> = ({
             <div
               className={`relative h-full ${
                 (grant?.totalFundedUSD || 0) / grant?.totalGoalUSD >= 100
-                  ? "rounded-md"
-                  : "rounded-l-md"
+                  ? "rounded-b-md"
+                  : "rounded-bl-md"
               } bg-mar/75 flex`}
               style={{
                 width: `${
@@ -171,7 +172,7 @@ const Edit: FunctionComponent<EditProps> = ({
                           >
                             <Image
                               src={`${INFURA_GATEWAY}/ipfs/${
-                                ACCEPTED_TOKENS_MUMBAI.find(
+                                ACCEPTED_TOKENS.find(
                                   (t) => t[2] == currency.currency
                                 )?.[0]
                               }`}
@@ -197,7 +198,7 @@ const Edit: FunctionComponent<EditProps> = ({
                               )
                             ).toFixed(2)}{" "}
                             {
-                              ACCEPTED_TOKENS_MUMBAI.find(
+                              ACCEPTED_TOKENS.find(
                                 (token) => token[2] == currency.currency
                               )?.[1]
                             }

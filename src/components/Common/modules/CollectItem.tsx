@@ -3,6 +3,7 @@ import Image from "next/legacy/image";
 import { FunctionComponent } from "react";
 import { AiOutlineLoading } from "react-icons/ai";
 import {
+  ACCEPTED_TOKENS,
   ACCEPTED_TOKENS_MUMBAI,
   INFURA_GATEWAY,
 } from "../../../../lib/constants";
@@ -369,9 +370,7 @@ const CollectItem: FunctionComponent<CollectItemProps> = ({
                   )
                 )?.toFixed(4)
               )} ${
-                ACCEPTED_TOKENS_MUMBAI?.find(
-                  (i) => i[2] == details?.currency
-                )?.[1]
+                ACCEPTED_TOKENS?.find((i) => i[2] == details?.currency)?.[1]
               }`}
             </div>
             <div className="relative w-3/4 h-fit flex items-center justify-center">

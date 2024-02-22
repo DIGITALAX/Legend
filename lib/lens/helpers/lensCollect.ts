@@ -128,7 +128,7 @@ const lensCollect = async (
       address: LENS_HUB_PROXY,
       abi: LensHubProxy,
       functionName,
-      chain: polygonMumbai,
+      chain: polygon,
       args,
       account: address,
     });

@@ -1,6 +1,7 @@
 import Image from "next/legacy/image";
 import { FunctionComponent, SetStateAction } from "react";
 import {
+  ACCEPTED_TOKENS,
   ACCEPTED_TOKENS_MUMBAI,
   INFURA_GATEWAY,
 } from "../../../../lib/constants";
@@ -17,7 +18,7 @@ const PurchaseTokens: FunctionComponent<PurchaseTokensProps> = ({
 }): JSX.Element => {
   return (
     <div className="relative w-fit justify-center items-center flex flex-row gap-1 h-fit">
-      {ACCEPTED_TOKENS_MUMBAI?.filter((token) =>
+      {ACCEPTED_TOKENS?.filter((token) =>
         tokens?.includes(token[2])
       )?.map((item: string[], indexTwo: number) => {
         return (

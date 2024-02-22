@@ -2,6 +2,7 @@ import Bar from "@/components/Common/modules/Bar";
 import Image from "next/legacy/image";
 import { FunctionComponent } from "react";
 import {
+  ACCEPTED_TOKENS,
   ACCEPTED_TOKENS_MUMBAI,
   INFURA_GATEWAY,
 } from "../../../../lib/constants";
@@ -63,7 +64,7 @@ const LevelOne: FunctionComponent<LevelOneProps> = ({
                   )?.rate
                 )
               ).toFixed(4)} ${
-                ACCEPTED_TOKENS_MUMBAI?.find(
+                ACCEPTED_TOKENS?.find(
                   (ac) => ac[2] == details?.currency
                 )?.[1]
               }`}

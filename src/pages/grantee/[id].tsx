@@ -11,7 +11,7 @@ import useFollow from "@/components/Grantee/hooks/useFollow";
 import Account from "@/components/Grantee/modules/Account";
 import { useAccount } from "wagmi";
 import { createPublicClient, http } from "viem";
-import { polygonMumbai } from "viem/chains";
+import { polygon, polygonMumbai } from "viem/chains";
 import Orders from "@/components/Grantee/modules/Orders";
 import Edit from "@/components/Grantee/modules/Edit";
 import useClaim from "@/components/Grantee/hooks/useClaim";
@@ -28,7 +28,7 @@ export default function Grantee({
   const { id } = router.query;
   const { address } = useAccount();
   const publicClient = createPublicClient({
-    chain: polygonMumbai,
+    chain: polygon,
     transport: http(
       `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`
     ),

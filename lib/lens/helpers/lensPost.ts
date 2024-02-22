@@ -1,6 +1,6 @@
 import LensHubProxy from "../../../abi/LensHubProxy.json";
 import { Action, Dispatch } from "redux";
-import { polygonMumbai } from "viem/chains";
+import { polygon, polygonMumbai } from "viem/chains";
 import { PublicClient, WalletClient } from "viem";
 import { InputMaybe, OpenActionModuleInput } from "../../../graphql/generated";
 import { setIndexer } from "../../../redux/reducers/indexerSlice";
@@ -99,7 +99,7 @@ const lensPost = async (
       address: LENS_HUB_PROXY,
       abi: LensHubProxy,
       functionName: "post",
-      chain: polygonMumbai,
+      chain: polygon,
       args: [
         {
           profileId: parseInt(typedData?.value.profileId, 16),

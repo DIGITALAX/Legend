@@ -8,6 +8,7 @@ import "react-day-picker/dist/style.css";
 import { usePopper } from "react-popper";
 import Image from "next/legacy/image";
 import {
+  ACCEPTED_TOKENS,
   ACCEPTED_TOKENS_MUMBAI,
   INFURA_GATEWAY,
 } from "../../../../lib/constants";
@@ -52,7 +53,7 @@ const Milestone: FunctionComponent<MilestoneProps> = ({
                       >
                         <Image
                           src={`${INFURA_GATEWAY}/ipfs/${
-                            ACCEPTED_TOKENS_MUMBAI.find(
+                            ACCEPTED_TOKENS.find(
                               (item) => item[2] == currency
                             )?.[0]
                           }`}
