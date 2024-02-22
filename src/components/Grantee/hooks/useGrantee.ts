@@ -38,7 +38,7 @@ const useGrantee = (
     try {
       const { data } = await getProfile(
         {
-          forHandle: "test/" + id,
+          forHandle: "lens/" + id,
         },
         lensConnected?.id
       );

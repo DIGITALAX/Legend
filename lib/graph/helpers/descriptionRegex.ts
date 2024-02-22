@@ -49,7 +49,7 @@ const descriptionRegex = (description: string, colorChange: boolean) => {
       }
     });
   
-    const formattedDescription = styledLines.join("<br />");
+    const formattedDescription = styledLines?.join("<br />");
     return `<div style="word-wrap: break-word; max-width: 100%;">${formattedDescription}</div>`;
   };
   
